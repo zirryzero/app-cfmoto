@@ -21,7 +21,7 @@
         <ImageView
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:contentDescription="OpenCfMoto"
+            android:contentDescription="@string/app_name"
             android:src="@drawable/ic_ride"
             android:tint="@color/brand_orange" />
 
@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:letterSpacing="0.01"
-                android:text="OpenCfMoto"
+                android:text="@string/app_name"
                 android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold" />

@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🏍️ OpenCfMoto
+# 🏍️ 800NK ADV Link
 
-### Wireless Android Auto on Carbit / EasyConnect dashes (CFMoto MotoPlay and siblings) — no root, no PC.
+### Wireless Android Auto adapted specifically for the CFMOTO 800NK Advanced MotoPlay dash.
 
 **CFMoto** · **Voge** · **Moto Morini** · **Morbidelli** · **Zontes** · **Benelli** · **QJ Motor** ·
 **Longjia** · **GOES** / **Gladiator** · and other brands with a MotoPlay / EasyConnect pairing QR
@@ -42,6 +42,19 @@ dash touchscreen.
 CFMoto · Voge · Morini · Morbidelli · QJ Motor · GOES and more — community photos of Android Auto on the dash.
 
 </div>
+
+---
+
+> **Origen y atribución:** **800NK ADV Link no es una aplicación creada desde cero.** Es una
+> adaptación específica para la 800NK Advanced basada en el proyecto de código abierto
+> [OpenCfMoto](https://github.com/zanderp/open-cfmoto), desarrollado originalmente por
+> **Alexandru (zanderp)** con aportes de su comunidad.
+>
+> **Project origin and attribution:** It is a model-specific adaptation of the open-source
+> [OpenCfMoto](https://github.com/zanderp/open-cfmoto) project, originally developed and maintained
+> by **Alexandru (zanderp)** with contributions from the OpenCfMoto community. This adaptation builds
+> on that work to focus on the CFMOTO 800NK Advanced. Original copyright notices, contributor credits,
+> and the GNU AGPL v3 license are preserved in [NOTICE](NOTICE) and [LICENSE](LICENSE).
 
 ---
 

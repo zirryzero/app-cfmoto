@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Draft + terminology pass — improve via PR: docs/TRANSLATIONS.md -->
 <resources>
-    <string name="app_name">Open CfMoto</string>
+    <string name="app_name">800NK ADV Link</string>
+    <string name="about_origin_title">Origen del proyecto</string>
+    <string name="about_origin_body">800NK ADV Link es una adaptación específica para este modelo basada en el proyecto de código abierto OpenCfMoto. No fue creada desde cero por quien mantiene esta adaptación. La implementación original y su autoría pertenecen a Alexandru (zanderp) y a los colaboradores de OpenCfMoto; esta versión parte de su trabajo para centrarse en la CFMOTO 800NK Advanced.</string>
     <string name="about_copyright">© 2026 Alexandru</string>
     <string name="about_copyright_body">Mantenido por Alexandru (zanderp). Software libre bajo la GNU AGPL v3 o posterior: consulta LICENSE y NOTICE en el repositorio para ver el texto completo de derechos de autor y atribución.</string>
     <string name="about_license_body">Puedes usar, estudiar, compartir y modificar esta aplicación según la AGPL. Si redistribuyes una versión modificada (incluso como servicio de red), debes ofrecer el código fuente correspondiente completo bajo la misma licencia.</string>
     <string name="about_credits">Construido sobre el linaje de la comunidad open-cfmoto:\n\n• dcoletto / coletz: trabajo original de QR y EasyConn\n• BojanJ: integración del receptor Android Auto\n• richardbizik: compatibilidad con 1000 MT‑X\n• ionutradu252 / open-cflink — controles del manillar, márgenes, reconexión y pulido\n• eugen0309 — vía Wi‑Fi Direct/CL‑C450\n• unidad central revivida: pila de proyección de Android Auto (AGPL)\n\nY todos los que probaron motos, compartieron registros y abrieron incidencias.</string>
-    <string name="about_disclaimer">OpenCfMoto es un proyecto comunitario independiente. No está afiliado, respaldado ni patrocinado por CFMOTO, Carbit, Google, Android Auto u otras marcas que otorgan licencias para tableros estilo EasyConnect (incluidas Voge, Zontes, Moto Morini, Benelli, QJ Motor, Morbidelli y Longjia). CFMOTO, MotoPlay, EasyConn, Carbit, Android, Android Auto y las marcas relacionadas son marcas comerciales de sus respectivos propietarios. Úsalo bajo tu propia responsabilidad: fija la ruta antes de salir.</string>
+    <string name="about_disclaimer">800NK ADV Link es una adaptación no oficial del proyecto comunitario independiente OpenCfMoto. No está afiliada, respaldada ni patrocinada por CFMOTO, Carbit, Google ni Android Auto. CFMOTO, 800NK, MotoPlay, EasyConn, Carbit, Android, Android Auto y las marcas relacionadas pertenecen a sus respectivos propietarios. Úsala bajo tu propia responsabilidad: fija la ruta antes de salir.</string>
     <string name="supported_bikes_intro">Funciona con CFMoto MotoPlay/EasyConnect y otros tableros del entorno Carbit que muestran un QR de emparejamiento. No hace falta T-BOX. EE. UU. e internacional: si ves el QR, prueba Connect.</string>
     <string name="supported_bikes_confirmed_title">Confirmado con OpenCfMoto</string>
     <string name="supported_bikes_confirmed">CFMoto: 800MT (MT‑X / Explore / Explore GT) · 1000 MT‑X · 800NK (US CRCP) · 800NK Advanced · 675NK · 700MT Adventure · 450MT · 450SR (+ SR‑S / TC) · 450CL‑C / CL‑C450 · 450NK · 150SC scooter · CFORCE 850 / 1000 · GOES Terrox 1000 / Gladiator G3 1000\nOtros: Voge DS800 Rally / DS900X · Moto Morini X-Cape 649 / 700 / Seiemmezzo · Benelli TRK 702 / 702X · Rieju 307 · Zontes 125X · Morbidelli T1002VX / T352X · QJ Motor SRK800RR / SRK450RR / SRK250RD / SRT 600 / SRV600</string>
@@ -18,7 +20,7 @@
     <string name="supported_bikes_unlikely">800MT Sport · 800MT Touring · 450SR World Champion Edition · 700CL‑X (Adventure / Heritage / Sport) · PAPIO, a menos que tu unidad muestre el QR de todos modos.</string>
     <string name="supported_bikes_footer">Lista completa en línea: github.com/zanderp/open-cfmoto → docs/SUPPORTED-BIKES.md: informa motos nuevas en Discord.</string>
     <string name="about_about">Acerca de</string>
-    <string name="about_wireless_android_auto_for_carbit_easyconnect_das">Android Auto inalámbrico para tableros Carbit/EasyConnect (CFMoto MotoPlay y hermanos).</string>
+    <string name="about_wireless_android_auto_for_carbit_easyconnect_das">Android Auto inalámbrico adaptado para el tablero MotoPlay de la CFMOTO 800NK Advanced.</string>
     <string name="about_community_support">Comunidad y soporte</string>
     <string name="about_questions_logs_or_a_new_bike_join_discord_tips_k">¿Preguntas, registros o una moto nueva? Únete a Discord. Los consejos mantienen el proyecto en movimiento.</string>
     <string name="about_discord">Discord</string>
@@ -240,7 +242,7 @@
     <string name="main_search_a_place_or_address">Buscar un lugar o dirección…</string>
     <string name="main_go">Ir</string>
     <string name="main_rider_tips">Consejos para moteros</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Conectar: inicia Android Auto en el tablero (se convierte en Detener mientras está vinculado).\n• Mapa: mapa OpenCfMoto / GPX (no Google Maps). Espejo: transmitir la pantalla del teléfono.\n• Mientras está conectado, Mapa/Espejo cambia lo que muestra el tablero.\n• Vista del tablero y controles: HUD del teléfono y D-pad/manillar.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Conectar: inicia Android Auto en el tablero (se convierte en Detener mientras está vinculado).\n• Mapa: mapa 800NK ADV Link / GPX (no Google Maps). Espejo: transmitir la pantalla del teléfono.\n• Mientras está conectado, Mapa/Espejo cambia lo que muestra el tablero.\n• Vista del tablero y controles: HUD del teléfono y D-pad/manillar.</string>
     <string name="main_about_credits">Acerca de y créditos</string>
     <string name="main_check_for_update">Buscar actualizaciones</string>
     <string name="main_report_a_problem">Informar de un problema</string>
@@ -248,7 +250,7 @@
     <string name="main_report_hint_problem">¿Qué ha fallado?</string>
     <string name="main_report_hint_bike_model">Modelo de moto (p. ej. 800NK Advanced)</string>
     <string name="main_report_hint_year">Año (opcional)</string>
-    <string name="main_mirror_leave_shared_app">Dejar en pantalla la aplicación compartida (OpenCfMoto se queda en la notificación)</string>
+    <string name="main_mirror_leave_shared_app">Dejar en pantalla la aplicación compartida (800NK ADV Link se queda en la notificación)</string>
     <string name="main_share_problem_report">Compartir el informe del problema</string>
     <string name="main_diagnostics">Diagnóstico</string>
     <string name="main_share">Compartir</string>
@@ -272,7 +274,7 @@
     <string name="setup_a_one_time_setup_so_android_auto_can_project_to_">Una configuración única para que Android Auto pueda proyectar en tu tablero CFMoto, más las opciones de pantalla y batería.</string>
     <string name="setup_get_started">Empezar</string>
     <string name="setup_1_android_auto">1. Android Auto</string>
-    <string name="setup_android_auto_runs_maps_waze_opencfmoto_relays_it">Android Auto ejecuta Maps/Waze. OpenCfMoto retransmite tu pantalla a la moto.</string>
+    <string name="setup_android_auto_runs_maps_waze_opencfmoto_relays_it">Android Auto ejecuta Maps/Waze. 800NK ADV Link retransmite su pantalla a la moto.</string>
     <string name="setup_open_android_auto">Abrir Android Auto</string>
     <string name="setup_install_android_auto">Instalar Android Auto</string>
     <string name="setup_2_permissions">2. Permisos</string>
@@ -404,7 +406,7 @@
     <string name="setup_share_json">Compartir JSON</string>
     <string name="setup_import">Importar…</string>
     <string name="setup_supported_bikes">Motos compatibles</string>
-    <string name="setup_2026_alexandru_opencfmoto_agpl_3_0">© 2026 Alexandru · OpenCfMoto · AGPL‑3.0</string>
+    <string name="setup_2026_alexandru_opencfmoto_agpl_3_0">800NK ADV Link · basada en OpenCfMoto · AGPL‑3.0</string>
     <string name="trip_trip_computer">Ordenador de viaje</string>
     <string name="trip_saved_trips">Viajes guardados</string>
     <string name="trip_waiting_for_gps">Esperando al GPS…</string>

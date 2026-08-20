@@ -1,5 +1,14 @@
-OpenCfMoto
-==========
+800NK ADV Link - derivative work notice
+=======================================
+
+800NK ADV Link is a model-specific adaptation of OpenCfMoto for the CFMOTO
+800NK Advanced. It was not created from scratch by the maintainer of this
+adaptation. The original implementation and authorship belong to Alexandru
+and the OpenCfMoto contributors identified below. This derivative preserves
+their copyright, project lineage, incorporated-code notices, and AGPL terms.
+
+OpenCfMoto - original project
+=============================
 
 Copyright (C) 2026 Alexandru <https://alexandru.rocks> and the OpenCfMoto contributors.
 

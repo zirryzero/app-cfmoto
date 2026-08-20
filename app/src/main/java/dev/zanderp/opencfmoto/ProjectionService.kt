@@ -41,7 +41,7 @@ class ProjectionService : Service() {
             )
         }
         val notification: Notification = Notification.Builder(this, channelId)
-            .setContentTitle(getString(R.string.notif_mirror_title))
+            .setContentTitle(getString(R.string.app_name))
             .setContentText(getString(R.string.notif_mirror_text))
             .setSmallIcon(android.R.drawable.ic_menu_share)
             .build()
