@@ -20,6 +20,7 @@
     <string name="about_origin_title">Origen del proyecto</string>
     <string name="about_origin_body">800NK ADV Link es una adaptación específica basada en el proyecto de código abierto OpenCfMoto. No fue creada desde cero. La implementación original y su autoría pertenecen a Alexandru (zanderp) y a los colaboradores de OpenCfMoto. Esta adaptación para la 800NK Advanced es mantenida por ZirryZero.</string>
     <string name="about_zirryzero_github">ZirryZero en GitHub</string>
+    <string name="about_adaptation_source">Ver código de la adaptación</string>
     <string name="about_copyright">© 2026 Alexandru</string>
     <string name="about_copyright_body">Mantenido por Alexandru (zanderp). Software libre bajo la GNU AGPL v3 o posterior: consulta LICENSE y NOTICE en el repositorio para ver el texto completo de derechos de autor y atribución.</string>
     <string name="about_license_body">Puedes usar, estudiar, compartir y modificar esta aplicación según la AGPL. Si redistribuyes una versión modificada (incluso como servicio de red), debes ofrecer el código fuente correspondiente completo bajo la misma licencia.</string>
@@ -31,7 +32,7 @@
     <string name="about_donate">Donar</string>
     <string name="about_copyright_2">Derechos de autor</string>
     <string name="about_website_alexandru_rocks">Sitio web — alexandru.rocks</string>
-    <string name="about_source_on_github">Código fuente en GitHub</string>
+    <string name="about_source_on_github">Ver código original</string>
     <string name="about_license">Licencia</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">Licencia Pública General Affero de GNU v3 o posterior</string>
     <string name="about_view_license_notice">Ver LICENSE y NOTICE</string>

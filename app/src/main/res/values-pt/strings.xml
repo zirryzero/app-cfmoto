@@ -16,7 +16,8 @@
     <string name="about_donate">Doar</string>
     <string name="about_copyright_2">Direitos autorais</string>
     <string name="about_website_alexandru_rocks">Site - alexandru.rocks</string>
-    <string name="about_source_on_github">Fonte no GitHub</string>
+    <string name="about_source_on_github">Ver código original</string>
+    <string name="about_adaptation_source">Ver código da adaptação</string>
     <string name="about_license">Licença</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">Licença Pública Geral GNU Affero v3 ou posterior</string>
     <string name="about_view_license_notice">Ver LICENÇA E AVISO</string>

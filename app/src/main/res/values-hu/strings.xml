@@ -17,7 +17,8 @@
     <string name="about_donate">Adomány</string>
     <string name="about_copyright_2">Szerzői jog</string>
     <string name="about_website_alexandru_rocks">Weboldal — alexandru.rocks</string>
-    <string name="about_source_on_github">Forrás a GitHubon</string>
+    <string name="about_source_on_github">Eredeti kód megtekintése</string>
+    <string name="about_adaptation_source">Az adaptáció kódjának megtekintése</string>
     <string name="about_license">Licenc</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">GNU Affero General Public License v3 vagy újabb</string>
     <string name="about_view_license_notice">LICENSE és NOTICE megtekintése</string>

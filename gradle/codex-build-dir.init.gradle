@@ -1,0 +1,5 @@
+gradle.beforeProject { project ->
+    def base = new File(System.getenv("LOCALAPPDATA"), "Temp/app-cfmoto-codex-build")
+    def projectName = project.path.replace(":", "_").replaceFirst("^_", "")
+    project.layout.buildDirectory.set(new File(base, projectName ?: "root"))
+}

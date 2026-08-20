@@ -16,7 +16,8 @@
     <string name="about_donate">Doneer</string>
     <string name="about_copyright_2">Copyright</string>
     <string name="about_website_alexandru_rocks">Website - alexandru.rocks</string>
-    <string name="about_source_on_github">Bron op GitHub</string>
+    <string name="about_source_on_github">Originele code bekijken</string>
+    <string name="about_adaptation_source">Code van de aanpassing bekijken</string>
     <string name="about_license">Licentie</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">GNU Affero Algemene Publieke Licentie v3 of hoger</string>
     <string name="about_view_license_notice">Bekijk LICENTIE &amp; KENNISGEVING</string>

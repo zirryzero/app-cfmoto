@@ -16,7 +16,8 @@
     <string name="about_donate">Darovat</string>
     <string name="about_copyright_2">Copyright</string>
     <string name="about_website_alexandru_rocks">Webové stránky — alexandru.rocks</string>
-    <string name="about_source_on_github">Zdroj na GitHubu</string>
+    <string name="about_source_on_github">Zobrazit původní kód</string>
+    <string name="about_adaptation_source">Zobrazit kód adaptace</string>
     <string name="about_license">Licence</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">GNU Affero General Public License v3 nebo novější</string>
     <string name="about_view_license_notice">Zobrazit LICENSE a NOTICE</string>

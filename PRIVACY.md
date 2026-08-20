@@ -1,6 +1,6 @@
 # 800NK ADV Link - Privacy and permissions
 
-_App version: 2.0.19-pre (74)_
+_App version: 2.0.20-pre (75)_
 _Last updated: 2026-08-19_
 
 800NK ADV Link is an unofficial, local-first Android application adapted
@@ -199,7 +199,7 @@ owners.
 
 # 800NK ADV Link - Privacidad y permisos
 
-_Version de la aplicacion: 2.0.19-pre (74)_
+_Version de la aplicacion: 2.0.20-pre (75)_
 _Ultima actualizacion: 2026-08-19_
 
 800NK ADV Link es una aplicacion Android local-first y no oficial, adaptada

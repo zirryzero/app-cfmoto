@@ -16,7 +16,8 @@
     <string name="about_donate">Donar</string>
     <string name="about_copyright_2">Drets d\'autor</string>
     <string name="about_website_alexandru_rocks">Lloc web — alexandru.rocks</string>
-    <string name="about_source_on_github">Codi font a GitHub</string>
+    <string name="about_source_on_github">Veure el codi original</string>
+    <string name="about_adaptation_source">Veure el codi de l\'adaptació</string>
     <string name="about_license">Llicència</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">Llicència Pública General GNU Affero v3 o posterior</string>
     <string name="about_view_license_notice">Veure LICÈNCIA I AVÍS</string>
