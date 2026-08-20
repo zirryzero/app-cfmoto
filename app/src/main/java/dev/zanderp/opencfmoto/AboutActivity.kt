@@ -68,7 +68,7 @@ class AboutActivity : AppCompatActivity() {
         private const val URL_DISCORD = "https://discord.gg/KNTjJhmFZ6"
         const val URL_KOFI = "https://ko-fi.com/alexandrupopa"
         private const val URL_NOTICE =
-            "https://github.com/zanderp/open-cfmoto/blob/main/NOTICE"
+            "https://github.com/zirryzero/app-cfmoto/blob/main/NOTICE"
 
         fun start(ctx: Context) {
             ctx.startActivity(Intent(ctx, AboutActivity::class.java))
