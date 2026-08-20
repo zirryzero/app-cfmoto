@@ -15,11 +15,23 @@ Referencia técnica de la adaptación exclusiva de 800NK ADV Link.
 | Autenticación de socket | Activada |
 | Pantalla | Táctil, `720×712` |
 | Video Android Auto | Vertical, `720×1280`, `160 dpi` |
+| Captura H.264 alineada | `720×704` |
+| Área útil predeterminada | `720×682` |
 | Margen inicial | Superior `22 px` |
 | Función anunciada | `128` |
 
 La aplicación puede aceptar un QR sin `modelId` si contiene `ssid` y `pwd`, pero rechaza un QR que
 declare explícitamente un identificador distinto de `37426`.
+
+## Resolución automática
+
+El modo inicial **Auto optimizada** mantiene la resolución estándar y estable de Android Auto en
+`720×1280`. La altura física `712` se alinea a `704` para el codificador H.264 y se reserva el margen
+superior de `22 px`, por lo que Android Auto reorganiza su interfaz para un área útil de `720×682`.
+Así, el compositor puede proyectar el contenido útil sin un segundo recorte ni una escala innecesaria.
+
+El usuario puede cambiar manualmente a `720×1280` o `1080×1920`, modificar el ajuste de pantalla y
+configurar la proporción o los márgenes. Los cambios de proporción se aplican en la siguiente conexión.
 
 ## Flujo de conexión
 

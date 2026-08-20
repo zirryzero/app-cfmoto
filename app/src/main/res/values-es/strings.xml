@@ -6,7 +6,7 @@
     <string name="qr_800nk_hint">Apunta la cámara al QR de MotoPlay que muestra tu 800NK Advanced. También puedes elegir una captura del QR desde la galería.</string>
     <string name="controls_800nk_touch_hint">La pantalla de la 800NK Advanced es táctil. La asignación del manillar sigue disponible para multimedia y los eventos de botones compatibles.</string>
     <string name="setup_800nk_resolution">Vertical para 800NK Advanced</string>
-    <string name="setup_800nk_resolution_help">La transmisión predeterminada de 720×1280 se ajusta al panel de 720×712. Usa HD solo después de confirmar una proyección estable.</string>
+    <string name="setup_800nk_resolution_help">El modo optimizado usa Android Auto a 720×1280 y lo adapta al área útil alineada del codificador (720×682 con el margen superior predeterminado). Las opciones manuales de 720p y 1080p siguen disponibles.</string>
     <string name="setup_800nk_connection">Conexión de la 800NK Advanced</string>
     <string name="setup_800nk_connection_desc">El emparejamiento SoftAP se configura automáticamente desde el QR de MotoPlay. No necesitas elegir transporte ni perfil de motocicleta.</string>
     <string name="about_credits_800nk">Construida sobre el linaje de la comunidad OpenCfMoto:\n\n• dcoletto / coletz: trabajo original de QR y EasyConn\n• BojanJ: integración del receptor Android Auto\n• richardbizik: investigación del protocolo CFDL26\n• ionutradu252 / open-cflink: controles, márgenes y reconexión\n• eugen0309: investigación de red\n• Martin Escudero: vía actual del servidor de unidad central de Android Auto\n• headunit-revived: base de proyección Android Auto (AGPL)\n\nGracias a quienes compartieron pruebas, registros y correcciones.</string>
@@ -520,7 +520,7 @@
     <string name="pref_power_smooth">Suave: 30 fps (la mayor parte de la batería)</string>
     <string name="pref_power_balanced">Equilibrado: 24 fps (recomendado)</string>
     <string name="pref_power_saver">Ahorro de batería: 20 fps (más frío)</string>
-    <string name="pref_res_auto">Auto: combina con tu moto (recomendado)</string>
+    <string name="pref_res_auto">Auto optimizada · 800NK (recomendada)</string>
     <string name="pref_res_port_sd">Retrato · 720×1280</string>
     <string name="pref_res_port_hd">Retrato · 1080×1920 (HD)</string>
     <string name="pref_hold_ignored">Ignorado mientras la detección de retención está desactivada</string>

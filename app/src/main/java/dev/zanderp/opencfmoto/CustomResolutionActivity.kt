@@ -29,6 +29,7 @@ class CustomResolutionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_custom_resolution)
+        AppSettings.applyToHolder(this)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.custom_res_root)) { v, insets ->
             val b = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(b.left, b.top, b.right, b.bottom)
@@ -99,7 +100,7 @@ class CustomResolutionActivity : AppCompatActivity() {
         val coded = VideoPrefs.resolution(this).spec ?: BikeProfileHolder.aaVideo
         val panel = when (mode) {
             MatchAspectMode.OFF -> null
-            MatchAspectMode.AUTO -> detected
+            MatchAspectMode.AUTO -> VideoPrefs.optimalContentSize(this)
             MatchAspectMode.MANUAL -> {
                 val (mw0, mh0) = VideoPrefs.aspectTarget(this)
                 readInt(R.id.match_w, mw0) to readInt(R.id.match_h, mh0)

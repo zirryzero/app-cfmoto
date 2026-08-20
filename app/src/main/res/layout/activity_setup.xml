@@ -384,7 +384,7 @@
                     style="@style/Widget.OpenCfMoto.Segment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/controls_auto" />
+                    android:text="@string/pref_res_auto" />
 
                 <TextView
                     android:layout_width="match_parent"

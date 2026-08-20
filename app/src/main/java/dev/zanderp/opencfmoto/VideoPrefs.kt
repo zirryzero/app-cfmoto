@@ -55,17 +55,13 @@ enum class PowerMode(val fps: Int, val label: String, @StringRes val labelRes: I
 /**
  * Android Auto video resolution + orientation.
  *
- * [AUTO] uses the resolution/orientation the bike profile proved works — correct for recognized
- * CFMoto dashes (matched from the QR/CLIENT_INFO). But an unrecognized dash falls back to the legacy
- * landscape 800×480, which is wrong for a tall/portrait screen. The explicit options let the rider
- * force the shape + size for any bike (e.g. a portrait display we don't yet have a profile for). AA
- * only supports these fixed sizes; [MatchAspectMode] + AAP margins reflow AA into odd panel
- * aspects, otherwise the compositor letterboxes/crops per [ScreenFit]. HD sizes are crisper but
- * heavier and can black-screen on some embedded decoders — drop back to a smaller size or AUTO if
- * a bike rejects them.
+ * [AUTO] uses the 800NK Advanced's proven 720×1280 Android Auto stream. [MatchAspectMode] and AAP
+ * margins reflow that standard stream to the encoder-aligned usable screen area. The explicit
+ * options remain available for troubleshooting; HD is heavier and can black-screen on the bike's
+ * embedded decoder, so Auto remains the initial and recommended mode.
  */
 enum class ResolutionMode(val label: String, @StringRes val labelRes: Int, val spec: AaVideoSpec?) {
-    AUTO("Auto — 800NK Advanced default", R.string.pref_res_auto, null),
+    AUTO("Optimized auto — 800NK Advanced", R.string.pref_res_auto, null),
     PORTRAIT_SD("Portrait · 720×1280", R.string.pref_res_port_sd, AaVideoSpec(AaResolution.PORTRAIT_720x1280, dpi = 240)),
     PORTRAIT_HD("Portrait · 1080×1920 (HD)", R.string.pref_res_port_hd, AaVideoSpec(AaResolution.PORTRAIT_1080x1920, dpi = 240)),
 }
@@ -73,9 +69,7 @@ enum class ResolutionMode(val label: String, @StringRes val labelRes: Int, val s
 /**
  * How [AaMargins] are chosen so Android Auto can reflow to the dash panel's real aspect ratio.
  *
- * - [AUTO] (default) — use the panel size learned from the bike (`REQ_CONFIG_CAPTURE` / [DashMemory])
- *   or the active profile's [BikeProfile.panelSize]. Margins are 0 when the AA coded size already
- *   matches, so normal landscape dashes stay unchanged.
+ * - [AUTO] (default) — use the encoder-aligned screen area left after the configured screen margins.
  * - [OFF] — never advertise margins (old letterbox/crop behaviour).
  * - [MANUAL] — use the rider-entered panel W×H.
  */
@@ -95,7 +89,7 @@ object VideoPrefs {
     private const val KEY_POWER = "power_mode"
     private const val KEY_RESOLUTION = "resolution_mode"
 
-    // Match panel aspect (AA margins): Auto uses the measured or fixed 800NK panel size.
+    // Match panel aspect (AA margins): Auto uses the encoder-aligned usable 800NK screen area.
     private const val KEY_MATCH_MODE = "match_aspect_mode"
     /** Legacy boolean from PR #5 — migrated once into [KEY_MATCH_MODE]. */
     private const val KEY_MATCH_ASPECT = "match_aspect_on"
@@ -184,6 +178,33 @@ object VideoPrefs {
         return BikeProfiles.selectByQr(qr, ctx).panelSize
     }
 
+    /** Encoder-aligned area that can actually display Android Auto without a second crop. */
+    fun optimalContentSize(ctx: Context, ssid: String? = null): Pair<Int, Int>? {
+        val panel = detectedPanelSize(ctx, ssid) ?: return null
+        val aligned = BikeProfileHolder.active.roundCaptureDimensions(panel.first, panel.second)
+        return contentArea(
+            aligned,
+            top = ScreenMargins.top,
+            bottom = ScreenMargins.bottom,
+            left = ScreenMargins.left,
+            right = ScreenMargins.right,
+        )
+    }
+
+    internal fun contentArea(
+        alignedPanel: Pair<Int, Int>,
+        top: Int,
+        bottom: Int,
+        left: Int,
+        right: Int,
+    ): Pair<Int, Int> {
+        val width = (alignedPanel.first - left.coerceAtLeast(0) - right.coerceAtLeast(0))
+            .coerceAtLeast(16)
+        val height = (alignedPanel.second - top.coerceAtLeast(0) - bottom.coerceAtLeast(0))
+            .coerceAtLeast(16)
+        return width to height
+    }
+
     fun setMatchAspect(ctx: Context, mode: MatchAspectMode, w: Int, h: Int) {
         BikeScope.putString(prefs(ctx), ctx, KEY_MATCH_MODE, mode.name)
         BikeScope.putInt(prefs(ctx), ctx, KEY_ASPECT_W, w.coerceIn(16, 8192))
@@ -200,17 +221,17 @@ object VideoPrefs {
             }
             MatchAspectMode.MANUAL -> aspectTarget(ctx)
             MatchAspectMode.AUTO -> {
-                val detected = detectedPanelSize(ctx, ssid)
-                if (detected == null) {
+                val optimal = optimalContentSize(ctx, ssid)
+                if (optimal == null) {
                     LogBus.log("[match-aspect] AUTO — no panel size yet (no DashMemory / profile.panelSize); margins 0 until learned")
                     return AaMargins.NONE
                 }
-                detected
+                optimal
             }
         }
         val margins = AaMargins.forAspect(spec, panel.first, panel.second)
         LogBus.log(
-            "[match-aspect] $mode panel ${panel.first}x${panel.second} → " +
+            "[match-aspect] $mode content ${panel.first}x${panel.second} → " +
                 "AA ${spec.width}x${spec.height} margins ${margins.marginW}x${margins.marginH}",
         )
         return margins
