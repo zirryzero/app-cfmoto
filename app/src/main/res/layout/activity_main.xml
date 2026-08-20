@@ -146,24 +146,30 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_hud_view"
-                    style="@style/Widget.OpenCfMoto.Button.Tonal"
+                    style="@style/Widget.OpenCfMoto.Button.Tile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="4dp"
                     android:layout_weight="1"
                     android:maxLines="1"
-                    android:ellipsize="end"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="@dimen/btn_tile_text_min"
+                    app:autoSizeMaxTextSize="@dimen/btn_tile_text"
+                    app:autoSizeStepGranularity="1sp"
                     android:text="@string/hud_dash_view" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_controls"
-                    style="@style/Widget.OpenCfMoto.Button.Tonal"
+                    style="@style/Widget.OpenCfMoto.Button.Tile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="4dp"
                     android:layout_weight="1"
                     android:maxLines="1"
-                    android:ellipsize="end"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="@dimen/btn_tile_text_min"
+                    app:autoSizeMaxTextSize="@dimen/btn_tile_text"
+                    app:autoSizeStepGranularity="1sp"
                     android:text="@string/controls_controls" />
             </LinearLayout>
 
@@ -211,112 +217,57 @@
                 android:text="@string/main_stop"
                 android:visibility="gone" />
 
-            <!-- 2×2 so labels stay horizontal on narrow phones / large font. -->
+            <!-- Secondary utility actions. -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_setup"
-                        style="@style/Widget.OpenCfMoto.Button.Text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/main_setup"
-                        app:icon="@drawable/ic_settings"
-                        app:iconTint="@color/text_secondary"
-                        app:iconGravity="textStart"
-                        app:iconPadding="6dp"
-                        app:iconSize="18dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_pair_bike"
-                        style="@style/Widget.OpenCfMoto.Button.Text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/main_pair_800nk"
-                        app:icon="@drawable/ic_qr"
-                        app:iconTint="@color/text_secondary"
-                        app:iconGravity="textStart"
-                        app:iconPadding="6dp"
-                        app:iconSize="18dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_trip"
-                        style="@style/Widget.OpenCfMoto.Button.Text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/main_trip"
-                        app:icon="@drawable/ic_ride"
-                        app:iconTint="@color/text_secondary"
-                        app:iconGravity="textStart"
-                        app:iconPadding="6dp"
-                        app:iconSize="18dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_toggle_log"
-                        style="@style/Widget.OpenCfMoto.Button.Text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/main_logs"
-                        app:icon="@drawable/ic_logs"
-                        app:iconTint="@color/text_secondary"
-                        app:iconGravity="textStart"
-                        app:iconPadding="6dp"
-                        app:iconSize="18dp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/et_destination"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_setup"
+                    style="@style/Widget.OpenCfMoto.Button.Text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="@string/main_search_a_place_or_address"
-                    android:imeOptions="actionGo"
-                    android:inputType="textPostalAddress"
                     android:maxLines="1"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary" />
+                    android:ellipsize="end"
+                    android:text="@string/main_setup"
+                    app:icon="@drawable/ic_settings"
+                    app:iconTint="@color/text_secondary"
+                    app:iconGravity="textStart"
+                    app:iconPadding="4dp"
+                    app:iconSize="16dp" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_navigate"
-                    style="@style/Widget.OpenCfMoto.Segment"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/btn_trip"
+                    style="@style/Widget.OpenCfMoto.Button.Text"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/main_go" />
+                    android:layout_weight="1"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="@string/main_trip"
+                    app:icon="@drawable/ic_ride"
+                    app:iconTint="@color/text_secondary"
+                    app:iconGravity="textStart"
+                    app:iconPadding="4dp"
+                    app:iconSize="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_toggle_log"
+                    style="@style/Widget.OpenCfMoto.Button.Text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="@string/main_logs"
+                    app:icon="@drawable/ic_logs"
+                    app:iconTint="@color/text_secondary"
+                    app:iconGravity="textStart"
+                    app:iconPadding="4dp"
+                    app:iconSize="16dp" />
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView

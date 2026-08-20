@@ -436,7 +436,7 @@ class MainActivity : AppCompatActivity() {
         (connectBtn as? MaterialButton)?.setIconResource(R.drawable.ic_power)
         findViewById<android.widget.TextView>(R.id.brand_version).text =
             "v${BuildConfig.VERSION_NAME}"
-        // Scan / Map / Mirror: icon on top (Tile style). maxLines=1 + autoSize keeps labels
+        // Primary actions use the same icon-top tile. maxLines=1 + autoSize keeps labels
         // horizontal on narrow phones / large system font (Samsung S22 report).
         fun MaterialButton.asIconTopTile(iconRes: Int) {
             setIconResource(iconRes)
@@ -445,31 +445,22 @@ class MainActivity : AppCompatActivity() {
             maxLines = 1
             isSingleLine = true
         }
+        (findViewById<View>(R.id.btn_hud_view) as? MaterialButton)?.asIconTopTile(R.drawable.ic_cast)
+        (findViewById<View>(R.id.btn_controls) as? MaterialButton)?.asIconTopTile(R.drawable.ic_devices)
         (findViewById<View>(R.id.btn_aa_start) as? MaterialButton)?.asIconTopTile(R.drawable.ic_qr)
         (findViewById<View>(R.id.btn_mirror_start) as? MaterialButton)?.asIconTopTile(R.drawable.ic_cast)
         (findViewById<View>(R.id.btn_aa_stop) as? MaterialButton)?.setIconResource(R.drawable.ic_stop)
-        (findViewById<View>(R.id.btn_hud_view) as? MaterialButton)?.apply {
-            setIconResource(R.drawable.ic_cast)
-            iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
-            maxLines = 1
-        }
-        (findViewById<View>(R.id.btn_controls) as? MaterialButton)?.apply {
-            setIconResource(R.drawable.ic_devices)
-            iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
-            maxLines = 1
-        }
         // Footer 2×2 — icon + label (same pattern as Dash view / Controls).
         fun MaterialButton.asFooterLink(iconRes: Int) {
             setIconResource(iconRes)
             iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
-            iconPadding = (6 * resources.displayMetrics.density).toInt()
-            iconSize = (18 * resources.displayMetrics.density).toInt()
+            iconPadding = (4 * resources.displayMetrics.density).toInt()
+            iconSize = (16 * resources.displayMetrics.density).toInt()
             setIconTintResource(R.color.text_secondary)
             maxLines = 1
             isSingleLine = true
         }
         (findViewById<View>(R.id.btn_setup) as? MaterialButton)?.asFooterLink(R.drawable.ic_settings)
-        (findViewById<View>(R.id.btn_pair_bike) as? MaterialButton)?.asFooterLink(R.drawable.ic_qr)
         (findViewById<View>(R.id.btn_trip) as? MaterialButton)?.asFooterLink(R.drawable.ic_ride)
         (toggleLogBtn as? MaterialButton)?.asFooterLink(R.drawable.ic_logs)
 
@@ -565,74 +556,6 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_hud_view).setOnClickListener { startActivity(Intent(this, HudViewActivity::class.java)) }
         findViewById<View>(R.id.btn_controls).setOnClickListener { startActivity(Intent(this, ControlsActivity::class.java)) }
-        findViewById<Button>(R.id.btn_navigate).setOnClickListener { navigateToTyped() }
-        val destField = findViewById<android.widget.EditText>(R.id.et_destination)
-        destField?.setOnEditorActionListener { _, _, _ ->
-            navigateToTyped(); true
-        }
-        // Bike Search tap → focus this field + show the phone keyboard (Presentation has no IME).
-        DashRemote.setTypeOnPhoneHandler {
-            runOnUiThread {
-                val field = findViewById<android.widget.EditText>(R.id.et_destination)
-                    ?: return@runOnUiThread
-                try {
-                    startActivity(
-                        Intent(this, MainActivity::class.java)
-                            .addFlags(
-                                Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or
-                                    Intent.FLAG_ACTIVITY_SINGLE_TOP or
-                                    Intent.FLAG_ACTIVITY_NEW_TASK,
-                            ),
-                    )
-                } catch (_: Exception) {}
-                // Make the phone field scream "this is the bike search box".
-                field.hint = getString(R.string.main_bike_search_hint)
-                field.setText("")
-                field.setSelection(0)
-                try {
-                    field.setBackgroundColor(0x33FF9800)
-                    field.postDelayed({
-                        try { field.background = null } catch (_: Exception) {}
-                    }, 2500)
-                } catch (_: Exception) {}
-                field.requestFocus()
-                field.post {
-                    val imm = getSystemService(INPUT_METHOD_SERVICE)
-                        as? android.view.inputmethod.InputMethodManager
-                    imm?.showSoftInput(
-                        field,
-                        android.view.inputmethod.InputMethodManager.SHOW_FORCED,
-                    )
-                }
-                try {
-                    @Suppress("DEPRECATION")
-                    (getSystemService(Context.VIBRATOR_SERVICE) as? android.os.Vibrator)
-                        ?.vibrate(40)
-                } catch (_: Exception) {}
-                Toast.makeText(
-                    this,
-                    "Bike search open — type here. Results appear on the dash.",
-                    Toast.LENGTH_LONG,
-                ).show()
-            }
-        }
-        // Live suggestions on the dash while typing on the phone.
-        destField?.addTextChangedListener(object : android.text.TextWatcher {
-            private val debounce = android.os.Handler(android.os.Looper.getMainLooper())
-            private val run = Runnable {
-                val q = destField.text?.toString()?.trim().orEmpty()
-                // Live suggestions only while OUR map is on the bike — not while Android Auto is live.
-                if (q.length >= 2 && GpxSession.active && DashRemote.isAvailable) DashRemote.submit(q)
-            }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: android.text.Editable?) {
-                debounce.removeCallbacks(run)
-                debounce.postDelayed(run, 350)
-            }
-        })
-        findViewById<View>(R.id.btn_pair_bike).setOnClickListener { startAaScan() }
-
         findViewById<View>(R.id.btn_trip).setOnClickListener { TripActivity.start(this) }
 
         findViewById<Button>(R.id.btn_share_log).setOnClickListener { shareLog() }
@@ -790,7 +713,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        DashRemote.setTypeOnPhoneHandler(null)
         LogBus.listener = null
         ConnectionState.listener = null
         // When the Android Auto receiver service is running, the whole AA→bike chain (receiver +
@@ -1077,104 +999,6 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1,
             )
-        }
-    }
-
-    /**
-     * Home search bar — two modes depending on what's on the bike:
-     *  1) Our Map projected → Nominatim search on the dash ([DashRemote])
-     *  2) Android Auto live → hand off to Google Maps (route should appear on the dash)
-     *  3) Nothing projected → open Map hub search on the phone
-     */
-    private fun navigateToTyped() {
-        val field = findViewById<android.widget.EditText>(R.id.et_destination)
-        val dest = field.text?.toString()?.trim().orEmpty()
-        if (dest.isEmpty()) {
-            Toast.makeText(this, R.string.main_type_place, Toast.LENGTH_SHORT).show()
-            return
-        }
-        (getSystemService(INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager)
-            ?.hideSoftInputFromWindow(field.windowToken, 0)
-
-        val aaLive = AaVideoBridge.pipeline != null
-        val ourMapOnBike = GpxSession.active && DashRemote.isAvailable
-
-        // 1) Our own map is on the bike — never send AA intents (would crash/steal Maps).
-        if (ourMapOnBike && DashRemote.submit(dest)) {
-            field.setText("")
-            Toast.makeText(this, getString(R.string.main_searching_dash, dest), Toast.LENGTH_SHORT).show()
-            return
-        }
-        // 2) Android Auto is live — resolve place then navigate (free-text google.navigation often
-        //    crashes or won't let the rider pick a route on newer Maps / AA).
-        if (aaLive && !GpxSession.active) {
-            field.setText("")
-            sendDestinationToAndroidAuto(dest)
-            return
-        }
-        // Stale DashRemote with no map session: ignore and fall through.
-        if (!aaLive && DashRemote.submit(dest)) {
-            field.setText("")
-            Toast.makeText(this, getString(R.string.main_searching_dash, dest), Toast.LENGTH_SHORT).show()
-            return
-        }
-        // 3) Nothing projected → Map hub on the phone.
-        GpxActivity.startSearch(this, dest)
-    }
-
-    /**
-     * Look up [dest] (location-biased when possible), then fire Google Maps navigation with
-     * lat/lng so Android Auto gets a clean destination instead of an ambiguous free-text query.
-     */
-    private fun sendDestinationToAndroidAuto(dest: String) {
-        Toast.makeText(this, getString(R.string.main_sent_aa, dest), Toast.LENGTH_SHORT).show()
-        log("[search] AA: looking up \"$dest\"…")
-        val near = lastKnownLatLon()
-        NominatimSearch.searchAsync(
-            query = dest,
-            nearLat = near?.first,
-            nearLon = near?.second,
-            onResult = { places ->
-                runOnUiThread {
-                    val best = places.firstOrNull()
-                    if (best != null) {
-                        // Prefer the place name (city) so Maps starts guidance to that place;
-                        // bare lat/lon with a "(label)" suffix was opening Maps with an empty search.
-                        val place = best.name.ifBlank { dest }
-                        log("[search] AA: resolved → $place (${best.lat},${best.lon})")
-                        if (!NavLauncher.navigate(this, place, ::log)) {
-                            NavLauncher.navigateLatLon(this, best.lat, best.lon, place, ::log)
-                        }
-                    } else {
-                        log("[search] AA: no geocode hit — free-text navigate \"$dest\"")
-                        NavLauncher.navigate(this, dest, ::log)
-                    }
-                }
-            },
-            onError = { err ->
-                runOnUiThread {
-                    log("[search] AA: geocode failed ($err) — free-text navigate \"$dest\"")
-                    NavLauncher.navigate(this, dest, ::log)
-                }
-            },
-        )
-    }
-
-    private fun lastKnownLatLon(): Pair<Double, Double>? {
-        return try {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                return null
-            }
-            val lm = getSystemService(LOCATION_SERVICE) as android.location.LocationManager
-            val loc = lm.getLastKnownLocation(android.location.LocationManager.GPS_PROVIDER)
-                ?: lm.getLastKnownLocation(android.location.LocationManager.NETWORK_PROVIDER)
-            if (loc != null) loc.latitude to loc.longitude else null
-        } catch (_: Exception) {
-            null
         }
     }
 

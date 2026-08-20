@@ -150,7 +150,7 @@
     <string name="main_ready">Ready</string>
     <string name="main_no_bike_paired_yet">No bike paired yet</string>
     <string name="main_connect">Connect</string>
-    <string name="main_scan">Scan</string>
+    <string name="main_scan">800NK QR 스캔</string>
     <string name="main_mirror">Mirror</string>
     <string name="main_stop">Stop</string>
     <string name="main_setup">Setup</string>

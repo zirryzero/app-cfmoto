@@ -145,7 +145,7 @@
     <string name="main_ready">Gotowy</string>
     <string name="main_no_bike_paired_yet">Nie sparowano jeszcze żadnego motocykla</string>
     <string name="main_connect">Połącz</string>
-    <string name="main_scan">Skanuj</string>
+    <string name="main_scan">Skanuj QR 800NK</string>
     <string name="main_mirror">Projekcja</string>
     <string name="main_stop">Zatrzymaj</string>
     <string name="main_setup">Ustawienia</string>

@@ -6,7 +6,6 @@
     <string name="setup_language">Idioma de la aplicación</string>
     <string name="setup_language_change">Cambiar idioma</string>
     <string name="setup_language_system">Predeterminado del sistema</string>
-    <string name="main_pair_800nk">Emparejar 800NK</string>
     <string name="qr_800nk_hint">Apunta la cámara al QR de MotoPlay que muestra tu 800NK Advanced. También puedes elegir una captura del QR desde la galería.</string>
     <string name="controls_800nk_touch_hint">La pantalla de la 800NK Advanced es táctil. La asignación del manillar sigue disponible para multimedia y los eventos de botones compatibles.</string>
     <string name="setup_800nk_resolution">Pantalla de la 800NK Advanced</string>
@@ -227,7 +226,7 @@
     <string name="main_ready">Listo</string>
     <string name="main_no_bike_paired_yet">Ninguna moto emparejada todavía</string>
     <string name="main_connect">Conectar</string>
-    <string name="main_scan">Escanear</string>
+    <string name="main_scan">Escanear QR 800NK</string>
     <string name="main_mirror">Espejo</string>
     <string name="main_stop">Detener</string>
     <string name="main_setup">Configuración</string>

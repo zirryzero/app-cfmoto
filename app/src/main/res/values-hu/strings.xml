@@ -205,7 +205,7 @@
     <string name="main_ready">Kész</string>
     <string name="main_no_bike_paired_yet">Még nincs párosított motor</string>
     <string name="main_connect">Csatlakozás</string>
-    <string name="main_scan">Beolvasás</string>
+    <string name="main_scan">800NK QR beolvasása</string>
     <string name="main_mirror">Tükrözés</string>
     <string name="main_stop">Leállítás</string>
     <string name="main_setup">Beállítások</string>

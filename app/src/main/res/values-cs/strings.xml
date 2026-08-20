@@ -145,7 +145,7 @@
     <string name="main_ready">Připraveno</string>
     <string name="main_no_bike_paired_yet">Zatím není spárován žádný motocykl</string>
     <string name="main_connect">Připojit</string>
-    <string name="main_scan">Skenovat</string>
+    <string name="main_scan">Skenovat QR 800NK</string>
     <string name="main_mirror">Zrcadlit</string>
     <string name="main_stop">Zastavit</string>
     <string name="main_setup">Nastavení</string>

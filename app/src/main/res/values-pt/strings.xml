@@ -145,7 +145,7 @@
     <string name="main_ready">Preparar</string>
     <string name="main_no_bike_paired_yet">Nenhuma moto emparelhada ainda</string>
     <string name="main_connect">Conectar</string>
-    <string name="main_scan">Digitalizar</string>
+    <string name="main_scan">Ler QR da 800NK</string>
     <string name="main_mirror">Espelho</string>
     <string name="main_stop">Parar</string>
     <string name="main_setup">Configurar</string>

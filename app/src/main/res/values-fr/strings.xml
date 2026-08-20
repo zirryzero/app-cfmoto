@@ -145,7 +145,7 @@
     <string name="main_ready">Prêt</string>
     <string name="main_no_bike_paired_yet">Aucune moto associée</string>
     <string name="main_connect">Connecter</string>
-    <string name="main_scan">Scanner</string>
+    <string name="main_scan">Scanner le QR 800NK</string>
     <string name="main_mirror">Miroir</string>
     <string name="main_stop">Arrêter</string>
     <string name="main_setup">Réglages</string>

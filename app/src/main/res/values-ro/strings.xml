@@ -145,7 +145,7 @@
     <string name="main_ready">Gata</string>
     <string name="main_no_bike_paired_yet">Nicio moto asociată</string>
     <string name="main_connect">Conectează</string>
-    <string name="main_scan">Scanează</string>
+    <string name="main_scan">Scanează QR 800NK</string>
     <string name="main_mirror">Oglindă</string>
     <string name="main_stop">Oprește</string>
     <string name="main_setup">Configurare</string>

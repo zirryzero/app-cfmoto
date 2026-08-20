@@ -145,7 +145,7 @@
     <string name="main_ready">Klaar</string>
     <string name="main_no_bike_paired_yet">Nog geen motor gekoppeld</string>
     <string name="main_connect">Verbinden</string>
-    <string name="main_scan">Scannen</string>
+    <string name="main_scan">800NK-QR scannen</string>
     <string name="main_mirror">Spiegel</string>
     <string name="main_stop">Stop</string>
     <string name="main_setup">Installatie</string>
