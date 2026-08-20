@@ -22,8 +22,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_ride"
-            android:tint="@color/brand_orange" />
+            android:src="@drawable/ic_launcher_foreground_art" />
 
         <LinearLayout
             android:layout_width="0dp"
