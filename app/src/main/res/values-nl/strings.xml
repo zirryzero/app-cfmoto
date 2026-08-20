@@ -154,7 +154,7 @@
     <string name="main_search_a_place_or_address">Zoek een plaats of adres…</string>
     <string name="main_go">Gaan</string>
     <string name="main_rider_tips">Tips voor ruiters</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Verbinden: start Android Auto op het dashboard (wordt Stop wanneer gekoppeld).\n• Kaart — OpenCfMoto-kaart / GPX (niet Google Maps). Spiegelen: telefoonscherm casten.\n• Terwijl de verbinding is gemaakt, schakelt Kaart/Spiegel over naar wat het dashboard laat zien.\n• Dashweergave en bedieningselementen: telefoon-HUD en D-pad/stuur.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Verbinden: start Android Auto op het dashboard (wordt Stop wanneer gekoppeld).\n• Spiegelen: cast het telefoonscherm; tijdens de verbinding verandert dit wat het dashboard toont.\n• Dashweergave en bedieningselementen: telefoon-HUD en D-pad/stuur.</string>
     <string name="main_about_credits">Over &amp; kredieten</string>
     <string name="main_check_for_update">Controleer op update</string>
     <string name="main_report_a_problem">Meld een probleem</string>

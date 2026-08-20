@@ -55,10 +55,9 @@ enum class PowerMode(val fps: Int, val label: String, @StringRes val labelRes: I
 /**
  * Android Auto video resolution + orientation.
  *
- * [AUTO] uses the 800NK Advanced's proven 720×1280 Android Auto stream. [MatchAspectMode] and AAP
- * margins reflow that standard stream to the encoder-aligned usable screen area. The explicit
- * options remain available for troubleshooting; HD is heavier and can black-screen on the bike's
- * embedded decoder, so Auto remains the initial and recommended mode.
+ * [AUTO] uses Android Auto's standard 1280×720 landscape stream. Google Maps has a known touch
+ * compatibility problem in portrait head-unit mode, so [MatchAspectMode] and AAP margins reflow
+ * landscape into the 800NK's near-square usable area. Portrait remains available for comparison.
  */
 enum class ResolutionMode(val label: String, @StringRes val labelRes: Int, val spec: AaVideoSpec?) {
     AUTO("Optimized auto — 800NK Advanced", R.string.pref_res_auto, null),

@@ -446,7 +446,6 @@ class MainActivity : AppCompatActivity() {
             isSingleLine = true
         }
         (findViewById<View>(R.id.btn_aa_start) as? MaterialButton)?.asIconTopTile(R.drawable.ic_qr)
-        (findViewById<View>(R.id.btn_gpx) as? MaterialButton)?.asIconTopTile(R.drawable.ic_place)
         (findViewById<View>(R.id.btn_mirror_start) as? MaterialButton)?.asIconTopTile(R.drawable.ic_cast)
         (findViewById<View>(R.id.btn_aa_stop) as? MaterialButton)?.setIconResource(R.drawable.ic_stop)
         (findViewById<View>(R.id.btn_hud_view) as? MaterialButton)?.apply {
@@ -554,7 +553,6 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_aa_start).setOnClickListener { startAaScan() }
 
         findViewById<Button>(R.id.btn_mirror_start).setOnClickListener { onMirrorPressed() }
-        findViewById<View>(R.id.btn_gpx).setOnClickListener { onMapPressed() }
         findViewById<Button>(R.id.btn_aa_stop).setOnClickListener { stopEverything() }
 
         toggleLogBtn.setOnClickListener {
@@ -896,9 +894,8 @@ class MainActivity : AppCompatActivity() {
         connectBtn.isEnabled = true
         // Scan only when not mid-flight.
         setEnabled(R.id.btn_aa_start, !busy)
-        // Map / Mirror stay available while live so the rider can switch dash content.
+        // Mirror stays available while live so the rider can switch dash content.
         setEnabled(R.id.btn_mirror_start, !busy || live)
-        setEnabled(R.id.btn_gpx, !busy || live)
         setEnabled(R.id.btn_aa_stop, busy || live)
     }
 
@@ -1195,20 +1192,6 @@ class MainActivity : AppCompatActivity() {
         try { DashClockBle.stop() } catch (_: Exception) {}
         try { BikeWifi.releaseSession(this, ::log) } catch (e: Exception) { log("wifi leave: $e") }
         ConnectionState.set(Phase.STOPPED, "")
-    }
-
-    /**
-     * Map button always opens the Hub — pick free ride / route / search / offline there.
-     * Starting a ride projects to the bike (no AA); a "See map on phone" button covers
-     * off-bike navigation (e.g. walking back to a parked bike).
-     */
-    private fun onMapPressed() {
-        // Don't carry a killed Campina/etc. NAV_TO into the hub → phone map.
-        if (ConnectionState.phase != Phase.STREAMING && ConnectionState.phase != Phase.MIRRORING) {
-            GpxSession.abandonStaleNavigation("map hub")
-        }
-        log("→ Map: open Hub")
-        GpxActivity.start(this)
     }
 
     /**

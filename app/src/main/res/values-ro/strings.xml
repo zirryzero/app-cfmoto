@@ -154,7 +154,7 @@
     <string name="main_search_a_place_or_address">Caută un loc sau o adresă…</string>
     <string name="main_go">Go</string>
     <string name="main_rider_tips">Sfaturi pentru rider</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Conectează — pornește Android Auto pe bord (devine Oprește cât ești conectat).\n• Hartă — harta OpenCfMoto / GPX (nu Google Maps). Oglindă — proiectează ecranul telefonului.\n• Cât ești conectat, Hartă / Oglindă comută ce se vede pe bord.\n• Vedere bord &amp; Comenzi — HUD pe telefon și D-pad / ghidon.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Conectează — pornește Android Auto pe bord (devine Oprește cât ești conectat).\n• Oglindă — proiectează ecranul telefonului; cât ești conectat, schimbă ce se vede pe bord.\n• Vedere bord &amp; Comenzi — HUD pe telefon și D-pad / ghidon.</string>
     <string name="main_about_credits">Despre &amp; credite</string>
     <string name="main_check_for_update">Verifică actualizare</string>
     <string name="main_report_a_problem">Raportează o problemă</string>

@@ -5,6 +5,7 @@
 package dev.zanderp.opencfmoto.aa
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.AudioDeviceInfo
@@ -26,10 +27,9 @@ import kotlin.concurrent.thread
  * AA asks for the mic with MICROPHONE_REQUEST(open=true) whenever the Assistant starts; we answer
  * MICROPHONE_RESPONSE and then push raw PCM up the MIC channel until it asks us to close.
  *
- * Audio source: the phone's `VOICE_RECOGNITION` input. On a bike the rider's mic is usually a helmet
- * headset paired to the BIKE, which bridges it to the phone as a Bluetooth headset — so we route
- * capture to the Bluetooth SCO device when one is present ([preferBluetoothMic]); otherwise the
- * phone's own mic is used.
+ * Audio source: a rider headset paired directly to the phone, or the phone microphone. The
+ * `CFMOTO_BT` hands-free endpoint is deliberately excluded because selecting it opens the bike's
+ * call UI and does not represent a directly usable rider microphone.
  *
  * Format must match what [ServiceDiscoveryResponse] advertises: 16 kHz, 16-bit, mono.
  */
@@ -47,8 +47,12 @@ class AaMicrophone(
         internal fun isBikeHandsFreeRoute(productName: CharSequence?): Boolean =
             productName?.toString()?.contains("CFMOTO", ignoreCase = true) == true
 
+        /** Headunit Revived's Android microphone path timestamps media in elapsed milliseconds. */
+        internal fun timestampMillisFromElapsedNanos(elapsedNanos: Long): Long =
+            elapsedNanos / 1_000_000L
+
         /** Build `[header][timestamp ms, BE][PCM16, LE]`, the AAP microphone media layout. */
-        internal fun buildMicData(samples: ShortArray, count: Int, timestampMs: Long): AapMessage {
+        internal fun buildMicData(samples: ShortArray, count: Int, timestampMillis: Long): AapMessage {
             require(count in 0..samples.size)
             val total = AapMessage.HEADER_SIZE + Long.SIZE_BYTES + count * 2
             val data = ByteArray(total)
@@ -56,7 +60,7 @@ class AaMicrophone(
             data[1] = 0x0b
             val bb = ByteBuffer.wrap(data, AapMessage.HEADER_SIZE, total - AapMessage.HEADER_SIZE)
                 .order(ByteOrder.BIG_ENDIAN)
-            bb.putLong(timestampMs)
+            bb.putLong(timestampMillis)
             bb.order(ByteOrder.LITTLE_ENDIAN)
             for (i in 0 until count) bb.putShort(samples[i])
             return AapMessage(Channel.ID_MIC, 0x0b, -1, 2, total, data)
@@ -85,7 +89,14 @@ class AaMicrophone(
 
     /** Handle AA's MICROPHONE_REQUEST: open or close the mic, and answer it. */
     fun onRequest(open: Boolean, channel: Int) {
-        if (open) start() else stop("AA closed the mic")
+        if (open) {
+            dev.zanderp.opencfmoto.MediaButtonBridge.instance?.setVoiceActive(true)
+            start()
+            if (!recording) dev.zanderp.opencfmoto.MediaButtonBridge.instance?.setVoiceActive(false)
+        } else {
+            stop("AA closed the mic")
+            dev.zanderp.opencfmoto.MediaButtonBridge.instance?.setVoiceActive(false)
+        }
         // Answer either way, so AA isn't left waiting. If the open failed (no permission, mic busy)
         // say so rather than claiming success — otherwise AA sits listening to a stream we never send.
         val status = if (!open || recording) Common.MessageStatus.STATUS_SUCCESS_VALUE
@@ -102,6 +113,7 @@ class AaMicrophone(
 
     fun setSessionId(id: Int) { sessionId = id }
 
+    @SuppressLint("MissingPermission")
     private fun start() {
         if (recording) return
         if (!hasPermission()) {
@@ -123,7 +135,10 @@ class AaMicrophone(
                 SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, minBuf
             )
             if (r.state != AudioRecord.STATE_INITIALIZED) {
-                log("[MIC] AudioRecord init failed"); r.release(); return
+                log("[MIC] AudioRecord init failed")
+                r.release()
+                releaseBluetoothMic()
+                return
             }
             recorder = r
             recording = true
@@ -133,82 +148,79 @@ class AaMicrophone(
         } catch (e: Exception) {
             log("[MIC] start failed: $e")
             recording = false
+            releaseBluetoothMic()
         }
     }
 
-    /**
-     * Prefer the rider's Bluetooth mic (helmet → bike → phone) over the phone's own, which is
-     * useless in a pocket at speed.
-     */
-    private fun preferBluetoothMic() {
+    /** Prefer a directly paired rider headset, but never the bike's call-profile endpoint. */
+    private fun configureAudioRoute(): Int {
         try {
             val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            audioManager = am
+            previousAudioMode = am.mode
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val bt = am.availableCommunicationDevices.firstOrNull {
-                    it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO
+                    (it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
+                        it.type == AudioDeviceInfo.TYPE_BLE_HEADSET) &&
+                        !isBikeHandsFreeRoute(it.productName)
                 }
                 if (bt != null) {
-                    am.setCommunicationDevice(bt)
-                    log("[MIC] using Bluetooth headset mic (${bt.productName})")
-                } else {
-                    log("[MIC] no Bluetooth mic available — using the phone's mic")
+                    am.mode = AudioManager.MODE_IN_COMMUNICATION
+                    if (am.setCommunicationDevice(bt)) {
+                        log("[MIC] using rider headset mic (${bt.productName})")
+                        return MediaRecorder.AudioSource.VOICE_COMMUNICATION
+                    }
                 }
-            } else {
-                @Suppress("DEPRECATION")
-                am.startBluetoothSco()
+                val bikeRoute = am.availableCommunicationDevices.firstOrNull {
+                    (it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
+                        it.type == AudioDeviceInfo.TYPE_BLE_HEADSET) &&
+                        isBikeHandsFreeRoute(it.productName)
+                }
+                if (bikeRoute != null) {
+                    log("[MIC] ignoring bike hands-free route (${bikeRoute.productName}); using phone mic")
+                }
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) am.clearCommunicationDevice()
+            am.mode = previousAudioMode
+            log("[MIC] using phone microphone")
         } catch (e: Exception) {
-            log("[MIC] bluetooth mic routing failed ($e) — using the phone's mic")
+            log("[MIC] audio routing failed ($e); using phone microphone")
         }
+        return MediaRecorder.AudioSource.VOICE_RECOGNITION
     }
 
     private fun releaseBluetoothMic() {
         try {
-            val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) am.clearCommunicationDevice()
-            else @Suppress("DEPRECATION") am.stopBluetoothSco()
+            audioManager?.let { am ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) am.clearCommunicationDevice()
+                am.mode = previousAudioMode
+            }
         } catch (_: Exception) {}
+        audioManager = null
     }
 
     /** Read PCM and push it up the MIC channel as AAP media-data messages. */
     private fun pump(r: AudioRecord) {
         val buf = ShortArray(CHUNK_SAMPLES)
         var sent = 0L
+        var maxPeak = 0
         while (recording) {
             val n = try { r.read(buf, 0, buf.size) } catch (e: Exception) { break }
             if (n <= 0) continue
             try {
-                transport.send(micData(buf, n))
-                if (++sent <= 2L || sent % 250L == 0L) log("[MIC] chunks sent=$sent")
+                transport.send(
+                    buildMicData(buf, n, timestampMillisFromElapsedNanos(SystemClock.elapsedRealtimeNanos()))
+                )
+                maxPeak = maxOf(maxPeak, signalPeak(buf, n))
+                sent++
+                if (sent == 50L || sent % 250L == 0L) {
+                    log("[MIC] chunks sent=$sent peak=$maxPeak/32768")
+                    maxPeak = 0
+                }
             } catch (e: Exception) {
                 log("[MIC] send failed: $e"); break
             }
         }
-    }
-
-    /**
-     * One media-data message: `[channel][flags][len][msgType=DATA][timestamp µs BE][PCM…]`.
-     * Built by hand because [AapMessage]'s convenience constructor only takes a protobuf body.
-     */
-    private fun micData(samples: ShortArray, count: Int): AapMessage {
-        val pcmBytes = count * 2
-        val payload = 8 + pcmBytes
-        val total = AapMessage.HEADER_SIZE + MsgType.SIZE + payload
-        val data = ByteArray(total)
-        data[0] = Channel.ID_MIC.toByte()
-        data[1] = 0x0b                                   // media data (not a control message)
-        Utils.intToBytes(MsgType.SIZE + payload, 2, data)
-        data[4] = 0                                       // msgType hi — MEDIA_MESSAGE_DATA (0)
-        data[5] = 0                                       // msgType lo
-        val bb = ByteBuffer.wrap(data, AapMessage.HEADER_SIZE + MsgType.SIZE, payload)
-            .order(ByteOrder.BIG_ENDIAN)
-        bb.putLong(SystemClock.elapsedRealtimeNanos() / 1000)
-        bb.order(ByteOrder.LITTLE_ENDIAN)                 // PCM16 is little-endian
-        for (i in 0 until count) bb.putShort(samples[i])
-        return AapMessage(
-            Channel.ID_MIC, 0x0b, Media.MsgType.MEDIA_MESSAGE_DATA_VALUE,
-            AapMessage.HEADER_SIZE + MsgType.SIZE, total, data,
-        )
     }
 
     fun stop(reason: String) {

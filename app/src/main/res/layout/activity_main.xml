@@ -189,20 +189,6 @@
                     android:text="@string/main_scan" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_gpx"
-                    style="@style/Widget.OpenCfMoto.Button.Tile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="4dp"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    app:autoSizeTextType="uniform"
-                    app:autoSizeMinTextSize="@dimen/btn_tile_text_min"
-                    app:autoSizeMaxTextSize="@dimen/btn_tile_text"
-                    app:autoSizeStepGranularity="1sp"
-                    android:text="@string/gpx_map" />
-
-                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_mirror_start"
                     style="@style/Widget.OpenCfMoto.Button.Tile"
                     android:layout_width="0dp"

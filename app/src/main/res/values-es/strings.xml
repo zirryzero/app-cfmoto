@@ -9,8 +9,8 @@
     <string name="main_pair_800nk">Emparejar 800NK</string>
     <string name="qr_800nk_hint">Apunta la cámara al QR de MotoPlay que muestra tu 800NK Advanced. También puedes elegir una captura del QR desde la galería.</string>
     <string name="controls_800nk_touch_hint">La pantalla de la 800NK Advanced es táctil. La asignación del manillar sigue disponible para multimedia y los eventos de botones compatibles.</string>
-    <string name="setup_800nk_resolution">Vertical para 800NK Advanced</string>
-    <string name="setup_800nk_resolution_help">El modo optimizado usa Android Auto a 720×1280 y lo adapta al área útil alineada del codificador (720×682 con el margen superior predeterminado). Las opciones manuales de 720p y 1080p siguen disponibles.</string>
+    <string name="setup_800nk_resolution">Pantalla de la 800NK Advanced</string>
+    <string name="setup_800nk_resolution_help">El modo optimizado usa Android Auto a 1280×720 para evitar el problema táctil conocido de Google Maps en modo vertical y luego lo adapta al área útil. Las opciones verticales manuales siguen disponibles.</string>
     <string name="setup_800nk_connection">Conexión de la 800NK Advanced</string>
     <string name="setup_800nk_connection_desc">El emparejamiento SoftAP se configura automáticamente desde el QR de MotoPlay. No necesitas elegir transporte ni perfil de motocicleta.</string>
     <string name="about_credits_800nk">Construida sobre el linaje de la comunidad OpenCfMoto:\n\n• dcoletto / coletz: trabajo original de QR y EasyConn\n• BojanJ: integración del receptor Android Auto\n• richardbizik: investigación del protocolo CFDL26\n• ionutradu252 / open-cflink: controles, márgenes y reconexión\n• eugen0309: investigación de red\n• Martin Escudero: vía actual del servidor de unidad central de Android Auto\n• headunit-revived: base de proyección Android Auto (AGPL)\n\nGracias a quienes compartieron pruebas, registros y correcciones.</string>
@@ -84,7 +84,7 @@
     <string name="controls_voice">Voz</string>
     <string name="controls_handlebar_buttons">Botones del manillar</string>
     <string name="controls_handlebar_buttons_drive_android_auto">Los botones del manillar controlan Android Auto</string>
-    <string name="controls_requires_the_phone_paired_to_the_bike_over_bluet">Requiere que el teléfono esté emparejado con la moto por Bluetooth.\n\nMientras esté activado, el manillar controla la interfaz de Android Auto (sin cambio de pista). La música puede seguir sonando: inicia, detén o salta navegando por esa interfaz con el manillar o con la cruceta en pantalla. Desactívalo solo si quieres que los botones físicos vuelvan a controlar la reproducción.</string>
+    <string name="controls_requires_the_phone_paired_to_the_bike_over_bluet">Desactivado por defecto. Mientras esté apagado, los botones de la moto conservan sus funciones normales de multimedia, volumen y llamadas. Actívalo solo cuando quieras usar los botones para navegar por Android Auto; requiere emparejar el teléfono con la moto por Bluetooth.</string>
     <string name="controls_customize_buttons">Personalizar botones</string>
     <string name="res_match_panel_aspect">Ajustar a la proporción del panel</string>
     <string name="res_makes_android_auto_render_at_your_dash_s_real_as">Hace que Android Auto se dibuje con la proporción real de tu tablero (márgenes AAP + recorte) para que el mapa llene la pantalla sin recortar ni estirar. Auto usa el tamaño que informa la moto (o el perfil). Beneficia a los paneles raros (casi cuadrados, verticales alargados); los tableros horizontales normales se quedan con márgenes cero y no cambian.</string>
@@ -236,7 +236,7 @@
     <string name="main_search_a_place_or_address">Buscar un lugar o dirección…</string>
     <string name="main_go">Ir</string>
     <string name="main_rider_tips">Consejos para moteros</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Conectar: inicia Android Auto en el tablero (se convierte en Detener mientras está vinculado).\n• Mapa: mapa 800NK ADV Link / GPX (no Google Maps). Espejo: transmitir la pantalla del teléfono.\n• Mientras está conectado, Mapa/Espejo cambia lo que muestra el tablero.\n• Vista del tablero y controles: HUD del teléfono y D-pad/manillar.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Conectar: inicia Android Auto en el tablero (se convierte en Detener mientras está vinculado).\n• Espejo: transmite la pantalla del teléfono; mientras está conectado, cambia lo que muestra el tablero.\n• Vista del tablero y controles: HUD del teléfono y D-pad/manillar.</string>
     <string name="main_about_credits">Acerca de y créditos</string>
     <string name="main_check_for_update">Buscar actualizaciones</string>
     <string name="main_report_a_problem">Informar de un problema</string>
@@ -463,8 +463,8 @@
     <string name="conn_detail_need_bluetooth">Concede Dispositivos cercanos / Bluetooth y vuelve a tocar Conectar</string>
     <string name="conn_detail_aa_not_started">Android Auto no se ha enganchado. En Android Auto 17.4+ Google bloqueó el arranque automático: abre Android Auto, toca Versión 10 veces, luego ⋮ → Start head unit server, y vuelve a Conectar. SoftAP y Espejo siguen demostrando que el enlace Wi-Fi con la moto funciona.</string>
     <string name="main_aa_need_nearby_title">Se necesitan los dispositivos cercanos</string>
-    <string name="main_aa_need_nearby_message">Conectar con Android Auto necesita Dispositivos cercanos (Bluetooth) para que el teléfono pueda iniciar la proyección inalámbrica. Concede Dispositivos cercanos, enciende el Bluetooth y vuelve a tocar Conectar.\n\nEspejo y Mapa no lo necesitan.</string>
-    <string name="main_aa_need_bt_on_message">Enciende el Bluetooth y vuelve a tocar Conectar. Conectar con Android Auto usa Bluetooth para iniciar la proyección inalámbrica en las versiones recientes de Android Auto.\n\nEspejo y Mapa no lo necesitan.</string>
+    <string name="main_aa_need_nearby_message">Conectar con Android Auto necesita Dispositivos cercanos (Bluetooth) para que el teléfono pueda iniciar la proyección inalámbrica. Concede Dispositivos cercanos, enciende el Bluetooth y vuelve a tocar Conectar.\n\nEspejo no lo necesita.</string>
+    <string name="main_aa_need_bt_on_message">Enciende el Bluetooth y vuelve a tocar Conectar. Conectar con Android Auto usa Bluetooth para iniciar la proyección inalámbrica en las versiones recientes de Android Auto.\n\nEspejo no lo necesita.</string>
     <string name="main_aa_need_nearby_settings">Abrir ajustes</string>
     <string name="conn_detail_wifi_picker">Acepta el selector de Wi-Fi o de dispositivos del teléfono (no lo dejes abierto) y vuelve a Conectar</string>
     <string name="conn_detail_easyconn_offline">El Wi-Fi de la moto está activo pero EasyConn está desconectado: mantén abierto el QR de emparejamiento en el tablero</string>

@@ -154,7 +154,7 @@
     <string name="main_search_a_place_or_address">Pesquise um lugar ou endereço…</string>
     <string name="main_go">Ir</string>
     <string name="main_rider_tips">Dicas para ciclistas</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Conectar – inicia o Android Auto no painel (torna-se Parar enquanto estiver vinculado).\n• Mapa — mapa OpenCfMoto / GPX (não Google Maps). Espelho – transmitir a tela do telefone.\n• Enquanto estiver conectado, Mapa/Espelho alterna o que o painel mostra.\n• Visualização e controles do painel — HUD do telefone e D-pad/guiador.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Conectar – inicia o Android Auto no painel (torna-se Parar enquanto estiver vinculado).\n• Espelho – transmitir a tela do telefone; durante a conexão, altera o que o painel mostra.\n• Visualização e controles do painel — HUD do telefone e D-pad/guiador.</string>
     <string name="main_about_credits">Sobre e créditos</string>
     <string name="main_check_for_update">Verifique se há atualização</string>
     <string name="main_report_a_problem">Informar um problema</string>

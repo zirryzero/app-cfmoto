@@ -159,7 +159,7 @@
     <string name="main_search_a_place_or_address">Bir yer veya adres ara…</string>
     <string name="main_go">Git</string>
     <string name="main_rider_tips">Sürücü ipuçları</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Bağlan — Ekranda Android Auto\'yu başlat (bağlıyken Durdur olur).\n• Harita — OpenCfMoto haritası / GPX (Google Haritalar değil). Yansıt — telefon ekranını yansıt.\n• Bağlıyken, Harita / Yansıt ekranda neyin görüneceğini değiştirir.\n• Ekran görünümü &amp; Kontroller — telefonda HUD ve D-pad / gidon.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Bağlan — Ekranda Android Auto\'yu başlat (bağlıyken Durdur olur).\n• Yansıt — telefon ekranını yansıt; bağlıyken ekranda gösterilen içeriği değiştirir.\n• Ekran görünümü &amp; Kontroller — telefonda HUD ve D-pad / gidon.</string>
     <string name="main_about_credits">Hakkında &amp; emeği geçenler</string>
     <string name="main_check_for_update">Güncelleme kontrol et</string>
     <string name="main_report_a_problem">Sorun bildir</string>

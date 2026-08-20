@@ -213,7 +213,7 @@
     <string name="main_search_a_place_or_address">Cerca un lloc o adreça…</string>
     <string name="main_go">Vés</string>
     <string name="main_rider_tips">Consells per a motoristes</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connecta: inicia Android Auto al quadre (es converteix en Atura mentre està vinculat).\n• Mapa: mapa OpenCfMoto / GPX (no Google Maps). Mirall: transmetre la pantalla del telèfon.\n• Mentre està connectat, Mapa/Mirall canvia el que mostra el quadre.\n• Vista del quadre i controls: HUD del telèfon i D-pad/manillar.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connecta: inicia Android Auto al quadre (es converteix en Atura mentre està vinculat).\n• Mirall: transmet la pantalla del telèfon; mentre està connectat, canvia el que mostra el quadre.\n• Vista del quadre i controls: HUD del telèfon i D-pad/manillar.</string>
     <string name="main_about_credits">Quant a i crèdits</string>
     <string name="main_check_for_update">Cerca actualitzacions</string>
     <string name="main_report_a_problem">Informar d\'un problema</string>

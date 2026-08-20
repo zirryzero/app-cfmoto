@@ -15,7 +15,7 @@ class BikeProfileSelectTest {
         assertTrue(Cfdl26NkTouchProfile.supportsScreenTouch)
         assertTrue(Cfdl26NkTouchProfile.requiresSockServerAuth)
         assertEquals(720 to 712, Cfdl26NkTouchProfile.panelSize)
-        assertEquals(AaResolution.PORTRAIT_720x1280, Cfdl26NkTouchProfile.aaVideo.resolution)
+        assertEquals(AaResolution.LANDSCAPE_1280x720, Cfdl26NkTouchProfile.aaVideo.resolution)
     }
 
     @Test

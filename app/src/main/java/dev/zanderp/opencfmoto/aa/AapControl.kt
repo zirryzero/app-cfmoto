@@ -44,7 +44,13 @@ internal class AapControlMedia(private val aapTransport: AapTransport) : AapCont
                 // AA wants the mic (Assistant starting/stopping). Open it and stream PCM back —
                 // voice is the only hands-free way to set a destination on a bike.
                 val req = message.parse(Media.MicrophoneRequest.newBuilder()).build()
-                AaLog.i("RX: Microphone request open=%b", req.open)
+                AaLog.i(
+                    "RX: Microphone request open=%b anc=%b ec=%b maxUnacked=%d",
+                    req.open,
+                    req.ancEnabled,
+                    req.ecEnabled,
+                    req.maxUnacked,
+                )
                 aapTransport.microphone?.onRequest(req.open, message.channel)
                 return 0
             }

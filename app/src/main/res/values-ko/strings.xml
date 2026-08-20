@@ -159,7 +159,7 @@
     <string name="main_search_a_place_or_address">Search a place or address…</string>
     <string name="main_go">Go</string>
     <string name="main_rider_tips">Rider tips</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connect — start Android Auto on the dash (becomes Stop while linked).\n• Map — OpenCfMoto map / GPX (not Google Maps). Mirror — cast phone screen.\n• While connected, Map / Mirror switch what the dash shows.\n• Dash view &amp; Controls — phone HUD and D-pad / handlebar.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connect — start Android Auto on the dash (becomes Stop while linked).\n• Mirror — cast the phone screen; while connected, it switches what the dash shows.\n• Dash view &amp; Controls — phone HUD and D-pad / handlebar.</string>
     <string name="main_about_credits">About &amp; credits</string>
     <string name="main_check_for_update">Check for update</string>
     <string name="main_report_a_problem">Report a problem</string>

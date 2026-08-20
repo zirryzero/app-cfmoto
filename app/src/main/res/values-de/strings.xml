@@ -154,7 +154,7 @@
     <string name="main_search_a_place_or_address">Ort oder Adresse suchen…</string>
     <string name="main_go">Los</string>
     <string name="main_rider_tips">Fahrertipps</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Verbinden – Android Auto auf dem Armaturenbrett starten (wird bei der Verbindung zu „Stopp“).\n• Karte – OpenCfMoto-Karte/GPX (nicht Google Maps). Spiegel – Telefonbildschirm spiegeln.\n• Während die Verbindung besteht, können Sie mit Karte/Spiegel umschalten, was auf dem Armaturenbrett angezeigt wird.\n• Armaturenbrettansicht und Bedienelemente – Telefon-HUD und D-Pad/Lenker.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Verbinden – Android Auto auf dem Armaturenbrett starten (wird bei der Verbindung zu „Stopp“).\n• Spiegel – Telefonbildschirm spiegeln; während der Verbindung wird damit die Anzeige des Armaturenbretts umgeschaltet.\n• Armaturenbrettansicht und Bedienelemente – Telefon-HUD und D-Pad/Lenker.</string>
     <string name="main_about_credits">Über &amp; Credits</string>
     <string name="main_check_for_update">Nach Update suchen</string>
     <string name="main_report_a_problem">Problem melden</string>

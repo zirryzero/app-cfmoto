@@ -8,8 +8,8 @@
     <string name="main_pair_800nk">Pair 800NK</string>
     <string name="qr_800nk_hint">Point the camera at the MotoPlay QR shown by your 800NK Advanced. You can also choose a QR screenshot from your gallery.</string>
     <string name="controls_800nk_touch_hint">The 800NK Advanced display is touch enabled. Handlebar mapping remains available for media and supported button events.</string>
-    <string name="setup_800nk_resolution">800NK Advanced portrait</string>
-    <string name="setup_800nk_resolution_help">Optimized mode uses Android Auto at 720×1280 and reflows it to the encoder-aligned usable area (720×682 with the default top margin). Manual 720p and 1080p options remain available.</string>
+    <string name="setup_800nk_resolution">800NK Advanced display</string>
+    <string name="setup_800nk_resolution_help">Optimized mode uses Android Auto at 1280×720 to avoid the known Google Maps portrait touch problem, then reflows it to the encoder-aligned usable area. Manual portrait options remain available.</string>
     <string name="setup_800nk_connection">800NK Advanced connection</string>
     <string name="setup_800nk_connection_desc">SoftAP pairing is configured automatically from the MotoPlay QR. No transport or motorcycle profile selection is required.</string>
     <string name="about_credits_800nk">Built on the OpenCfMoto community lineage:\n\n• dcoletto / coletz — original QR and EasyConn work\n• BojanJ — Android Auto receiver integration\n• richardbizik — CFDL26 protocol research\n• ionutradu252 / open-cflink — controls, margins and reconnect work\n• eugen0309 — network research\n• Martin Escudero — current Android Auto head unit server path\n• headunit-revived — Android Auto projection stack (AGPL)\n\nThanks to everyone who shared tests, logs and fixes.</string>
@@ -83,7 +83,7 @@
     <string name="controls_voice">Voice</string>
     <string name="controls_handlebar_buttons">Handlebar buttons</string>
     <string name="controls_handlebar_buttons_drive_android_auto">Handlebar buttons drive Android Auto</string>
-    <string name="controls_requires_the_phone_paired_to_the_bike_over_bluet">Requires the phone paired to the bike over Bluetooth.\n\nWhile on, the bars drive the Android Auto UI (not track-skip). Music can keep playing — start/stop/skip by navigating that UI with the bars or the on-screen pad. Turn OFF only if you want the physical bars to control media again.</string>
+    <string name="controls_requires_the_phone_paired_to_the_bike_over_bluet">Off by default. While off, the bike buttons keep their normal media, volume and call functions. Turn this on only when you want the buttons to navigate Android Auto; Bluetooth pairing with the bike is required.</string>
     <string name="controls_customize_buttons">Customize buttons</string>
     <string name="res_match_panel_aspect">Match panel aspect</string>
     <string name="res_makes_android_auto_render_at_your_dash_s_real_as">Makes Android Auto render at your dash\'s real aspect ratio (AAP margins + crop) so the map can fill the screen without cropping or stretching. Auto uses the size the bike reports (or the profile). Odd panels (near-square, tall portrait) benefit; normal landscape dashes get zero margins and stay the same.</string>
@@ -235,7 +235,7 @@
     <string name="main_search_a_place_or_address">Search a place or address…</string>
     <string name="main_go">Go</string>
     <string name="main_rider_tips">Rider tips</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connect — start Android Auto on the dash (becomes Stop while linked).\n• Map — 800NK ADV Link map / GPX (not Google Maps). Mirror — cast phone screen.\n• While connected, Map / Mirror switch what the dash shows.\n• Dash view &amp; Controls — phone HUD and D-pad / handlebar.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connect — start Android Auto on the dash (becomes Stop while linked).\n• Mirror — cast the phone screen; while connected, it switches what the dash shows.\n• Dash view &amp; Controls — phone HUD and D-pad / handlebar.</string>
     <string name="main_about_credits">About &amp; credits</string>
     <string name="main_check_for_update">Check for update</string>
     <string name="main_report_a_problem">Report a problem</string>
@@ -465,8 +465,8 @@
     <string name="conn_detail_need_bluetooth">Grant Nearby devices / Bluetooth, then tap Connect again</string>
     <string name="conn_detail_aa_not_started">Android Auto didn\'t attach. On Android Auto 17.4+ Google blocked the automatic start: open Android Auto, tap Version 10 times, then ⋮ → Start head unit server, and retry Connect. SoftAP/Mirror still prove the bike Wi‑Fi link.</string>
     <string name="main_aa_need_nearby_title">Nearby devices required</string>
-    <string name="main_aa_need_nearby_message">Android Auto Connect needs Nearby devices (Bluetooth) so the phone can start wireless projection. Grant Nearby, turn Bluetooth on, then tap Connect again.\n\nMirror and Map do not need this.</string>
-    <string name="main_aa_need_bt_on_message">Turn Bluetooth on, then tap Connect again. Android Auto Connect uses Bluetooth to start wireless projection on newer Android Auto builds.\n\nMirror and Map do not need this.</string>
+    <string name="main_aa_need_nearby_message">Android Auto Connect needs Nearby devices (Bluetooth) so the phone can start wireless projection. Grant Nearby, turn Bluetooth on, then tap Connect again.\n\nMirror does not need this.</string>
+    <string name="main_aa_need_bt_on_message">Turn Bluetooth on, then tap Connect again. Android Auto Connect uses Bluetooth to start wireless projection on newer Android Auto builds.\n\nMirror does not need this.</string>
     <string name="main_aa_need_nearby_settings">Open settings</string>
     <string name="conn_detail_wifi_picker">Approve the phone\'s Wi‑Fi / device picker (don\'t leave it open), then Connect again</string>
     <string name="conn_detail_easyconn_offline">Bike Wi‑Fi is up but EasyConn is offline — keep the pairing QR open on the dash</string>

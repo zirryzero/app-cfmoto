@@ -56,6 +56,10 @@ class AaInput(
             KEY_ASSISTANT,
         )
 
+        /** A real touchscreen must not also identify itself as a rotary-only controller. */
+        internal fun supportedKeycodes(touchscreen: Boolean): IntArray =
+            SUPPORTED_KEYCODES.filter { !touchscreen || it != KEY_SCROLL_WHEEL }.toIntArray()
+
         /** AAP input reports use the monotonic clock in microseconds. */
         internal fun timestampMicrosFromElapsedNanos(elapsedNanos: Long): Long =
             elapsedNanos / 1_000L

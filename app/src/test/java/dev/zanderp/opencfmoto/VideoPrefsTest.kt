@@ -29,4 +29,14 @@ class VideoPrefsTest {
         assertEquals(720, spec.width - margins.marginW)
         assertEquals(682, spec.height - margins.marginH)
     }
+
+    @Test
+    fun optimizedLandscapeMarginsMatch800NkUsableAspect() {
+        val spec = Cfdl26NkTouchProfile.aaVideo
+        val margins = AaMargins.forAspect(spec, targetW = 720, targetH = 682)
+
+        assertEquals(AaMargins(marginW = 520, marginH = 0), margins)
+        assertEquals(760, spec.width - margins.marginW)
+        assertEquals(720, spec.height - margins.marginH)
+    }
 }

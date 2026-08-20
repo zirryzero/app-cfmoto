@@ -6,6 +6,7 @@ import java.io.OutputStream
 
 /** Android Auto resolutions retained for display tuning and backwards-compatible preferences. */
 enum class AaResolution(val w: Int, val h: Int) {
+    LANDSCAPE_1280x720(1280, 720),
     PORTRAIT_720x1280(720, 1280),
     PORTRAIT_1080x1920(1080, 1920),
 }
@@ -201,7 +202,7 @@ object Cfdl26NkTouchProfile : BikeProfile {
     override val supportsScreenTouch = true
     override val advertisedSupportFunction = 128
     override val panelSize = 720 to 712
-    override val aaVideo = AaVideoSpec(AaResolution.PORTRAIT_720x1280, dpi = 160)
+    override val aaVideo = AaVideoSpec(AaResolution.LANDSCAPE_1280x720, dpi = 160)
     override val defaultMargins = intArrayOf(22, 0, 0, 0)
 
     override fun matchesModelId(modelId: String): Boolean = modelId.trim() == "37426"

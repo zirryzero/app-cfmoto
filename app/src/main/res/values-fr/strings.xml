@@ -154,7 +154,7 @@
     <string name="main_search_a_place_or_address">Rechercher un lieu ou une adresse…</string>
     <string name="main_go">Go</string>
     <string name="main_rider_tips">Conseils aux motards</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connecter : démarrez Android Auto sur le tableau de bord (devient Stop une fois lié).\n• Carte — Carte OpenCfMoto/GPX (pas Google Maps). Miroir : projeter l\'écran du téléphone.\n• Une fois connecté, Map / Mirror change ce que le tableau de bord affiche.\n• Vue et commandes du tableau de bord : HUD du téléphone et D-pad/guidon.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connecter : démarrez Android Auto sur le tableau de bord (devient Stop une fois lié).\n• Miroir : projeter l\'écran du téléphone ; une fois connecté, il remplace ce que le tableau de bord affiche.\n• Vue et commandes du tableau de bord : HUD du téléphone et D-pad/guidon.</string>
     <string name="main_about_credits">À propos et crédits</string>
     <string name="main_check_for_update">Vérifier la mise à jour</string>
     <string name="main_report_a_problem">Signaler un problème</string>

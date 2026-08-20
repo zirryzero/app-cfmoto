@@ -154,7 +154,7 @@
     <string name="main_search_a_place_or_address">Wyszukaj miejsce lub adres…</string>
     <string name="main_go">Idź</string>
     <string name="main_rider_tips">Wskazówki dla użytkowników</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Połącz — uruchom Android Auto na ekranie motocykla (po połączeniu zmienia się w Zatrzymaj).\n• Mapa — mapa OpenCfMoto / GPX (nie Google Maps). Projekcja — przesyłaj ekran telefonu.\n• Po podłączeniu, Mapa/Projekcja przełącza to, co pokazuje ekran.\n• Widok ekranu motocykla i sterowanie — HUD telefonu i pad kierunkowy/kierownica.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Połącz — uruchom Android Auto na ekranie motocykla (po połączeniu zmienia się w Zatrzymaj).\n• Projekcja — przesyłaj ekran telefonu; po podłączeniu zmienia ona zawartość ekranu motocykla.\n• Widok ekranu motocykla i sterowanie — HUD telefonu i pad kierunkowy/kierownica.</string>
     <string name="main_about_credits">Informacje i autorzy</string>
     <string name="main_check_for_update">Sprawdź dostępność aktualizacji</string>
     <string name="main_report_a_problem">Zgłoś problem</string>

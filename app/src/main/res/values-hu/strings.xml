@@ -214,7 +214,7 @@
     <string name="main_search_a_place_or_address">Hely vagy cím keresése…</string>
     <string name="main_go">Indítás</string>
     <string name="main_rider_tips">Motoros tippek</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Csatlakozás — Android Auto indítása a műszerfalon (kapcsolat közben Leállítás lesz).\n• Térkép — OpenCfMoto térkép / GPX (nem Google Maps). Tükrözés — telefon képernyő tükrözése.\n• Kapcsolat közben a Térkép / Tükrözés váltja, mit mutat a műszerfal.\n• Műszerfal nézet és Vezérlés — telefon HUD és D-pad / kormány.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Csatlakozás — Android Auto indítása a műszerfalon (kapcsolat közben Leállítás lesz).\n• Tükrözés — a telefon képernyőjének tükrözése; kapcsolat közben ez váltja a műszerfal tartalmát.\n• Műszerfal nézet és Vezérlés — telefon HUD és D-pad / kormány.</string>
     <string name="main_about_credits">Névjegy és köszönet</string>
     <string name="main_check_for_update">Frissítés keresése</string>
     <string name="main_report_a_problem">Probléma jelentése</string>

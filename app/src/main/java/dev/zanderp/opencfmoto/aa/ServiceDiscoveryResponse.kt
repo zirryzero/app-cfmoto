@@ -1,5 +1,5 @@
 // Adapted from headunit-revived (AGPLv3): aap/protocol/messages/ServiceDiscoveryResponse.kt
-// Video-only head-unit profile for OpenCfMoto: advertises 720x1280 PORTRAIT H.264 video
+// Video-only head-unit profile for OpenCfMoto: advertises standard 1280x720 H.264 video
 // (composited aspect-correct into the bike's requested canvas — the CFDL26 dash is a tall 800x951
 // panel), a driving-status sensor, a touchscreen input service, and a PCM microphone (required for
 // AA bring-up). Audio sink, navigation-status, media-playback and bluetooth services from HUR are
@@ -24,6 +24,8 @@ class ServiceDiscoveryResponse
 
         private fun protoResolution(r: AaResolution):
             Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType = when (r) {
+            AaResolution.LANDSCAPE_1280x720 ->
+                Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._1280x720
             AaResolution.PORTRAIT_720x1280 ->
                 Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._720x1280
             AaResolution.PORTRAIT_1080x1920 ->
@@ -43,7 +45,7 @@ class ServiceDiscoveryResponse
                 }.build()
             }.build())
 
-            // --- Video service (720x1280 PORTRAIT H.264 baseline, 30 fps) ---
+            // --- Video service (H.264 baseline, 30 fps) ---
             services.add(Control.Service.newBuilder().also { service ->
                 service.id = Channel.ID_VID
                 service.mediaSinkService = Control.Service.MediaSinkService.newBuilder().also { sink ->
@@ -66,17 +68,26 @@ class ServiceDiscoveryResponse
             }.build())
 
             // --- Input service (D-pad/rotary keycodes + optional touchscreen) ---
+            val touchscreen = BikeProfileHolder.advertisesScreenTouch
+            val inputKeycodes = AaInput.supportedKeycodes(touchscreen)
+            AaLog.i(
+                "[AA] input profile touchscreen=%b rotary=%b touch=%dx%d",
+                touchscreen,
+                inputKeycodes.contains(AaInput.KEY_SCROLL_WHEEL),
+                spec.width,
+                spec.height,
+            )
             services.add(Control.Service.newBuilder().also { service ->
                 service.id = Channel.ID_INP
                 service.inputSourceService = Control.Service.InputSourceService.newBuilder().also { inp ->
                     // D-pad / rotary keycodes so the on-screen and handlebar controls can drive AA.
                     // Advertising these (esp. KEY_SCROLL_WHEEL) makes Android Auto render a
                     // focus-navigable UI — the only way to control it on a non-touch dash.
-                    AaInput.SUPPORTED_KEYCODES.forEach { inp.addKeycodesSupported(it) }
+                    inputKeycodes.forEach { inp.addKeycodesSupported(it) }
                     // Advertise a touchscreen only on dashes that actually have one. On a non-touch
                     // dash advertising touch would put AA in touch mode with no on-screen focus for
                     // the D-pad/knob to move.
-                    if (BikeProfileHolder.advertisesScreenTouch) {
+                    if (touchscreen) {
                         inp.touchscreen = Control.Service.InputSourceService.TouchConfig.newBuilder().apply {
                             setWidth(spec.width)
                             setHeight(spec.height)
