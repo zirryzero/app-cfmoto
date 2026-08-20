@@ -122,7 +122,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:indeterminate="true"
-                            android:indeterminateTint="@color/brand_orange"
+                            android:indeterminateTint="@color/brand_cyan"
                             android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
@@ -314,7 +314,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="@string/main_check_for_update" />
+                        android:text="@string/main_check_for_update"
+                        android:visibility="gone" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_problem_report"
@@ -330,7 +331,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="@string/about_donate"
+                        android:text="@string/about_support_adaptation"
                         android:textSize="13sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

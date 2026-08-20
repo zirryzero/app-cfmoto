@@ -113,6 +113,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/about_adaptation_source" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_about_email"
+                    style="@style/Widget.OpenCfMoto.Segment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/about_contact_email" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -145,30 +153,29 @@
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
-                <LinearLayout
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_about_kofi"
+                    style="@style/Widget.OpenCfMoto.Button.Connect"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:orientation="horizontal">
+                    android:text="@string/about_support_adaptation" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_about_discord"
-                        style="@style/Widget.OpenCfMoto.Button.Tonal"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="6dp"
-                        android:layout_weight="1"
-                        android:text="@string/about_discord" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_about_original_kofi"
+                    style="@style/Widget.OpenCfMoto.Button.Tonal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/about_support_original_creator" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_about_kofi"
-                        style="@style/Widget.OpenCfMoto.Button.Connect"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_weight="1"
-                        android:text="@string/about_donate" />
-                </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_about_discord"
+                    style="@style/Widget.OpenCfMoto.Segment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/about_discord" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

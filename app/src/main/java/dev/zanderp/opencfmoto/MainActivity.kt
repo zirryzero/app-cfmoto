@@ -1161,7 +1161,7 @@ class MainActivity : AppCompatActivity() {
             .setTitle(R.string.main_report_a_problem)
             .setMessage(R.string.main_report_problem_message)
             .setView(box)
-            .setPositiveButton(R.string.main_share) { _, _ ->
+            .setPositiveButton(R.string.main_open_email) { _, _ ->
                 shareProblemReport(
                     problem.text.toString(),
                     year.text.toString(),
@@ -1173,7 +1173,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun shareProblemReport(problem: String, year: String) {
         try {
-            val model = "CFMOTO 800NK Advanced"
+            val model = "800NK Advanced"
             val diagnostics = buildString {
                 appendLine(
                     "app=${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) " +
@@ -1185,25 +1185,19 @@ class MainActivity : AppCompatActivity() {
                 appendLine("ssid=${BikeMemory.lastQr(this@MainActivity)?.ssid ?: "—"}")
                 appendLine("phase=${ConnectionState.phase} ${ConnectionState.detail}")
             }
-            val text = ProblemReport.file(
-                problem = problem.ifBlank { "(not specified)" },
-                model = model,
-                year = year,
-                diagnostics = diagnostics,
-                log = LogBus.snapshot(),
-            )
-            val dir = File(cacheDir, "logs").apply { mkdirs() }
-            val file = File(dir, "800nk-adv-link-report.txt")
-            file.writeText(text)
-            val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
-            val send = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, ProblemReport.subject(model, BuildConfig.VERSION_NAME))
-                putExtra(Intent.EXTRA_TEXT, ProblemReport.body(problem, model, year, diagnostics))
-                putExtra(Intent.EXTRA_STREAM, uri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            startActivity(Intent.createChooser(send, getString(R.string.main_share_problem_report)))
+            val emailUri = Uri.Builder()
+                .scheme("mailto")
+                .opaquePart(SUPPORT_EMAIL)
+                .appendQueryParameter(
+                    "subject",
+                    ProblemReport.subject(model, BuildConfig.VERSION_NAME),
+                )
+                .appendQueryParameter(
+                    "body",
+                    ProblemReport.body(problem, model, year, diagnostics, LogBus.snapshot()),
+                )
+                .build()
+            startActivity(Intent(Intent.ACTION_SENDTO, emailUri))
         } catch (e: Exception) {
             Toast.makeText(this, getString(R.string.main_share_report_failed, e.toString()), Toast.LENGTH_LONG).show()
         }
@@ -1278,6 +1272,7 @@ class MainActivity : AppCompatActivity() {
         const val EXTRA_START_GPX = "start_gpx"
         /** When set with [EXTRA_START_GPX], join the bike even if not already live. */
         const val EXTRA_GPX_TO_BIKE = "gpx_to_bike"
+        private const val SUPPORT_EMAIL = "powerdevelopco@gmail.com"
         private const val REQ_BT_FOR_AA = 4
         /** Latched once an auto-connect attempt actually starts, so it fires only once per process. */
         @Volatile private var autoConnectStarted = false

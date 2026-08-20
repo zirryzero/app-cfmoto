@@ -1,6 +1,6 @@
 # 800NK ADV Link - Privacy and permissions
 
-_App version: 2.0.20-pre (75)_
+_App version: 2.0.23-pre (78)_
 _Last updated: 2026-08-19_
 
 800NK ADV Link is an unofficial, local-first Android application adapted
@@ -188,6 +188,7 @@ service; and without screen-capture approval, Mirror will not start.
 ## Contact and unofficial status
 
 For questions about this adaptation:
+[powerdevelopco@gmail.com](mailto:powerdevelopco@gmail.com) or
 [github.com/zirryzero](https://github.com/zirryzero).
 
 800NK ADV Link is independent and is not affiliated with, endorsed by, or
@@ -199,7 +200,7 @@ owners.
 
 # 800NK ADV Link - Privacidad y permisos
 
-_Version de la aplicacion: 2.0.20-pre (75)_
+_Version de la aplicacion: 2.0.23-pre (78)_
 _Ultima actualizacion: 2026-08-19_
 
 800NK ADV Link es una aplicacion Android local-first y no oficial, adaptada
@@ -393,6 +394,7 @@ la captura de pantalla no se inicia Espejo.
 ## Contacto y caracter no oficial
 
 Para consultas sobre esta adaptacion:
+[powerdevelopco@gmail.com](mailto:powerdevelopco@gmail.com) o
 [github.com/zirryzero](https://github.com/zirryzero).
 
 800NK ADV Link es independiente y no esta afiliada, respaldada ni certificada

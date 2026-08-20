@@ -30,6 +30,9 @@
     <string name="about_questions_logs_or_a_new_bike_join_discord_tips_k">¿Preguntas, registros o una moto nueva? Únete a Discord. Los consejos mantienen el proyecto en movimiento.</string>
     <string name="about_discord">Discord</string>
     <string name="about_donate">Donar</string>
+    <string name="about_support_adaptation">Apoyar 800NK ADV Link</string>
+    <string name="about_support_original_creator">Apoyar al creador original</string>
+    <string name="about_contact_email">Contacto: powerdevelopco@gmail.com</string>
     <string name="about_copyright_2">Derechos de autor</string>
     <string name="about_website_alexandru_rocks">Sitio web — alexandru.rocks</string>
     <string name="about_source_on_github">Ver código original</string>
@@ -240,11 +243,13 @@
     <string name="main_about_credits">Acerca de y créditos</string>
     <string name="main_check_for_update">Buscar actualizaciones</string>
     <string name="main_report_a_problem">Informar de un problema</string>
-    <string name="main_report_problem_message">Crea un informe que puedes compartir con los diagnósticos y el registro reciente (los secretos se ocultan salvo que lo actives en Configuración).</string>
+    <string name="main_report_problem_message">Describe el problema. Se abrirá tu aplicación de correo con el diagnóstico y un extracto del registro incluidos; revisa el mensaje antes de enviarlo.</string>
     <string name="main_report_hint_problem">¿Qué ha fallado?</string>
     <string name="main_report_hint_year">Año (opcional)</string>
     <string name="main_mirror_leave_shared_app">Dejar en pantalla la aplicación compartida (800NK ADV Link se queda en la notificación)</string>
     <string name="main_share_problem_report">Compartir el informe del problema</string>
+    <string name="main_open_email">Abrir correo</string>
+    <string name="main_choose_email_app">Enviar informe por correo</string>
     <string name="main_diagnostics">Diagnóstico</string>
     <string name="main_share">Compartir</string>
     <string name="main_clear">Borrar</string>
@@ -489,7 +494,7 @@
     <string name="main_donate_failed">No se pudo abrir el enlace de donación</string>
     <string name="main_settings_failed">No se pudo abrir la configuración de la aplicación</string>
     <string name="main_download_failed">No se pudo abrir el enlace de descarga</string>
-    <string name="main_share_report_failed">No se pudo compartir el informe: %1$s</string>
+    <string name="main_share_report_failed">No se pudo abrir una aplicación de correo: %1$s</string>
     <string name="main_vpn_hint">Abre Ajustes ▸ Red ▸ VPN</string>
     <string name="main_type_place">Escribe un lugar para buscar en el mapa.</string>
     <string name="main_searching_dash">Buscando «%1$s» en el tablero</string>

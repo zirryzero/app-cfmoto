@@ -29,6 +29,9 @@
     <string name="about_questions_logs_or_a_new_bike_join_discord_tips_k">Questions, logs, or a new bike? Join Discord. Tips keep the project moving.</string>
     <string name="about_discord">Discord</string>
     <string name="about_donate">Donate</string>
+    <string name="about_support_adaptation">Support 800NK ADV Link</string>
+    <string name="about_support_original_creator">Support original creator</string>
+    <string name="about_contact_email">Contact: powerdevelopco@gmail.com</string>
     <string name="about_copyright_2">Copyright</string>
     <string name="about_website_alexandru_rocks">Website — alexandru.rocks</string>
     <string name="about_source_on_github">View original code</string>
@@ -239,11 +242,13 @@
     <string name="main_about_credits">About &amp; credits</string>
     <string name="main_check_for_update">Check for update</string>
     <string name="main_report_a_problem">Report a problem</string>
-    <string name="main_report_problem_message">Builds a shareable report with diagnostics + recent log (secrets redacted unless enabled in Setup).</string>
+    <string name="main_report_problem_message">Describe the problem. Your email app will open with diagnostics and a recent log excerpt included; review the message before sending.</string>
     <string name="main_report_hint_problem">What went wrong?</string>
     <string name="main_report_hint_year">Year (optional)</string>
     <string name="main_mirror_leave_shared_app">Leave the shared app on screen (800NK ADV Link stays in the notification)</string>
     <string name="main_share_problem_report">Share problem report</string>
+    <string name="main_open_email">Open email</string>
+    <string name="main_choose_email_app">Send problem report by email</string>
     <string name="main_diagnostics">Diagnostics</string>
     <string name="main_share">Share</string>
     <string name="main_clear">Clear</string>
@@ -493,7 +498,7 @@
     <string name="main_donate_failed">Couldn\'t open donate link</string>
     <string name="main_settings_failed">Couldn\'t open app settings</string>
     <string name="main_download_failed">Couldn\'t open download link</string>
-    <string name="main_share_report_failed">Couldn\'t share report: %1$s</string>
+    <string name="main_share_report_failed">Couldn\'t open an email app: %1$s</string>
     <string name="main_vpn_hint">Open Settings ▸ Network ▸ VPN</string>
     <string name="main_type_place">Type a place to search on the map</string>
     <string name="main_searching_dash">Searching \"%1$s\" on the dash</string>

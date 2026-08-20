@@ -44,11 +44,17 @@ class AboutActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.btn_about_adaptation_github).setOnClickListener {
             openUrl(URL_ADAPTATION_GITHUB)
         }
+        findViewById<MaterialButton>(R.id.btn_about_email).setOnClickListener {
+            openUrl(URL_CONTACT_EMAIL)
+        }
         findViewById<MaterialButton>(R.id.btn_about_discord).setOnClickListener {
             openUrl(URL_DISCORD)
         }
         findViewById<MaterialButton>(R.id.btn_about_kofi).setOnClickListener {
             openUrl(URL_KOFI)
+        }
+        findViewById<MaterialButton>(R.id.btn_about_original_kofi).setOnClickListener {
+            openUrl(URL_ORIGINAL_KOFI)
         }
         findViewById<MaterialButton>(R.id.btn_about_license).setOnClickListener {
             openUrl(URL_NOTICE)
@@ -69,8 +75,10 @@ class AboutActivity : AppCompatActivity() {
         private const val URL_ORIGINAL_GITHUB = "https://github.com/zanderp/open-cfmoto"
         private const val URL_ZIRRYZERO = "https://github.com/zirryzero"
         private const val URL_ADAPTATION_GITHUB = "https://github.com/zirryzero/app-cfmoto"
+        private const val URL_CONTACT_EMAIL = "mailto:powerdevelopco@gmail.com"
         private const val URL_DISCORD = "https://discord.gg/KNTjJhmFZ6"
-        const val URL_KOFI = "https://ko-fi.com/alexandrupopa"
+        const val URL_KOFI = "https://ko-fi.com/zirryzero"
+        private const val URL_ORIGINAL_KOFI = "https://ko-fi.com/alexandrupopa"
         private const val URL_NOTICE =
             "https://github.com/zirryzero/app-cfmoto/blob/main/NOTICE"
 

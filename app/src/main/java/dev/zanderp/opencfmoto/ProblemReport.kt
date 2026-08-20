@@ -12,7 +12,7 @@ object ProblemReport {
     fun file(problem: String, model: String, year: String, diagnostics: String, log: String): String =
         buildString {
             appendLine(RULE)
-            appendLine("OpenCfMoto problem report")
+            appendLine("800NK ADV Link problem report")
             appendLine(RULE)
             appendLine()
             appendLine("WHAT WENT WRONG")
@@ -30,7 +30,7 @@ object ProblemReport {
             append(log)
         }
 
-    fun body(problem: String, model: String, year: String, diagnostics: String): String =
+    fun body(problem: String, model: String, year: String, diagnostics: String, log: String): String =
         buildString {
             appendLine("### What went wrong")
             appendLine(problem.trim())
@@ -43,15 +43,19 @@ object ProblemReport {
             appendLine(diagnostics.trim())
             appendLine("```")
             appendLine()
-            append("Full log attached. Secrets redacted unless enabled in Setup.")
+            appendLine("### Recent log")
+            appendLine("Secrets are redacted unless enabled in Settings.")
+            append(log.takeLast(MAX_EMAIL_LOG_CHARS))
         }
 
     fun subject(model: String, version: String): String =
-        "OpenCfMoto ${bikeLine(model, "")} report — $version"
+        "800NK ADV Link - ${bikeLine(model, "")} report - $version"
 
     private fun bikeLine(model: String, year: String): String {
         val m = model.trim().ifEmpty { "unknown model" }
         val y = year.trim()
         return if (y.isEmpty()) "CFMOTO $m" else "CFMOTO $m, $y"
     }
+
+    private const val MAX_EMAIL_LOG_CHARS = 6_000
 }
