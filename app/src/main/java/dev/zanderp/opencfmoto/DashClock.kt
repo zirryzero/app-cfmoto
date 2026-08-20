@@ -13,8 +13,6 @@ internal object DashClock {
     }
 
     private val DASH_NAME_MARKERS = listOf(
-        "MLN", "ZM_", "ZM-", "VOGE", "CFMOTO", "QJ", "GRIFFIN", "MORINI",
-        "XCAPE", "X-CAPE", "CARBIT", "EASYCONN", "YUNMO", "ALLTR",
-        "P2P", "SOFTAP",
+        "CFMOTO", "CFDL", "800NK",
     )
 }

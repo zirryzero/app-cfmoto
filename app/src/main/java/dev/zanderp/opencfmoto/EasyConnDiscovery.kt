@@ -16,11 +16,8 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * Find the bike's EasyConn TCP endpoint after SoftAP / P2P join.
- *
- * Many SoftAP dashes (e.g. Morini `ML*`) do not accept the classic wake probe on `:10930`
- * even while Wi‑Fi is fine — they advertise `_EasyConn._tcp.` (or listen on a nearby port).
- * Prefer NSD, then a short TCP port scan.
+ * Find the 800NK Advanced EasyConn TCP endpoint after joining its SoftAP.
+ * Prefer NSD, then a short scan around the standard EasyConn port.
  *
  * Caller should already have pinned the process to the bike [Network] (multicast lock + bind)
  * so NSD sees the SoftAP LAN.
@@ -30,20 +27,7 @@ object EasyConnDiscovery {
     const val SERVICE_TYPE = "_EasyConn._tcp."
     private const val NSD_TIMEOUT_MS = 12_000L
     private const val SCAN_CONNECT_MS = 350
-    private const val WIDE_SCAN_CONNECT_MS = 250
     private val SCAN_PORTS = (10915..10935).toList()
-
-    /**
-     * Broader TCP ports to probe when EasyConn + Yunmo both refuse (e.g. Kove / Thinkerride SoftAP).
-     * Log-only — does not start a video link.
-     */
-    private val THINKER_SCAN_PORTS: List<Int> = buildList {
-        addAll(listOf(80, 443, 554, 8080, 8888, 9000, 9999))
-        addAll(5000..5010)
-        addAll(7000..7010)
-        addAll(8000..8210)
-        addAll(10000..10010)
-    }
 
     data class Endpoint(
         val host: Inet4Address,
@@ -169,29 +153,6 @@ object EasyConnDiscovery {
         log(
             if (open.isEmpty()) "[DISC] port-scan: none open"
             else "[DISC] port-scan open: $open",
-        )
-        return open
-    }
-
-    /**
-     * Log-only wider TCP scan after EasyConn/Yunmo fail — helps reverse Thinkerride / Kove SoftAP.
-     * Tag: `[DISC] thinkerride-scan …`
-     */
-    fun scanThinkerridePorts(
-        bikeIp: Inet4Address,
-        network: Network?,
-        myIp: Inet4Address,
-        openSocket: (Network?, Inet4Address) -> Socket,
-        log: (String) -> Unit,
-    ): List<Int> {
-        log(
-            "[DISC] thinkerride-scan ${bikeIp.hostAddress} " +
-                "(${THINKER_SCAN_PORTS.size} ports, log-only)…",
-        )
-        val open = scanPorts(bikeIp, network, myIp, openSocket, THINKER_SCAN_PORTS, WIDE_SCAN_CONNECT_MS)
-        log(
-            if (open.isEmpty()) "[DISC] thinkerride-scan: none open"
-            else "[DISC] thinkerride-scan open: $open",
         )
         return open
     }

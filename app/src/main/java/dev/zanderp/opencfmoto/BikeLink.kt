@@ -5,7 +5,6 @@ package dev.zanderp.opencfmoto
 
 import android.content.Context
 import android.net.Network
-import java.net.Inet4Address
 
 /**
  * Process-global handle to the bike PXC client ([EasyConnProber]).
@@ -34,9 +33,6 @@ object BikeLink {
     @Volatile private var bikeNetwork: Network? = null
     @Volatile private var networkReady = false
     @Volatile private var proberStarted = false
-    /** Wi‑Fi Direct path: no [Network], so the prober binds/probes with these overrides. */
-    @Volatile private var p2pBindIp: Inet4Address? = null
-    @Volatile private var p2pGatewayIp: Inet4Address? = null
 
     /** Reset the gate at the start of a fresh Android Auto connection attempt. */
     @Synchronized
@@ -46,8 +42,6 @@ object BikeLink {
         bikeNetwork = null
         networkReady = false
         proberStarted = false
-        p2pBindIp = null
-        p2pGatewayIp = null
     }
 
     @Synchronized
@@ -64,16 +58,6 @@ object BikeLink {
         maybeStartProbe()
     }
 
-    /** Wi‑Fi Direct: no [Network] — store bind/gateway IPs and mark ready. */
-    @Synchronized
-    fun markP2pReady(bindIp: Inet4Address, gatewayIp: Inet4Address) {
-        p2pBindIp = bindIp
-        p2pGatewayIp = gatewayIp
-        bikeNetwork = null
-        networkReady = true
-        maybeStartProbe()
-    }
-
     private fun maybeStartProbe() {
         if (proberStarted || !aaVideoSteady || !networkReady) return
         val p = prober ?: return
@@ -82,7 +66,7 @@ object BikeLink {
         ConnectionState.set(Phase.PXC_CONNECTING)
         appContext?.let { DashClockBle.start(it) }
         try {
-            p.start(bikeNetwork, gatewayOverride = p2pGatewayIp, bindIpOverride = p2pBindIp)
+            p.start(bikeNetwork)
         } catch (e: Exception) {
             LogBus.log("prober start failed: $e")
             ConnectionState.set(Phase.ERROR, "prober start failed")

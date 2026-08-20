@@ -7,6 +7,9 @@ adaptation. The original implementation and authorship belong to Alexandru
 and the OpenCfMoto contributors identified below. This derivative preserves
 their copyright, project lineage, incorporated-code notices, and AGPL terms.
 
+800NK ADV Link adaptation maintained by ZirryZero:
+https://github.com/zirryzero
+
 OpenCfMoto - original project
 =============================
 
@@ -73,10 +76,10 @@ this project treats the shared AGPLv3 heritage of the Android Auto code as
 governing and credits the prior authors here:
 
   * coletz / dcoletto  — dcoletto/open-cfmoto  (base app, QR/EasyConn work)
-  * richardbizik        — richardbizik/open-cfmoto  (1000MT-X support)
+  * richardbizik        — richardbizik/open-cfmoto  (CFDL26 protocol research)
   * BojanJ              — BojanJ/open-cfmoto  (Android Auto receiver integration)
-  * ionutradu252        — ionutradu252/open-cfmoto  (CFDL16/450SR handlebar-button
-                          control, on-screen D-pad/knob, navigate-to, Assistant mic)
+  * ionutradu252        — ionutradu252/open-cfmoto  (handlebar-button control,
+                          on-screen D-pad/knob, navigate-to, Assistant mic)
 
 --------------------------------------------------------------------------------
 Third-party dependencies (fetched at build time, not vendored)

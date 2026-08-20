@@ -262,15 +262,7 @@ object AaSelfMode {
         val n = name ?: return false
         return n.contains("CFMOTO", ignoreCase = true) ||
             n.contains("CFDL", ignoreCase = true) ||
-            n.contains("Bike", ignoreCase = true) ||
-            n.contains("Moto", ignoreCase = true) ||
-            n.contains("VOGE", ignoreCase = true) ||
-            n.contains("QJ", ignoreCase = true) ||
-            n.contains("Zontes", ignoreCase = true) ||
-            n.contains("Benelli", ignoreCase = true) ||
-            n.contains("Morini", ignoreCase = true) ||
-            n.contains("Alltrhike", ignoreCase = true) ||
-            n.contains("Kove", ignoreCase = true)
+            n.contains("800NK", ignoreCase = true)
     }
 
     private fun createFakeNetwork(netId: Int): Parcelable? {

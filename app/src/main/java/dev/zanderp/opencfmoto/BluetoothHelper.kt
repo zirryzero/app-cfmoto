@@ -78,10 +78,7 @@ object BluetoothHelper {
                 val n = d.name ?: return@firstOrNull false
                 n.contains("CFMOTO", ignoreCase = true) ||
                     n.contains("CFDL", ignoreCase = true) ||
-                    n.contains("Bike", ignoreCase = true) ||
-                    n.contains("Moto", ignoreCase = true) ||
-                    n.contains("VOGE", ignoreCase = true) ||
-                    n.contains("QJ", ignoreCase = true)
+                    n.contains("800NK", ignoreCase = true)
             }
             (bikeish ?: pool.firstOrNull())?.name
         } catch (_: SecurityException) {

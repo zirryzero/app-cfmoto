@@ -61,11 +61,6 @@ class VideoPipeline(
      * its canvas size (so the encoder matches the bike, not a hardcoded resolution).
      */
     private val compositor: Boolean = false,
-    /**
-     * Optional density for [createOwnVirtualDisplay]. Ride MO OEM map uses **187 dpi** on a
-     * 1024×464 `NaviVirtualDisplay` (not the scaled TARGET_DASH_WIDTH_DP heuristic).
-     */
-    private val ownDisplayDensityDpi: Int? = null,
 ) {
     private val main = Handler(Looper.getMainLooper())
     private var codec: MediaCodec? = null
@@ -170,7 +165,6 @@ class VideoPipeline(
             val profile = BikeProfileHolder.active
             // Map / GPX Presentation changes every pan/GPS tick — give H.264 more bits + shorter GOP
             // so motion doesn't smear into block artifacts on the bike (phone preview skips encode).
-            // Skip FREE_RIDE 1.35× boost when the profile already targets a low OEM rate (e.g. Morini 10 fps / 2 Mbit).
             val mapBoost = GpxSession.active && profile.videoFrameRate >= 30
             val bitrate = (VideoPrefs.bitrateFor(context, profile) * if (mapBoost) 1.35f else 1f).toInt()
             val iframeSec = if (mapBoost) {
@@ -256,8 +250,7 @@ class VideoPipeline(
      * different size is not re-applied live (logged instead).
      */
     /**
-     * @param force when true, tear down an existing encoder and recreate at [w]×[h]
-     *   (Yunmo SoftAP learns the canvas from cmd 0x32 after AA may already have started).
+     * @param force when true, tear down an existing encoder and recreate at [w]×[h].
      */
     fun configureBikeCanvas(w: Int, h: Int, force: Boolean = false) {
         if (!compositor) return
@@ -512,9 +505,7 @@ class VideoPipeline(
             DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION
         // Scale density to the bike resolution so controls stay glanceable without crowding the panel.
         // Higher TARGET_DASH_WIDTH_DP → lower dpi → smaller chrome (~20% vs the old 720dp target).
-        // OEM Yunmo path overrides via [ownDisplayDensityDpi] (187).
-        val densityDpi = ownDisplayDensityDpi
-            ?: Math.round(160.0 * width / TARGET_DASH_WIDTH_DP).toInt().coerceIn(160, 640)
+        val densityDpi = Math.round(160.0 * width / TARGET_DASH_WIDTH_DP).toInt().coerceIn(160, 640)
         val vd = dm.createVirtualDisplay("OpenCfMoto", width, height, densityDpi, inputSurface, flags)
         virtualDisplay = vd
         log(

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2026 Alexandru <https://alexandru.rocks> and the OpenCfMoto contributors.
 // Part of OpenCfMoto. Free software under the GNU AGPL v3 or later; see LICENSE and NOTICE.
+// 800NK ADV Link adaptation maintained by ZirryZero <https://github.com/zirryzero>.
 package dev.zanderp.opencfmoto
 
 import android.content.Context
@@ -37,6 +38,9 @@ class AboutActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.btn_about_github).setOnClickListener {
             openUrl(URL_GITHUB)
         }
+        findViewById<MaterialButton>(R.id.btn_about_zirryzero).setOnClickListener {
+            openUrl(URL_ZIRRYZERO)
+        }
         findViewById<MaterialButton>(R.id.btn_about_discord).setOnClickListener {
             openUrl(URL_DISCORD)
         }
@@ -60,6 +64,7 @@ class AboutActivity : AppCompatActivity() {
     companion object {
         private const val URL_WEBSITE = "https://alexandru.rocks"
         private const val URL_GITHUB = "https://github.com/zanderp/open-cfmoto"
+        private const val URL_ZIRRYZERO = "https://github.com/zirryzero"
         private const val URL_DISCORD = "https://discord.gg/KNTjJhmFZ6"
         const val URL_KOFI = "https://ko-fi.com/alexandrupopa"
         private const val URL_NOTICE =

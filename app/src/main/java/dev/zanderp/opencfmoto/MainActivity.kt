@@ -51,10 +51,26 @@ class MainActivity : AppCompatActivity() {
     private val ts = SimpleDateFormat("HH:mm:ss.SSS", Locale.US)
     /** True when the pending QR scan should kick off the Android Auto flow (vs the mirror path). */
     private var pendingAaStart = false
+    private var pendingAaMicPermission: QrData? = null
     /** Guards the "close the official CFMoto app" prompt so it shows once per error, not every redraw. */
     private var rivalPromptShown = false
     /** Guards the VPN kill-switch prompt so it shows once per error, not every redraw. */
     private var vpnPromptShown = false
+
+    private val micPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        val qr = pendingAaMicPermission
+        pendingAaMicPermission = null
+        if (granted) {
+            log("Microphone permission granted for Gemini / Android Auto voice")
+            AndroidAutoService.upgradeForegroundForMicrophone()
+        } else {
+            log("Microphone permission denied; projection continues without Gemini voice input")
+            Toast.makeText(this, R.string.mic_permission_denied, Toast.LENGTH_LONG).show()
+        }
+        if (qr != null) startAaFlowReady(qr)
+    }
 
     private val scanLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -77,9 +93,8 @@ class MainActivity : AppCompatActivity() {
             return@registerForActivityResult
         }
         log(
-            "QR parsed: ssid=${qr.ssid} mac=${qr.mac} action=${qr.action} " +
-                "(ap=${qr.supportsAp}, p2p=${qr.supportsP2p}, hotspot=${qr.supportsPhoneHotspot}) " +
-                "modelId=${qr.modelId} sn=${qr.sn}"
+            "800NK QR parsed: ssid=${qr.ssid} mac=${qr.mac} " +
+                "modelId=${qr.modelId ?: "not declared"} sn=${qr.sn}"
         )
         // Remember this bike so the next ride is a one-tap reconnect (skips the scan entirely).
         BikeMemory.save(this, raw, qr)
@@ -103,17 +118,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Pick the bike profile from the QR up front — it drives the Android Auto resolution/orientation,
-     *  which must be set before AA starts. CLIENT_INFO refines it later during the PXC handshake. */
+    /** Apply the fixed 800NK Advanced display contract before Android Auto starts. */
     private fun applyProfile(qr: QrData) {
         AppSettings.applyToHolder(this)
-        BikeProfileHolder.active = BikeProfiles.selectByQr(qr, this)
+        BikeProfileHolder.active = BikeProfiles.only
         DashMemory.setLastDashTouch(this, BikeProfileHolder.advertisesScreenTouch)
         val userOverride = VideoPrefs.resolutionOverride(this, BikeProfileHolder.active)
-        // In AUTO mode, if a previous session revealed this dash is a different orientation than the
-        // profile assumes, flip AA to match. Learned from the dash's REQ_CONFIG_CAPTURE (see DashMemory).
-        val autoGeo = if (userOverride == null) DashMemory.specFor(this, qr.ssid, BikeProfileHolder.active) else null
-        BikeProfileHolder.aaVideoOverride = userOverride ?: autoGeo
+        BikeProfileHolder.aaVideoOverride = userOverride
         val spec = BikeProfileHolder.aaVideo
         BikeProfileHolder.aaContentMargins = VideoPrefs.aaMarginsFor(this, spec, qr.ssid)
         val aspectMode = VideoPrefs.matchAspectMode(this)
@@ -127,18 +138,10 @@ class MainActivity : AppCompatActivity() {
         }
         val note = when {
             userOverride != null -> " (override: ${VideoPrefs.resolution(this).label})"
-            autoGeo != null -> " (auto-orientation from last connect)"
             else -> ""
         }
-        val touchNote = when {
-            BikeProfileHolder.forceNonTouch -> " [Disable touchscreen ON — focus/knob AA]"
-            BikeProfileHolder.forceTouch -> " [Force touchscreen ON — touch AA]"
-            else -> ""
-        }
-        val ov = BikeProfileHolder.profileOverride
-        val ovNote = if (ov != ProfileOverride.AUTO) " [profile override: ${ov.shortLabel}]" else ""
-        log("→ bike profile (QR ssid=${qr.ssid} modelId=${qr.modelId}): ${BikeProfileHolder.active.name} " +
-            "→ AA ${spec.width}x${spec.height} @${spec.dpi}dpi$note$touchNote$ovNote$aspectNote")
+        log("→ 800NK Advanced (QR ssid=${qr.ssid} modelId=${qr.modelId}) " +
+            "→ AA ${spec.width}x${spec.height} @${spec.dpi}dpi$note$aspectNote")
     }
 
     /**
@@ -174,6 +177,24 @@ class MainActivity : AppCompatActivity() {
     /** Start the Android Auto → bike projection for [qr]. Shared by the one-tap Connect reconnect
      *  and a fresh scan, so both paths behave identically. */
     private fun startAaFlow(qr: QrData) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            pendingAaMicPermission = qr
+            log("Microphone permission required before starting Gemini voice")
+            try {
+                micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            } catch (e: Exception) {
+                pendingAaMicPermission = null
+                log("Microphone permission prompt failed ($e); continuing without voice")
+                startAaFlowReady(qr)
+            }
+            return
+        }
+        startAaFlowReady(qr)
+    }
+
+    private fun startAaFlowReady(qr: QrData) {
         try {
             if (!WifiGate.ensureEnabledOrPrompt(this)) return
             // AA Connect needs Nearby + Bluetooth so HUR (START_WIRELESS_PROJECTION) can run when
@@ -449,7 +470,7 @@ class MainActivity : AppCompatActivity() {
             isSingleLine = true
         }
         (findViewById<View>(R.id.btn_setup) as? MaterialButton)?.asFooterLink(R.drawable.ic_settings)
-        (findViewById<View>(R.id.btn_devices) as? MaterialButton)?.asFooterLink(R.drawable.ic_devices)
+        (findViewById<View>(R.id.btn_pair_bike) as? MaterialButton)?.asFooterLink(R.drawable.ic_qr)
         (findViewById<View>(R.id.btn_trip) as? MaterialButton)?.asFooterLink(R.drawable.ic_ride)
         (toggleLogBtn as? MaterialButton)?.asFooterLink(R.drawable.ic_logs)
 
@@ -612,7 +633,7 @@ class MainActivity : AppCompatActivity() {
                 debounce.postDelayed(run, 350)
             }
         })
-        findViewById<View>(R.id.btn_devices).setOnClickListener { GarageActivity.start(this) }
+        findViewById<View>(R.id.btn_pair_bike).setOnClickListener { startAaScan() }
 
         findViewById<View>(R.id.btn_trip).setOnClickListener { TripActivity.start(this) }
 
@@ -668,8 +689,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // The active bike (and its name) may have changed in the Garage — reflect it on the label and
-        // the Connect button.
+        // Refresh pairing state after returning from settings or the QR scanner.
         refreshBikeLabel()
         renderStatus(ConnectionState.phase, ConnectionState.detail)
         if (WifiGate.isWifiEnabled(this)) WifiGate.cancelNotification(this)
@@ -792,7 +812,6 @@ class MainActivity : AppCompatActivity() {
             // NOTE: AndroidAutoService is intentionally NOT stopped here — it is a foreground service
             // meant to keep running when the phone is backgrounded/locked. Use "Stop Android Auto".
             BikeWifi.leave(this, ::log)
-            BikeWifiP2p.stop(::log)
         }
         super.onDestroy()
     }
@@ -986,71 +1005,18 @@ class MainActivity : AppCompatActivity() {
     private fun joinWifi(qr: QrData, gateOnAaSteady: Boolean) {
         if (!WifiGate.ensureEnabledOrPrompt(this)) return
         ConnectionState.set(Phase.JOINING_WIFI)
-        val transport = AppSettings.transport(this)
-        // Phone-hosts-hotspot (Zontes action=128 / no SoftAP pwd): dash joins the phone.
-        if (qr.supportsPhoneHotspot && qr.pwd.isEmpty()) {
-            joinPhoneHotspot(qr, gateOnAaSteady)
+        if (qr.ssid.isBlank() || qr.pwd.isBlank()) {
+            log("→ 800NK QR missing SoftAP credentials")
+            ConnectionState.set(Phase.ERROR, getString(R.string.main_invalid_qr))
             return
         }
-        // AUTO: P2P when the QR is P2P-only (incl. non-DIRECT SSIDs — join by MAC), or DIRECT-*.
-        // SoftAP fallback remains in joinWifiP2p.onFailed for SoftAP-capable units.
-        // Never force P2P when the QR is SoftAP-only (action bit3 clear) — Setup→P2P on those
-        // bikes only burns 25s then falls back (Benelli TRK / bj* SSIDs in the field).
-        val useP2p = when (transport) {
-            WifiTransport.P2P -> qr.supportsP2p || !qr.supportsAp
-            WifiTransport.AP -> false
-            WifiTransport.AUTO ->
-                (qr.supportsP2p && !qr.supportsAp) ||
-                    (qr.ssid.startsWith("DIRECT-", ignoreCase = true) &&
-                        (qr.supportsP2p || !qr.supportsAp))
-        }
-        // Per-bike memory refines AUTO only (an explicit P2P/AP setting is the rider's call): once a
-        // transport has produced a live link for THIS bike, use it and skip the dead path. Some dashes
-        // advertise DIRECT-* + SoftAP, so AUTO tries P2P first and burns the whole timeout on every
-        // connect even when P2P never forms a group on this phone, while SoftAP connects in seconds.
-        val remembered = if (transport == WifiTransport.AUTO) BikeMemory.winningTransport(this, qr.ssid) else null
-        val effUseP2p = when {
-            remembered == "AP" && qr.supportsAp -> false
-            remembered == "P2P" && qr.supportsP2p -> true
-            else -> useP2p
-        }
-        if (remembered != null && effUseP2p != useP2p) {
-            log("→ transport memory: '$remembered' connected before for '${qr.ssid}' — using it, skipping the dead path")
-        }
-        if (transport == WifiTransport.P2P && !useP2p) {
-            log(
-                "→ Setup Wi‑Fi transport is P2P but QR is SoftAP-only " +
-                    "(action=${qr.action} ssid=${qr.ssid}) — joining SoftAP instead",
-            )
-        }
-        if (effUseP2p) {
-            val isDirect = qr.ssid.startsWith("DIRECT-", ignoreCase = true)
-            // P2P-only QRs with a SoftAP-style SSID but no MAC burn ~40s on MAC ERROR
-            // (Voge-5G / ZT5G / etc.). Prefer SoftAP immediately when we have a password.
-            if (!isDirect && qr.mac.isNullOrBlank() && qr.pwd.isNotEmpty()) {
-                log(
-                    "→ QR says P2P-only; SSID '${qr.ssid}' has no MAC — " +
-                        "joining SoftAP first (skip Wi‑Fi Direct by MAC)",
-                )
-            } else {
-                if (!isDirect) {
-                    log(
-                        "→ QR says P2P-only; SSID '${qr.ssid}' is not DIRECT-* — " +
-                            "trying Wi‑Fi Direct by MAC (then SoftAP fallback)",
-                    )
-                }
-                joinWifiP2p(qr, gateOnAaSteady)
-                return
-            }
-        }
+        log("→ joining 800NK Advanced SoftAP '${qr.ssid}'")
         BikeWifi.reuseOrJoin(
             context = applicationContext,
             ssid = qr.ssid,
             psk = qr.pwd,
             onAvailable = { network ->
                 WifiGate.cancelNotification(applicationContext)
-                // SoftAP got Wi-Fi up for this bike → remember it so AUTO skips P2P next time.
-                BikeMemory.setWinningTransport(applicationContext, qr.ssid, "AP")
                 if (gateOnAaSteady) {
                     LogBus.log("→ bike Wi-Fi bound (waiting for AA video to go steady)")
                     BikeLink.markWifiReady(network)
@@ -1066,204 +1032,6 @@ class MainActivity : AppCompatActivity() {
                 }
             },
             onLost = { LogBus.log("bike network lost") },
-            log = LogBus::log,
-        )
-    }
-
-    /**
-     * Dash is the Wi‑Fi client (Carbit `action=128`). Android cannot create a hotspot with the
-     * dash SSID/password for us — show assist dialog, open tether settings, then poll for EasyConn.
-     */
-    private fun joinPhoneHotspot(qr: QrData, gateOnAaSteady: Boolean) {
-        LogBus.log(
-            "→ phone-hotspot mode (action=${qr.action} mac=${qr.mac}) — " +
-                "assist dialog (app cannot create AP; set dash SSID/pwd in system hotspot)",
-        )
-        ConnectionState.set(Phase.JOINING_WIFI, getString(R.string.main_phone_hotspot_status))
-        PhoneHotspotAssist.showSetupDialog(
-            activity = this,
-            qr = qr,
-            onContinue = { startPhoneHotspotScan(gateOnAaSteady) },
-            onCancel = {
-                ConnectionState.set(Phase.ERROR, getString(R.string.main_phone_hotspot_cancelled))
-            },
-        )
-    }
-
-    /** Poll for tether iface (~45s) then NSD / subnet EasyConn scan. */
-    private fun startPhoneHotspotScan(gateOnAaSteady: Boolean) {
-        val creds = PhoneHotspotAssist.loadCreds(this)
-        if (creds.ssid.isNotEmpty()) {
-            Toast.makeText(
-                this,
-                getString(R.string.main_phone_hotspot_waiting_named, creds.ssid),
-                Toast.LENGTH_LONG,
-            ).show()
-        } else {
-            Toast.makeText(this, R.string.main_phone_hotspot_hint, Toast.LENGTH_LONG).show()
-        }
-        ConnectionState.set(Phase.JOINING_WIFI, getString(R.string.main_phone_hotspot_status))
-        Thread({
-            try {
-                var subnets = emptyList<PhoneHotspotScan.Subnet>()
-                val pollRounds = 30 // ~45s at 1.5s
-                for (i in 0 until pollRounds) {
-                    if (ConnectionState.phase == Phase.STOPPED) return@Thread
-                    subnets = PhoneHotspotScan.tetheringSubnets()
-                    if (subnets.isNotEmpty()) break
-                    if (i == 0 || i % 5 == 0) {
-                        LogBus.log(
-                            "[HOTSPOT] waiting for tether interface… " +
-                                "(${i + 1}/$pollRounds) set Android hotspot" +
-                                creds.ssid.takeIf { it.isNotEmpty() }?.let { " SSID='$it'" }.orEmpty(),
-                        )
-                    }
-                    try {
-                        Thread.sleep(1_500)
-                    } catch (_: InterruptedException) {
-                        return@Thread
-                    }
-                }
-                if (subnets.isEmpty()) {
-                    LogBus.log(
-                        "[HOTSPOT] no tether interface after wait — open hotspot settings " +
-                            "and set the dash SSID/password, then Connect again",
-                    )
-                    runOnUiThread {
-                        ConnectionState.set(Phase.ERROR, getString(R.string.main_phone_hotspot_no_iface))
-                        com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                            .setTitle(R.string.main_phone_hotspot_dialog_title)
-                            .setMessage(R.string.main_phone_hotspot_no_iface)
-                            .setPositiveButton(R.string.main_phone_hotspot_open_settings) { _, _ ->
-                                PhoneHotspotAssist.openHotspotSettings(this)
-                            }
-                            .setNegativeButton(android.R.string.ok, null)
-                            .show()
-                    }
-                    return@Thread
-                }
-                val subnet = subnets.first()
-                LogBus.log(
-                    "[HOTSPOT] using ${subnet.interfaceName} " +
-                        "${subnet.localAddress.hostAddress}/${subnet.prefixLength}",
-                )
-                // Prefer NSD first (works when multicast reaches the tether iface).
-                val nsd = EasyConnDiscovery.discoverNsd(applicationContext, LogBus::log)
-                val peer = nsd?.host
-                    ?: PhoneHotspotScan.findEasyConnPeer(subnet, LogBus::log)
-                if (peer == null) {
-                    runOnUiThread {
-                        ConnectionState.set(Phase.ERROR, getString(R.string.main_phone_hotspot_no_peer))
-                        Toast.makeText(
-                            this,
-                            getString(R.string.main_phone_hotspot_no_peer),
-                            Toast.LENGTH_LONG,
-                        ).show()
-                    }
-                    return@Thread
-                }
-                val bindIp = subnet.localAddress
-                runOnUiThread {
-                    WifiGate.cancelNotification(applicationContext)
-                    if (gateOnAaSteady) {
-                        LogBus.log(
-                            "→ hotspot peer ${peer.hostAddress} (waiting for AA); " +
-                                "bind=${bindIp.hostAddress}",
-                        )
-                        BikeLink.markP2pReady(bindIp, peer)
-                    } else {
-                        ConnectionState.set(Phase.PXC_CONNECTING)
-                        LogBus.log("→ hotspot peer ${peer.hostAddress}; starting EasyConn PXC …")
-                        try {
-                            (BikeLink.prober ?: prober).start(
-                                network = null,
-                                gatewayOverride = peer,
-                                bindIpOverride = bindIp,
-                            )
-                        } catch (e: Exception) {
-                            LogBus.log("prober start failed: $e")
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                LogBus.log("[HOTSPOT] failed: $e")
-                runOnUiThread {
-                    ConnectionState.set(Phase.ERROR, "hotspot scan failed")
-                }
-            }
-        }, "phone-hotspot-scan").apply { isDaemon = true }.start()
-    }
-
-    /** Wi‑Fi Direct Group Owner path (CL‑C450 / some DIRECT- SSIDs / Zontes MAC join). */
-    private fun joinWifiP2p(qr: QrData, gateOnAaSteady: Boolean) {
-        if (!WifiGate.ensureEnabledOrPrompt(this)) return
-        LogBus.log("→ joining via Wi‑Fi Direct (P2P)")
-        // How long to wait for a P2P group before failing over to SoftAP:
-        //  - "P2P" remembered  → proven P2P device on this phone; give it the full window.
-        //  - SoftAP advertised → a working fallback exists, so bail (12s) when P2P is hopeless
-        //    (some phones ERROR on every join attempt in <1s but the group never forms).
-        //  - otherwise (P2P-only) → full window; there is nothing to fall back to.
-        val known = BikeMemory.winningTransport(this, qr.ssid)
-        val p2pTimeout = when {
-            known == "P2P" -> BikeWifiP2p.CONNECT_TIMEOUT_MS
-            qr.supportsAp && qr.pwd.isNotEmpty() -> 12_000L
-            else -> BikeWifiP2p.CONNECT_TIMEOUT_MS
-        }
-        BikeWifiP2p.connect(
-            context = applicationContext,
-            qr = qr,
-            timeoutMs = p2pTimeout,
-            onConnected = { bindIp, gatewayIp ->
-                WifiGate.cancelNotification(applicationContext)
-                // P2P actually formed a group for this bike → remember it (some DIRECT-* bikes need P2P).
-                BikeMemory.setWinningTransport(applicationContext, qr.ssid, "P2P")
-                if (gateOnAaSteady) {
-                    LogBus.log("→ P2P bound (waiting for AA video); bike=${gatewayIp.hostAddress}")
-                    BikeLink.markP2pReady(bindIp, gatewayIp)
-                } else {
-                    ConnectionState.set(Phase.PXC_CONNECTING)
-                    LogBus.log("→ P2P bound; starting EasyConn PXC flow …")
-                    try {
-                        (BikeLink.prober ?: prober).start(
-                            network = null,
-                            gatewayOverride = gatewayIp,
-                            bindIpOverride = bindIp,
-                        )
-                    } catch (e: Exception) {
-                        LogBus.log("prober start failed: $e")
-                    }
-                }
-            },
-            onFailed = { reason ->
-                if (qr.pwd.isEmpty() || qr.ssid.startsWith("PHONE-HOTSPOT", ignoreCase = true)) {
-                    LogBus.log("P2P join failed: $reason — no SoftAP credentials to fall back to")
-                    ConnectionState.set(Phase.ERROR, "Wi‑Fi Direct failed")
-                    return@connect
-                }
-                LogBus.log("P2P join failed: $reason — falling back to AP join")
-                if (!WifiGate.ensureEnabledOrNotify(applicationContext)) return@connect
-                BikeWifi.join(
-                    context = applicationContext,
-                    ssid = qr.ssid,
-                    psk = qr.pwd,
-                    onAvailable = { network ->
-                        WifiGate.cancelNotification(applicationContext)
-                        // SoftAP fallback connected → remember AP so AUTO goes straight here next time.
-                        BikeMemory.setWinningTransport(applicationContext, qr.ssid, "AP")
-                        if (gateOnAaSteady) BikeLink.markWifiReady(network)
-                        else {
-                            ConnectionState.set(Phase.PXC_CONNECTING)
-                            try {
-                                (BikeLink.prober ?: prober).start(network)
-                            } catch (e: Exception) {
-                                LogBus.log("prober start failed: $e")
-                            }
-                        }
-                    },
-                    onLost = { LogBus.log("bike network lost") },
-                    log = LogBus::log,
-                )
-            },
             log = LogBus::log,
         )
     }
@@ -1448,8 +1216,7 @@ class MainActivity : AppCompatActivity() {
      * otherwise start mirror flow (consent then connect).
      */
     private fun onMirrorPressed() {
-        // parsec82 TRK 702 X (2026-07-30): tapping Mirror again while frames were still flowing
-        // tore down a live PXC session (freeze → second tap recovery). Ignore duplicate taps
+        // Tapping Mirror again while frames are flowing can tear down a live PXC session. Ignore duplicates
         // when mirroring and we sent a frame recently; allow retry when stalled/frozen.
         val mirroring =
             ConnectionState.phase == Phase.MIRRORING || ConnectionState.phase == Phase.RECONNECTING
@@ -1573,11 +1340,6 @@ class MainActivity : AppCompatActivity() {
             minLines = 3
             setPadding(pad, pad, pad, pad)
         }
-        val model = android.widget.EditText(this).apply {
-            hint = context.getString(R.string.main_report_hint_bike_model)
-            setText(BikeMemory.lastBikeName(this@MainActivity).orEmpty())
-            setPadding(pad, pad / 2, pad, pad / 2)
-        }
         val year = android.widget.EditText(this).apply {
             hint = context.getString(R.string.main_report_hint_year)
             setPadding(pad, pad / 2, pad, pad / 2)
@@ -1586,7 +1348,6 @@ class MainActivity : AppCompatActivity() {
             orientation = android.widget.LinearLayout.VERTICAL
             setPadding(pad, pad / 2, pad, 0)
             addView(problem)
-            addView(model)
             addView(year)
         }
         androidx.appcompat.app.AlertDialog.Builder(this)
@@ -1596,7 +1357,6 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(R.string.main_share) { _, _ ->
                 shareProblemReport(
                     problem.text.toString(),
-                    model.text.toString(),
                     year.text.toString(),
                 )
             }
@@ -1604,19 +1364,17 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun shareProblemReport(problem: String, model: String, year: String) {
+    private fun shareProblemReport(problem: String, year: String) {
         try {
+            val model = "CFMOTO 800NK Advanced"
             val diagnostics = buildString {
                 appendLine(
                     "app=${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) " +
                         "git=${BuildConfig.GIT_HASH}",
                 )
                 appendLine("profile=${BikeProfileHolder.active.name}")
-                appendLine("override=${BikeProfileHolder.profileOverride}")
-                appendLine("transport=${AppSettings.transport(this@MainActivity).label}")
+                appendLine("transport=800NK SoftAP")
                 appendLine("margins=${ScreenMargins.summary()}")
-                appendLine("forceNonTouch=${BikeProfileHolder.forceNonTouch}")
-                appendLine("forceTouch=${BikeProfileHolder.forceTouch}")
                 appendLine("ssid=${BikeMemory.lastQr(this@MainActivity)?.ssid ?: "—"}")
                 appendLine("phase=${ConnectionState.phase} ${ConnectionState.detail}")
             }
@@ -1628,7 +1386,7 @@ class MainActivity : AppCompatActivity() {
                 log = LogBus.snapshot(),
             )
             val dir = File(cacheDir, "logs").apply { mkdirs() }
-            val file = File(dir, "opencfmoto-report.txt")
+            val file = File(dir, "800nk-adv-link-report.txt")
             file.writeText(text)
             val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
             val send = Intent(Intent.ACTION_SEND).apply {

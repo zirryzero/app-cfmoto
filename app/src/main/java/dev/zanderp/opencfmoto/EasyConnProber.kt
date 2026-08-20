@@ -89,9 +89,6 @@ class EasyConnProber(
     @Volatile private var negH = 384
     @Volatile private var framesSent = 0
     @Volatile private var lastFrameAt = 0L
-    /** SoftAP Yunmo path (MOTOMORINI / X-Cape 1200) when EasyConn never answers. */
-    private var yunmo: YunmoLink? = null
-
     /** Live dash contacts: id → (x, y, lastSeenMs). Stale entries are evicted when UP is lost. */
     private val pointers = LinkedHashMap<Int, Triple<Int, Int, Long>>()
     private var ghostsDropped = 0
@@ -123,16 +120,7 @@ class EasyConnProber(
     @Volatile private var reprobing = false
     @Volatile private var reconnectAttempts = 0
 
-    /**
-     * @param gatewayOverride when set (Wi‑Fi Direct P2P path), use this bike GO IP instead of
-     *   resolving from [Network] link properties — P2P often has no default route.
-     * @param bindIpOverride phone's P2P interface address when there is no [Network] to bind.
-     */
-    fun start(
-        network: Network?,
-        gatewayOverride: java.net.Inet4Address? = null,
-        bindIpOverride: java.net.Inet4Address? = null,
-    ) {
+    fun start(network: Network?) {
         if (running) {
             // Mode switches (AA↔Map↔Mirror) must never no-op on a half-dead session
             // (logs: "already running" + framesSent=0). Always rebuild PXC cleanly.
@@ -148,9 +136,9 @@ class EasyConnProber(
         this.network = network
         dumpEnvironment(network)
 
-        val myIp = bindIpOverride ?: pickBikeInterfaceIp(network)
+        val myIp = pickBikeInterfaceIp(network)
         if (myIp == null) { log("could not resolve our IPv4 on the bike network; aborting"); return }
-        val bikeIp = gatewayOverride ?: resolveGateway(network)
+        val bikeIp = resolveGateway(network)
         if (bikeIp == null) {
             log(
                 "could not resolve bike gateway IP; aborting" +
@@ -298,8 +286,6 @@ class EasyConnProber(
         probed = false
         everConnected = false
         reprobing = false
-        try { yunmo?.stop() } catch (_: Exception) {}
-        yunmo = null
         // Only stop the pipeline if we created it; the shared Android Auto pipeline is owned
         // by AndroidAutoService and must outlive a bike disconnect.
         if (ownsVideo) video?.stop()
@@ -329,13 +315,11 @@ class EasyConnProber(
 
     /** True once at least one frame has been delivered to the dash this session. */
     val isStreaming: Boolean
-        get() = running && (framesSent > 0 || (yunmo?.framesSent ?: 0) > 0)
+        get() = running && framesSent > 0
 
     /** Milliseconds since the last frame was sent to the dash (Long.MAX_VALUE if none yet). */
     fun msSinceLastFrame(): Long {
-        val yAt = yunmo?.lastFrameAt ?: 0L
-        val at = maxOf(lastFrameAt, yAt)
-        return if (at == 0L) Long.MAX_VALUE else System.currentTimeMillis() - at
+        return if (lastFrameAt == 0L) Long.MAX_VALUE else System.currentTimeMillis() - lastFrameAt
     }
 
     /**
@@ -345,22 +329,11 @@ class EasyConnProber(
      */
     fun forceReconnect() {
         val n = activeClients.size
-        val hadYunmo = yunmo != null
-        log(
-            "[watchdog] forcing reconnect — dropping $n live socket(s)" +
-                if (hadYunmo) " + Yunmo" else "",
-        )
+        log("[watchdog] forcing reconnect — dropping $n live socket(s)")
         synchronized(activeClients) {
             for (s in activeClients.toList()) try { s.close() } catch (_: Exception) {}
         }
-        // Yunmo SoftAP has no reverse-TCP clients in [activeClients]. Closing EasyConn
-        // sockets alone left X-Cape 1200 half-dead (kosalos: "dropping 0", yunmoFrames stuck).
-        if (hadYunmo) {
-            try { yunmo?.stop() } catch (_: Exception) {}
-            yunmo = null
-            probed = false
-            if (n == 0) onAllConnectionsClosed()
-        }
+        if (n == 0) onAllConnectionsClosed()
     }
 
     /**
@@ -397,11 +370,11 @@ class EasyConnProber(
             }
         }
 
-        // Classic wake port on the SoftAP / P2P gateway.
+        // Classic wake port on the 800NK SoftAP gateway.
         probeTarget(bikeIp, BIKE_PROBE_PORT, myIp, network, attempts = 5)
         if (probed || !running) return
 
-        // Peer alive but :10930 closed (common on Morini SoftAP) — scan nearby ports.
+        // Peer alive but :10930 closed: scan nearby EasyConn ports.
         val open = EasyConnDiscovery.scanOpenPorts(
             bikeIp, network, myIp, ::openOnBikeNetwork, log,
         )
@@ -414,16 +387,6 @@ class EasyConnProber(
         if (probed || !running) return
 
         if (!everConnected) {
-            // X-Cape 1200 / MOTOMORINI SoftAP speaks Yunmo on :8200, not EasyConn :10930.
-            if (tryYunmoFallback(bikeIp, network)) return
-
-            // Kove / Thinkerride SoftAP: neither EasyConn nor Yunmo — log open ports for RE.
-            if (running) {
-                EasyConnDiscovery.scanThinkerridePorts(
-                    bikeIp, network, myIp, ::openOnBikeNetwork, log,
-                )
-            }
-
             val bindErr = BikeWifi.testBikeSocketBind(context)
             if (BikeWifi.isVpnBindBlocked(context, bindErr)) {
                 log("!! VPN kill-switch blocked bike bind after probe failure: ${bindErr?.message}")
@@ -434,10 +397,8 @@ class EasyConnProber(
                     "off or allow LAN — not treating as hard VPN error (bind still works).")
             } else {
                 log(
-                    "!! SoftAP is up but EasyConn never answered (NSD empty, :$BIKE_PROBE_PORT " +
-                        "refused, nearby ports quiet) and Yunmo :${YunmoFrame.DEFAULT_PORT} also failed. " +
-                        "Keep Nav QR open on the dash. If this is Kove/Thinkerride, check " +
-                        "[DISC] thinkerride-scan in Share Logs.",
+                    "!! 800NK SoftAP is up but EasyConn never answered. Keep MotoPlay and " +
+                        "the pairing QR open on the dashboard.",
                 )
                 ConnectionState.set(
                     Phase.ERROR,
@@ -447,41 +408,6 @@ class EasyConnProber(
         }
     }
 
-    /** Try MOTOMORINI Yunmo TCP after EasyConn discovery fails. */
-    private fun tryYunmoFallback(bikeIp: Inet4Address, network: Network?): Boolean {
-        if (!running) return false
-        log("[YUNMO] EasyConn quiet — trying SoftAP Yunmo ${bikeIp.hostAddress}:${YunmoFrame.DEFAULT_PORT}")
-        val link = YunmoLink(context, log)
-        link.onFrameSent = { lastFrameAt = System.currentTimeMillis() }
-        // Prefer AA coded size when known (kosalos log: 800×480); else negotiated / default.
-        val aa = BikeProfileHolder.aaVideo
-        val w = when {
-            aa.width >= 64 -> aa.width
-            negW >= 64 -> negW
-            else -> 800
-        }
-        val h = when {
-            aa.height >= 64 -> aa.height
-            negH >= 64 -> negH
-            else -> 480
-        }
-        val ok = link.connectAndStream(bikeIp, network, w, h)
-        if (!ok) {
-            link.stop()
-            return false
-        }
-        yunmo = link
-        probed = true
-        everConnected = true
-        // Seed lastFrameAt so stall watchdog doesn't fire on Long.MAX_VALUE before frame #1.
-        lastFrameAt = System.currentTimeMillis()
-        val sw = link.streamWidth.takeIf { it >= 16 } ?: w
-        val sh = link.streamHeight.takeIf { it >= 16 } ?: h
-        log("[YUNMO] *** linked — streaming AA/H264 over Yunmo (${sw}x${sh}) ***")
-        return true
-    }
-
-    /** Phone→bike probe. cmd 0x70000010 + JSON; expect 0x70000011 {"status":true}. */
     private fun probeTarget(
         host: Inet4Address,
         port: Int,
@@ -639,16 +565,11 @@ class EasyConnProber(
                     if (bi == null || mi == null) { log("[reconnect] no cached IPs — abort"); return@thread }
                     probed = false
                     framesSent = 0   // so the first frame after reconnect re-signals STREAMING
-                    try { yunmo?.stop() } catch (_: Exception) {}
-                    yunmo = null
-                    // Fast path for reconnect — classic wake → NSD → Yunmo SoftAP :8200.
+                    // Fast path for reconnect: classic wake, then NSD.
                     probeTarget(bi, BIKE_PROBE_PORT, mi, network, attempts = 2)
                     if (!probed && running && liveConns.get() == 0) {
                         val ep = EasyConnDiscovery.discoverNsd(context, log)
                         if (ep != null) probeTarget(ep.host, ep.port, mi, network, attempts = 2)
-                    }
-                    if (!probed && running && liveConns.get() == 0) {
-                        tryYunmoFallback(bi, network)
                     }
                     // Give the dash a moment to connect back before deciding to try again.
                     try { Thread.sleep(2500) } catch (_: InterruptedException) { return@thread }
@@ -849,8 +770,12 @@ class EasyConnProber(
         synchronized(pointers) {
             val now = android.os.SystemClock.elapsedRealtime()
 
-            // Drop fingers whose UP frame was lost so a missed UP can't strand one down forever.
-            pointers.entries.removeAll { (id, p) -> id != pointerId && now - p.third > POINTER_STALE_MS }
+            // A silent removal leaves Android Auto with a pointer permanently down. Always synthesize
+            // the missing UP before forgetting a stale dash contact.
+            val staleIds = pointers.entries
+                .filter { (id, p) -> id != pointerId && now - p.third > POINTER_STALE_MS }
+                .map { it.key }
+            for (id in staleIds) releasePointer(tag, id, "stale")
 
             when (action) {
                 1 -> {
@@ -902,7 +827,8 @@ class EasyConnProber(
             val keep = (listOf(dashId) +
                 pointers.entries.sortedByDescending { it.value.third }.map { it.key })
                 .distinct().take(MAX_POINTERS).toSet()
-            pointers.keys.retainAll(keep)
+            val droppedIds = pointers.keys.filterNot { it in keep }
+            for (id in droppedIds) releasePointer(tag, id, "pointer limit")
         }
 
         val aaId = aaIdFor(dashId)
@@ -928,6 +854,20 @@ class EasyConnProber(
             else -> if (action != 2) log("[$tag] touch dropped (no AA / GPX sink)")
         }
         if (action == 1) { pointers.remove(dashId); aaIdOf.remove(dashId) }
+    }
+
+    /** End a contact that the dash stopped reporting so the AAP gesture state cannot remain latched. */
+    private fun releasePointer(tag: String, dashId: Int, reason: String) {
+        val p = pointers[dashId] ?: return
+        val aaId = aaIdFor(dashId)
+        val sink = AaVideoBridge.touchSink
+        when {
+            sink != null -> sink(1, aaId, p.first, p.second)
+            GpxSession.active -> GpxSession.dispatchTouch(1, p.first, p.second)
+        }
+        pointers.remove(dashId)
+        aaIdOf.remove(dashId)
+        log("[$tag] TOUCH UP synthesized for ptr=$dashId at (${p.first},${p.second}) ($reason)")
     }
 
     /** Hold an UP for [STITCH_MS] in case the digitizer re-acquires the same finger. */
@@ -968,24 +908,19 @@ class EasyConnProber(
         val target = network ?: cm.activeNetwork ?: return null
         val lp = cm.getLinkProperties(target) ?: return null
 
-        // 1. Explicit default-route gateway. Present on most phones — the DHCP server on the
-        //    bike's Wi-Fi Direct group advertises itself as the router.
+        // 1. Explicit default-route gateway advertised by the 800NK SoftAP DHCP server.
         for (r in lp.routes) {
             if (r.isDefaultRoute) {
                 val gw = r.gateway
                 if (gw is Inet4Address && !gw.isAnyLocalAddress) return gw
             }
         }
-        // 2. Wi-Fi Direct fallback. Some phones (seen on Samsung / Android 16) install NO default
-        //    route for the P2P group — only the on-link 192.168.49.0/24 subnet with a 0.0.0.0
-        //    gateway. But the group owner (the bike) is always the ".1" host of our own /24 by
-        //    Android's Wi-Fi Direct convention, so derive it from our address. Additive: only runs
-        //    when step 1 found nothing (which would otherwise abort the whole link).
+        // 2. Some phones omit the default route for a local-only SoftAP. Derive its .1 gateway.
         for (la in lp.linkAddresses) {
             val a = la.address
             if (a is Inet4Address && !a.isLoopbackAddress && !a.isLinkLocalAddress) {
                 gatewayForSubnet(a, la.prefixLength)?.let {
-                    log("no default route — assuming Wi-Fi Direct group owner ${it.hostAddress}")
+                    log("no default route — using SoftAP gateway ${it.hostAddress}")
                     return it
                 }
             }
@@ -994,7 +929,7 @@ class EasyConnProber(
         return lp.dnsServers.filterIsInstance<Inet4Address>().firstOrNull()
     }
 
-    /** The ".1" host of [addr]'s subnet (network address | 1) — the Wi-Fi Direct group-owner IP. */
+    /** The ".1" host of [addr]'s subnet (network address | 1). */
     private fun gatewayForSubnet(addr: Inet4Address, prefix: Int): Inet4Address? {
         if (prefix !in 1..31) return null
         return try {
@@ -1084,10 +1019,8 @@ class EasyConnProber(
             while (running) {
                 try { Thread.sleep(5000) } catch (_: InterruptedException) { break }
                 i++
-                val yFrames = yunmo?.framesSent ?: 0
                 log(
                     "hb#$i probed=$probed video=${video != null} framesSent=$framesSent" +
-                        (if (yFrames > 0 || yunmo != null) " yunmoFrames=$yFrames" else "") +
                         " openServers=${servers.count { !it.isClosed }}",
                 )
             }

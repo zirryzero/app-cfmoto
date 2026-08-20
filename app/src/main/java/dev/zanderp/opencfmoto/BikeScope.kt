@@ -7,19 +7,15 @@ import android.content.Context
 import android.content.SharedPreferences
 
 /**
- * Namespaces user settings to the currently selected bike, so every motorcycle in the garage keeps
- * its own screen-fit, resolution, power mode, video quality, handlebar-button mode, and button
- * mapping.
+ * Namespaces display and control settings to the saved 800NK Advanced pairing.
  *
  * A scoped value is stored under `"<base>#<bikeId>"`, where the id is derived from the bike's raw QR
  * ([BikeMemory.selected]). **Reads fall back to the un-scoped (global) key** when the selected bike
- * has no value yet: a rider's existing single-bike settings become the default for every bike until
- * they customize one — so nothing is lost on upgrade, and a freshly scanned bike inherits sensible
- * values. Writes always go to the scoped key (or the global key when no bike is selected).
+ * has no value yet, preserving settings from releases before pairing-specific storage.
  */
 object BikeScope {
 
-    /** Stable per-bike id for the selected bike, or null when none is selected (use global keys). */
+    /** Stable id for the saved pairing, or null before the first QR scan. */
     fun suffix(ctx: Context): String? =
         BikeMemory.selected(ctx)?.raw?.let { idFor(it) }
 

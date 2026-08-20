@@ -42,9 +42,6 @@ class SetupActivity : AppCompatActivity() {
     private lateinit var dblTapDesc: TextView
     private lateinit var holdsDesc: TextView
     private lateinit var holdDesc: TextView
-    private lateinit var nonTouchDesc: TextView
-    private lateinit var forceTouchDesc: TextView
-    private lateinit var profileDesc: TextView
     private lateinit var btStatus: TextView
     private lateinit var resumeBtn: MaterialButton
 
@@ -78,9 +75,6 @@ class SetupActivity : AppCompatActivity() {
         dblTapDesc = findViewById(R.id.dbltap_desc)
         holdsDesc = findViewById(R.id.holds_desc)
         holdDesc = findViewById(R.id.hold_desc)
-        nonTouchDesc = findViewById(R.id.nontouch_desc)
-        forceTouchDesc = findViewById(R.id.forcetouch_desc)
-        profileDesc = findViewById(R.id.profile_desc)
         btStatus = findViewById(R.id.bt_status)
         resumeBtn = findViewById(R.id.resume_perm_btn)
 
@@ -100,8 +94,6 @@ class SetupActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.power_balanced).setOnClickListener { setPower(PowerMode.BALANCED) }
         findViewById<MaterialButton>(R.id.power_saver).setOnClickListener { setPower(PowerMode.SAVER) }
         findViewById<MaterialButton>(R.id.res_auto).setOnClickListener { setResolution(ResolutionMode.AUTO) }
-        findViewById<MaterialButton>(R.id.res_land_sd).setOnClickListener { setResolution(ResolutionMode.LANDSCAPE_SD) }
-        findViewById<MaterialButton>(R.id.res_land_hd).setOnClickListener { setResolution(ResolutionMode.LANDSCAPE_HD) }
         findViewById<MaterialButton>(R.id.res_port_sd).setOnClickListener { setResolution(ResolutionMode.PORTRAIT_SD) }
         findViewById<MaterialButton>(R.id.res_port_hd).setOnClickListener { setResolution(ResolutionMode.PORTRAIT_HD) }
         findViewById<MaterialButton>(R.id.theme_auto).setOnClickListener { setMapTheme(MapTheme.AUTO) }
@@ -128,22 +120,8 @@ class SetupActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.keepwifi_off).setOnClickListener { setKeepWifi(false) }
         findViewById<MaterialButton>(R.id.logtrips_on).setOnClickListener { setLogTrips(true) }
         findViewById<MaterialButton>(R.id.logtrips_off).setOnClickListener { setLogTrips(false) }
-        findViewById<MaterialButton>(R.id.nontouch_on).setOnClickListener { setForceNonTouch(true) }
-        findViewById<MaterialButton>(R.id.nontouch_off).setOnClickListener { setForceNonTouch(false) }
-        findViewById<MaterialButton>(R.id.forcetouch_on).setOnClickListener { setForceTouch(true) }
-        findViewById<MaterialButton>(R.id.forcetouch_off).setOnClickListener { setForceTouch(false) }
-        findViewById<MaterialButton>(R.id.profile_auto).setOnClickListener { setProfileOverride(ProfileOverride.AUTO) }
-        findViewById<MaterialButton>(R.id.profile_legacy).setOnClickListener { setProfileOverride(ProfileOverride.LEGACY) }
-        findViewById<MaterialButton>(R.id.profile_nk800).setOnClickListener { setProfileOverride(ProfileOverride.NK800) }
-        findViewById<MaterialButton>(R.id.profile_800mt).setOnClickListener { setProfileOverride(ProfileOverride.CFDL26_LAND) }
-        findViewById<MaterialButton>(R.id.profile_1000mtx).setOnClickListener { setProfileOverride(ProfileOverride.CFDL26_PORT) }
-        findViewById<MaterialButton>(R.id.profile_nk_adv).setOnClickListener { setProfileOverride(ProfileOverride.NK_ADV) }
-        findViewById<MaterialButton>(R.id.profile_clc450).setOnClickListener { setProfileOverride(ProfileOverride.CLC450) }
         findViewById<MaterialButton>(R.id.btn_screen_margins).setOnClickListener { ScreenMarginsActivity.start(this) }
         findViewById<MaterialButton>(R.id.btn_custom_resolution).setOnClickListener { CustomResolutionActivity.start(this) }
-        findViewById<MaterialButton>(R.id.transport_auto).setOnClickListener { setTransport(WifiTransport.AUTO) }
-        findViewById<MaterialButton>(R.id.transport_ap).setOnClickListener { setTransport(WifiTransport.AP) }
-        findViewById<MaterialButton>(R.id.transport_p2p).setOnClickListener { setTransport(WifiTransport.P2P) }
         findViewById<MaterialButton>(R.id.secrets_on).setOnClickListener { setSecrets(true) }
         findViewById<MaterialButton>(R.id.secrets_off).setOnClickListener { setSecrets(false) }
         findViewById<MaterialButton>(R.id.telemetry_on).setOnClickListener { setTelemetry(true) }
@@ -169,15 +147,13 @@ class SetupActivity : AppCompatActivity() {
             val file = File(dir, SettingsBackup.suggestedFileName(this))
             file.writeText(json, Charsets.UTF_8)
             val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
-            val profile = ProfilePrefs.get(this).shortLabel
             val send = Intent(Intent.ACTION_SEND).apply {
                 type = "application/json"
-                putExtra(Intent.EXTRA_SUBJECT, "OpenCfMoto bike tuning — $profile")
+                putExtra(Intent.EXTRA_SUBJECT, "800NK ADV Link settings")
                 putExtra(
                     Intent.EXTRA_TEXT,
-                    "OpenCfMoto bike tuning ($profile) — profile / resolution / margins / buttons " +
-                        "(no passwords, no bike name/SSID).\n" +
-                        "Import via Setup → Wi‑Fi & logs → Import…",
+                    "800NK Advanced display tuning: resolution, margins and buttons. " +
+                        "Pairing credentials are not included.",
                 )
                 putExtra(Intent.EXTRA_STREAM, uri)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -196,12 +172,11 @@ class SetupActivity : AppCompatActivity() {
                 Toast.makeText(this, "Empty file", Toast.LENGTH_SHORT).show()
                 return
             }
-            val onto = BikeMemory.lastBikeName(this) ?: "the selected bike"
             AlertDialog.Builder(this)
                 .setTitle("Import settings?")
                 .setMessage(
-                    "Replace bike tuning for $onto — profile, resolution, fit, power, margins, " +
-                        "handlebar buttons, Control AA, non-touch, Wi‑Fi transport?\n\n" +
+                    "Replace the 800NK Advanced display tuning: resolution, fit, power, margins, " +
+                        "handlebar buttons and Control AA?\n\n" +
                         "Personal prefs (map theme, saved places, auto-connect, …) are left alone. " +
                         "Wi‑Fi passwords are never imported."
                 )
@@ -303,30 +278,6 @@ class SetupActivity : AppCompatActivity() {
         Toast.makeText(this, "Trip logging ${if (on) "on" else "off"}", Toast.LENGTH_SHORT).show()
     }
 
-    private fun setForceNonTouch(on: Boolean) {
-        AppSettings.setForceNonTouch(this, on)
-        refreshOptions()
-        toast("Disable touchscreen: ${if (on) "on" else "off"}")
-    }
-
-    private fun setForceTouch(on: Boolean) {
-        AppSettings.setForceTouch(this, on)
-        refreshOptions()
-        toast("Force touchscreen: ${if (on) "on" else "off"}")
-    }
-
-    private fun setProfileOverride(ov: ProfileOverride) {
-        ProfilePrefs.set(this, ov)
-        refreshOptions()
-        toast("Bike profile: ${ov.shortLabel}")
-    }
-
-    private fun setTransport(t: WifiTransport) {
-        AppSettings.setTransport(this, t)
-        refreshOptions()
-        toast(getString(R.string.setup_toast_transport, t.label))
-    }
-
     private fun setSecrets(on: Boolean) {
         AppSettings.setIncludeSecretsInLogs(this, on)
         refreshOptions()
@@ -375,17 +326,6 @@ class SetupActivity : AppCompatActivity() {
             getString(R.string.setup_holds_off_desc)
         }
         holdDesc.text = if (holdsOn) getString(hold.labelRes) else getString(R.string.pref_hold_ignored)
-        nonTouchDesc.text = if (AppSettings.forceNonTouch(this))
-            getString(R.string.setup_nontouch_on_desc)
-        else
-            getString(R.string.setup_off_use_the_bike_profile_touch_dashes_stay_touch)
-        forceTouchDesc.text = if (AppSettings.forceTouch(this))
-            getString(R.string.setup_forcetouch_on_desc)
-        else
-            getString(R.string.setup_off_use_the_bike_profile_1000_mt_x_stays_focus_k)
-        val pov = ProfilePrefs.get(this)
-        profileDesc.text = "${pov.shortLabel} — ${getString(pov.detailRes)}"
-
         highlight(quality,
             R.id.quality_smooth to VideoQuality.SMOOTH,
             R.id.quality_balanced to VideoQuality.BALANCED,
@@ -401,8 +341,6 @@ class SetupActivity : AppCompatActivity() {
             R.id.power_saver to PowerMode.SAVER)
         highlight(res,
             R.id.res_auto to ResolutionMode.AUTO,
-            R.id.res_land_sd to ResolutionMode.LANDSCAPE_SD,
-            R.id.res_land_hd to ResolutionMode.LANDSCAPE_HD,
             R.id.res_port_sd to ResolutionMode.PORTRAIT_SD,
             R.id.res_port_hd to ResolutionMode.PORTRAIT_HD)
         highlight(theme,
@@ -437,26 +375,6 @@ class SetupActivity : AppCompatActivity() {
         highlight(AppSettings.logTrips(this),
             R.id.logtrips_on to true,
             R.id.logtrips_off to false)
-        highlight(AppSettings.forceNonTouch(this),
-            R.id.nontouch_on to true,
-            R.id.nontouch_off to false)
-        highlight(AppSettings.forceTouch(this),
-            R.id.forcetouch_on to true,
-            R.id.forcetouch_off to false)
-        highlight(ProfilePrefs.get(this),
-            R.id.profile_auto to ProfileOverride.AUTO,
-            R.id.profile_legacy to ProfileOverride.LEGACY,
-            R.id.profile_nk800 to ProfileOverride.NK800,
-            R.id.profile_800mt to ProfileOverride.CFDL26_LAND,
-            R.id.profile_1000mtx to ProfileOverride.CFDL26_PORT,
-            R.id.profile_nk_adv to ProfileOverride.NK_ADV,
-            R.id.profile_clc450 to ProfileOverride.CLC450)
-        val transport = AppSettings.transport(this)
-        findViewById<android.widget.TextView>(R.id.transport_desc).text = transport.label
-        highlight(transport,
-            R.id.transport_auto to WifiTransport.AUTO,
-            R.id.transport_ap to WifiTransport.AP,
-            R.id.transport_p2p to WifiTransport.P2P)
         val secrets = AppSettings.includeSecretsInLogs(this)
         findViewById<android.widget.TextView>(R.id.secrets_desc).text =
             if (secrets) getString(R.string.setup_secrets_on_desc)

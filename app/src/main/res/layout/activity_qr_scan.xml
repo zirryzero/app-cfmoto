@@ -22,20 +22,11 @@
             android:id="@+id/hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/qr_point_the_camera_at_the_bike_s_motoplay_qr_if_it"
+            android:text="@string/qr_800nk_hint"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="13sp"
             android:lineSpacingExtra="2dp" />
-
-        <Button
-            android:id="@+id/btn_manual_wifi"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/garage_enter_wi_fi_manually"
-            android:textColor="#FFB74D" />
 
         <Button
             android:id="@+id/btn_qr_photo"

@@ -10,16 +10,15 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * Portable **bike-tuning** pack for Discord / friends: profile, resolution, fit, margins,
- * handlebar mapping, transport — the stuff that makes a dash work. Skips personal prefs
- * (map theme, saved places, auto-connect, trip logging, tap timing, …).
+ * Portable 800NK Advanced display tuning: resolution, fit, margins and handlebar mapping.
+ * Personal preferences and pairing credentials are excluded.
  *
  * Never includes QR passwords, serials, or bike photos.
  *
- * Import applies to the **currently selected** garage bike (via [BikeScope]).
+ * Import applies to the saved 800NK Advanced.
  */
 object SettingsBackup {
-    const val FORMAT = "opencfmoto.settings"
+    const val FORMAT = "800nk-adv-link.settings"
     const val VERSION = 1
 
     data class Result(val ok: Boolean, val message: String)
@@ -30,25 +29,14 @@ object SettingsBackup {
         root.put("version", VERSION)
         root.put("exportedAt", isoNow())
         root.put("appVersion", BuildConfig.VERSION_NAME)
-        // No bike name / SSID — those are identifying. Share the tuning knobs only;
-        // profileOverride + model class already describe which dash shape this pack targets.
-        root.put(
-            "bikeHint",
-            JSONObject()
-                .put("profile", BikeProfileHolder.active.name)
-                .put("profileOverride", ProfilePrefs.get(context).id),
-        )
+        root.put("bike", "CFMOTO 800NK Advanced")
 
         val s = JSONObject()
         s.put("videoQuality", VideoPrefs.get(context).name)
         s.put("screenFit", VideoPrefs.fit(context).name)
         s.put("powerMode", VideoPrefs.power(context).name)
         s.put("resolutionMode", VideoPrefs.resolution(context).name)
-        s.put("profileOverride", ProfilePrefs.get(context).id)
         s.put("controlAa", ButtonMode.isControlAa(context))
-        s.put("forceNonTouch", AppSettings.forceNonTouch(context))
-        s.put("forceTouch", AppSettings.forceTouch(context))
-        s.put("wifiTransport", AppSettings.transport(context).id)
 
         ScreenMargins.load(context)
         s.put(
@@ -79,7 +67,7 @@ object SettingsBackup {
         }
         val format = root.optString("format", "")
         if (format != FORMAT) {
-            return Result(false, "Not an OpenCfMoto settings file (format=$format)")
+            return Result(false, "Not an 800NK ADV Link settings file (format=$format)")
         }
         val ver = root.optInt("version", 0)
         if (ver < 1 || ver > VERSION) {
@@ -94,24 +82,10 @@ object SettingsBackup {
             return Result(false, "Import failed: ${e.message}")
         }
 
-        val hint = root.optJSONObject("bikeHint")
-        val profile = hint?.optString("profile")?.takeIf { it.isNotBlank() && it != "null" }
-            ?: hint?.optString("profileOverride")?.takeIf { it.isNotBlank() && it != "null" }
-        val onto = BikeMemory.lastBikeName(context) ?: "selected bike"
-        val msg = if (profile != null) "Imported bike tuning ($profile) onto $onto"
-        else "Bike tuning imported onto $onto"
-        return Result(true, msg)
+        return Result(true, "800NK Advanced tuning imported")
     }
 
-    /** Filename-friendly slug — profile class only, never the rider’s bike name/SSID. */
-    fun suggestedFileName(context: Context): String {
-        val ov = ProfilePrefs.get(context)
-        val slug = when (ov) {
-            ProfileOverride.AUTO -> "auto"
-            else -> ov.id
-        }
-        return "OpenCfMoto-$slug-settings.json"
-    }
+    fun suggestedFileName(context: Context): String = "800NK-ADV-Link-settings.json"
 
     private fun applySettings(context: Context, s: JSONObject) {
         s.optString("videoQuality").takeIf { it.isNotBlank() }?.let {
@@ -126,15 +100,7 @@ object SettingsBackup {
         s.optString("resolutionMode").takeIf { it.isNotBlank() }?.let {
             runCatching { VideoPrefs.setResolution(context, ResolutionMode.valueOf(it)) }
         }
-        if (s.has("profileOverride")) {
-            ProfilePrefs.set(context, ProfileOverride.byId(s.optString("profileOverride")))
-        }
         if (s.has("controlAa")) ButtonMode.set(context, s.optBoolean("controlAa"))
-        if (s.has("forceNonTouch")) AppSettings.setForceNonTouch(context, s.optBoolean("forceNonTouch"))
-        if (s.has("forceTouch")) AppSettings.setForceTouch(context, s.optBoolean("forceTouch"))
-        if (s.has("wifiTransport")) {
-            AppSettings.setTransport(context, WifiTransport.byId(s.optString("wifiTransport")))
-        }
 
         s.optJSONObject("screenMargins")?.let { m ->
             if (m.optBoolean("customised")) {

@@ -435,7 +435,7 @@
                     android:layout_marginTop="8dp"
                     android:padding="10dp"
                     android:background="@drawable/hint_pill"
-                    android:text="@string/controls_your_dash_is_a_touchscreen_just_tap_the_screen_t"
+                    android:text="@string/controls_800nk_touch_hint"
                     android:textColor="@color/text_primary"
                     android:textSize="13sp"
                     android:visibility="gone" />

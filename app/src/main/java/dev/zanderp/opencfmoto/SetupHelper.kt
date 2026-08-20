@@ -35,6 +35,7 @@ object SetupHelper {
     /** Permissions needed to join the bike and run the AA service (reconnect / auto-connect). */
     fun connectPermissions(): List<String> = buildList {
         add(Manifest.permission.ACCESS_FINE_LOCATION)
+        add(Manifest.permission.RECORD_AUDIO)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             add(Manifest.permission.POST_NOTIFICATIONS)
         }

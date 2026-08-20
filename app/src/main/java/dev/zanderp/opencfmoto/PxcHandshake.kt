@@ -25,10 +25,8 @@ class PxcHandshake(
         private set
     @Volatile var lastClientInfo: JSONObject? = null
         private set
-    /** Dashboard-variant strategy, selected from the bike's CLIENT_INFO. Read by the media plane too
-     *  (via EasyConnProber.handshake.profile). Written once on the control thread, before any media
-     *  socket exists. */
-    @Volatile var profile: BikeProfile = BikeProfiles.legacy
+    /** Fixed 800NK Advanced strategy, shared with the media plane. */
+    @Volatile var profile: BikeProfile = BikeProfiles.only
         private set
     /** Rate-limit HU_TIME_SYNC log lines (bike sends ~every 2s). */
     @Volatile private var lastHuTimeSyncLogAt: Long = 0L
@@ -68,9 +66,7 @@ class PxcHandshake(
             PxcFrame.CMD_CHECK_SN_RESULT + 1 -> {
                 // acks from the bike — nothing to do
             }
-            // First-class: never empty-ack 0x10600 (→ 1970 / 00:00 on Morini/Voge/QJ).
-            // Echo-only (2.0.10): do not push an unsolicited 0x10601 — Griffin / X-Cape / Voge
-            // ignore it or jump hours. 0x10450 stays on the profile unknown path (empty cmd+1).
+            // Never empty-ack 0x10600: preserve the dashboard time payload when available.
             PxcFrame.CMD_HU_TIME_SYNC -> onHuTimeSync(tag, frame, out)
             else -> {
                 if (!profile.handleUnknownControl(tag, frame, out, log)) {
@@ -103,35 +99,8 @@ class PxcHandshake(
         log("[$tag] carHuid=$carHuid HUName=${json.optString("HUName")} channel=${json.optString("channel")}")
 
         profile = BikeProfiles.select(json, log)
-        val early = BikeProfileHolder.active
-        val startedSpec = BikeProfileHolder.aaVideo  // what Android Auto actually started / negotiated with
-        // Keep a measured landscape panel (e.g. 800MT 1280×576) when CLIENT_INFO scoring would
-        // flip to the near-square 800NK Advanced profile — that mis-route resized touch/margins
-        // mid-session while AA stayed on the landscape stream (connect/drop flaps in field logs).
-        val earlyPanel = early.panelSize
-        val earlyIsWide = earlyPanel != null && earlyPanel.first >= earlyPanel.second * 3 / 2
-        if (earlyIsWide && profile === Cfdl26NkTouchProfile) {
-            log("[$tag] keeping landscape QR/measured profile '${early.name}' " +
-                "(CLIENT_INFO preferred '${profile.name}' but panel ${earlyPanel!!.first}x${earlyPanel.second} is wide)")
-            profile = early
-        }
-        if (early !== profile) {
-            log("[$tag] profile refined from QR guess '${early.name}' → CLIENT_INFO '${profile.name}' " +
-                "(AA already started at the QR-guess resolution)")
-        }
-        BikeProfileHolder.active = profile  // authoritative; QR modelId was only the early hint
-        // Android Auto's video surface + decoder buffer were sized when AA started (from the QR guess)
-        // and CANNOT be resized mid-session. If the refined profile wants a different resolution and no
-        // explicit override is in effect, pin the spec to what AA is really running: otherwise the
-        // compositor scales the live source (e.g. 800x480) as if it were the profile's (e.g. 720x1280),
-        // producing a wildly wrong draw rect and a picture the dash rejects — which drops the link every
-        // few seconds (the connect/drop flap). Known/consistent bikes hit no-op here.
-        if (BikeProfileHolder.aaVideoOverride == null && BikeProfileHolder.aaVideo != startedSpec) {
-            BikeProfileHolder.aaVideoOverride = startedSpec
-            log("[$tag] pinned AA video to ${startedSpec.width}x${startedSpec.height} " +
-                "(can't resize mid-session; refined profile wanted ${profile.aaVideo.width}x${profile.aaVideo.height})")
-        }
-        log("[$tag] *** BikeProfile selected: ${profile.name} ***")
+        BikeProfileHolder.active = profile
+        log("[$tag] *** Fixed profile: ${profile.name} ***")
 
         val reply = profile.buildClientInfoReply(json, carHuid, phoneUuid)
         log("[$tag] → CLIENT_INFO reply ${reply.toString().take(180)}…")

@@ -8,8 +8,7 @@ import android.content.Context
 /**
  * Remembers the canvas size each dash asks for (`REQ_CONFIG_CAPTURE` width×height), keyed by SSID.
  *
- * On the next connect [specFor] / [BikeProfiles.selectByQr] can pick an AA resolution that fits the
- * panel at 1:1 (LearnedPanels-style), not just flip portrait/landscape.
+ * The measurement is used only to refine match-aspect margins for the fixed portrait stream.
  */
 object DashMemory {
     private const val PREFS = "opencfmoto_bike"
@@ -36,8 +35,7 @@ object DashMemory {
         prefs(ctx).edit().putString(key, now).apply()
         if (prior != now) {
             LogBus.log(
-                "[panel] learned: this bike's screen is $now — next connect will fit AA " +
-                    "resolution + match-aspect margins to it",
+                "[panel] learned 800NK canvas $now — next connect will refine match-aspect margins",
             )
         }
     }
@@ -51,32 +49,4 @@ object DashMemory {
         return if (w in 1..8192 && h in 1..8192) w to h else null
     }
 
-    /**
-     * Pick an AA resolution that can hold [w]×[h] at 1:1 on one axis (see open-cflink LearnedPanels).
-     * Returns null when no standard size fits cleanly — caller keeps the profile guess.
-     */
-    fun bestFit(w: Int, h: Int): AaResolution? {
-        val cw = w and 0xFFF0
-        val ch = h and 0xFFF0
-        val exact = AaResolution.entries.filter { r ->
-            (r.w == cw && r.h >= ch) || (r.h == ch && r.w >= cw)
-        }
-        return exact.minByOrNull { (it.w - cw).toLong() * (it.h - ch) + (it.w - cw) + (it.h - ch) }
-    }
-
-    /**
-     * AA spec from remembered geometry. Prefers exact [bestFit]; else orientation flip to SD sizes.
-     */
-    fun specFor(ctx: Context, ssid: String?, profile: BikeProfile): AaVideoSpec? {
-        val (w, h) = get(ctx, ssid) ?: return null
-        bestFit(w, h)?.let { res ->
-            if (res == profile.aaVideo.resolution && profile.panelSize == w to h) return null
-            return AaVideoSpec(res, dpi = profile.aaVideo.dpi)
-        }
-        val dashPortrait = h > w
-        val profilePortrait = profile.aaVideo.height > profile.aaVideo.width
-        if (dashPortrait == profilePortrait) return null
-        return if (dashPortrait) AaVideoSpec(AaResolution.PORTRAIT_720x1280, dpi = 240)
-        else AaVideoSpec(AaResolution.LANDSCAPE_800x480, dpi = 160)
-    }
 }

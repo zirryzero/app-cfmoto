@@ -630,7 +630,7 @@ class MediaButtonBridge(private val context: Context, private val log: (String) 
                 // so dashes that send two separate ~1-step writes still register a double-tap.
                 val forceDouble = kotlin.math.abs(jump) >= DOUBLE_TAP_STEPS
                 // Volume UP = backward (previous item), DOWN = forward (next item) — same semantics as
-                // the 800MT's ◀/▶ track keys, so both layouts drive the same gestures.
+                // Normalize track-key and volume-style events into the same gestures.
                 val single = if (up) ButtonGesture.NAV_BACK else ButtonGesture.NAV_FWD
                 val double = if (up) ButtonGesture.NAV_BACK_DOUBLE else ButtonGesture.NAV_FWD_DOUBLE
                 log("[BTN] volume $dir ($pinnedVolume→$now, jump=$jump)${if (forceDouble) " ×2" else ""}")
@@ -664,8 +664,7 @@ class MediaButtonBridge(private val context: Context, private val log: (String) 
      * waiting [ButtonTimingPrefs.doubleTapMs] for a second same-channel tap. A single press therefore
      * fires only after that window, which is the cost of telling the two apart.
      *
-     * Exception: [ButtonTimingPrefs.snappySingles] (default on) or
-     * [ButtonClusterPreset.prefersInstantSingles] skips the wait — fire the single now; a second
+     * Exception: [ButtonTimingPrefs.snappySingles] (default on) skips the wait — fire the single now; a second
      * tap in-window still runs ×2. Coalesced volume jumps use [forceDouble] immediately.
      */
     private fun detectDoubleTap(single: ButtonGesture, double: ButtonGesture, forceDouble: Boolean) {
@@ -683,8 +682,7 @@ class MediaButtonBridge(private val context: Context, private val log: (String) 
 
         // Eager singles: fire the tap now. A second tap inside the window still runs ×2 — no lag
         // waiting to disambiguate (BT echoes used to turn every press into D-pad when we waited).
-        val snappy = ButtonTimingPrefs.snappySingles(context) ||
-            ButtonClusterPreset.prefersInstantSingles(context)
+        val snappy = ButtonTimingPrefs.snappySingles(context)
         if (snappy) {
             if (ch.pending != null && gap in 1 until window) {
                 ch.pending?.let { handler.removeCallbacks(it) }

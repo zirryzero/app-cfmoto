@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -42,6 +43,18 @@ class ControlsActivity : AppCompatActivity() {
     private var padFullscreen = false
     private lateinit var insetsController: WindowInsetsControllerCompat
     private lateinit var btnPadFullscreen: MaterialButton
+    private var activateAssistantAfterMicPermission = false
+    private val micPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            AndroidAutoService.upgradeForegroundForMicrophone()
+            if (activateAssistantAfterMicPermission) key(AaInput.KEY_ASSISTANT)
+        } else if (activateAssistantAfterMicPermission) {
+            Toast.makeText(this, R.string.mic_permission_denied, Toast.LENGTH_LONG).show()
+        }
+        activateAssistantAfterMicPermission = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,25 +114,13 @@ class ControlsActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_back).setOnClickListener { key(AaInput.KEY_BACK) }
         findViewById<View>(R.id.btn_home).setOnClickListener { key(AaInput.KEY_HOME) }
         findViewById<View>(R.id.btn_assistant).setOnClickListener {
-            ensureMicPermission()
-            key(AaInput.KEY_ASSISTANT)
+            if (ensureMicPermission(activateAssistant = true)) key(AaInput.KEY_ASSISTANT)
         }
 
-        // Touchscreen dashes (800MT, 1000 MT-X) run Android Auto's touch UI, which has no focus
-        // cursor for a rotary knob to move — so handlebar-button navigation can't work there and only
-        // costs the rider their music. Warn, and let them just tap the dash. The live profile is
-        // authoritative once connected; otherwise fall back to what the last connect remembered.
+        // The 800NK Advanced uses Android Auto's touch UI, which has no rotary focus cursor.
         AppSettings.applyToHolder(this)
-        val live = BikeProfileHolder.active
-        val touchDash: Boolean? = if (live !== BikeProfiles.legacy) {
-            DashMemory.setLastDashTouch(this, BikeProfileHolder.advertisesScreenTouch)
-            BikeProfileHolder.advertisesScreenTouch
-        } else {
-            DashMemory.lastDashTouch(this)
-        }
-        if (touchDash == true) {
-            findViewById<View>(R.id.tv_touch_hint).visibility = View.VISIBLE
-        }
+        DashMemory.setLastDashTouch(this, true)
+        findViewById<View>(R.id.tv_touch_hint).visibility = View.VISIBLE
 
         // Handlebar-button mode toggle (live-applied if the bridge is running).
         val sw = findViewById<MaterialSwitch>(R.id.switch_control_aa)
@@ -288,16 +289,16 @@ class ControlsActivity : AppCompatActivity() {
     }
 
     /** The Assistant needs the mic to hear you — ask for it the first time voice is used. */
-    private fun ensureMicPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MIC)
-        }
+    private fun ensureMicPermission(activateAssistant: Boolean = false): Boolean {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) ==
+            PackageManager.PERMISSION_GRANTED
+        ) return true
+        activateAssistantAfterMicPermission = activateAssistant
+        micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        return false
     }
 
     companion object {
-        private const val REQ_MIC = 71
         private val PAD_BUTTON_IDS = intArrayOf(
             R.id.btn_knob_back, R.id.btn_dpad_up, R.id.btn_knob_fwd,
             R.id.btn_dpad_left, R.id.btn_select, R.id.btn_dpad_right,

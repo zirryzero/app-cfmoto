@@ -18,6 +18,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -42,6 +43,16 @@ class HudViewActivity : AppCompatActivity() {
     private var gpxUi: GpxDashUi? = null
     private var boundSessionKey: String? = null
     private lateinit var insetsController: WindowInsetsControllerCompat
+    private val micPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            AndroidAutoService.upgradeForegroundForMicrophone()
+            key(AaInput.KEY_ASSISTANT)
+        } else {
+            Toast.makeText(this, R.string.mic_permission_denied, Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,8 +130,7 @@ class HudViewActivity : AppCompatActivity() {
         findViewById<View>(R.id.hud_back).setOnClickListener { key(AaInput.KEY_BACK) }
         findViewById<View>(R.id.hud_home).setOnClickListener { key(AaInput.KEY_HOME) }
         findViewById<View>(R.id.hud_voice).setOnClickListener {
-            ensureMicPermission()
-            key(AaInput.KEY_ASSISTANT)
+            if (ensureMicPermission()) key(AaInput.KEY_ASSISTANT)
         }
     }
 
@@ -374,16 +384,15 @@ class HudViewActivity : AppCompatActivity() {
         }
     }
 
-    private fun ensureMicPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MIC)
-        }
+    private fun ensureMicPermission(): Boolean {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) ==
+            PackageManager.PERMISSION_GRANTED
+        ) return true
+        micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        return false
     }
 
     companion object {
-        private const val REQ_MIC = 72
         const val EXTRA_GPX_PREVIEW = "gpx_preview"
         const val EXTRA_FORCE_RELOAD = "gpx_force_reload"
 

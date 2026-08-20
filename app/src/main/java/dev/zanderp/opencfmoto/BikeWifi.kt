@@ -303,10 +303,8 @@ object BikeWifi {
     fun releaseSession(context: Context, log: (String) -> Unit) {
         if (AppSettings.keepWifiAfterDisconnect(context)) {
             park(context, log)
-            BikeWifiP2p.park(log)
         } else {
             leave(context, log)
-            BikeWifiP2p.stop(log)
         }
     }
 

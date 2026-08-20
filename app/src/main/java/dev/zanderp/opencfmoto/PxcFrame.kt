@@ -82,7 +82,7 @@ data class PxcFrame(val cmd: Int, val payload: ByteArray) {
         const val CMD_SOCK_SERVER_INFO_ACK = 0x104a1
         // Bike→phone wall-clock / keepalive (~2s). Payload: 16-byte header +
         // "yyyy-MM-dd HH:mm:ss.SSS000000" (29 ASCII). Bikes with supportSyncCorrectTime
-        // apply the 0x10601 ack body — empty ack → epoch/1970 on Morini/Voge. Reply with phone time.
+        // Apply the 0x10601 ack body; an empty reply can reset the dashboard clock.
         const val CMD_HU_TIME_SYNC         = 0x10600
         const val CMD_HU_TIME_SYNC_ACK     = 0x10601
         // ECP_C2P_QUERY_TIME — bike asks for wall clock (often empty). Empty 0x10451 → 1970/00:00.

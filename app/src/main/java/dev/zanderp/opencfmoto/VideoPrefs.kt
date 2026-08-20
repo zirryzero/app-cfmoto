@@ -65,9 +65,7 @@ enum class PowerMode(val fps: Int, val label: String, @StringRes val labelRes: I
  * a bike rejects them.
  */
 enum class ResolutionMode(val label: String, @StringRes val labelRes: Int, val spec: AaVideoSpec?) {
-    AUTO("Auto — match your bike (recommended)", R.string.pref_res_auto, null),
-    LANDSCAPE_SD("Landscape · 800×480", R.string.pref_res_land_sd, AaVideoSpec(AaResolution.LANDSCAPE_800x480, dpi = 160)),
-    LANDSCAPE_HD("Landscape · 1280×720 (HD)", R.string.pref_res_land_hd, AaVideoSpec(AaResolution.LANDSCAPE_1280x720, dpi = 160)),
+    AUTO("Auto — 800NK Advanced default", R.string.pref_res_auto, null),
     PORTRAIT_SD("Portrait · 720×1280", R.string.pref_res_port_sd, AaVideoSpec(AaResolution.PORTRAIT_720x1280, dpi = 240)),
     PORTRAIT_HD("Portrait · 1080×1920 (HD)", R.string.pref_res_port_hd, AaVideoSpec(AaResolution.PORTRAIT_1080x1920, dpi = 240)),
 }
@@ -88,10 +86,7 @@ enum class MatchAspectMode(val label: String) {
 }
 
 /**
- * Video/projection preferences. Each setting is **per bike** (scoped via [BikeScope] to the selected
- * bike in the garage): a portrait 1000 MT-X can keep Fit + portrait HD while a landscape 800MT keeps
- * Fill + SD, and switching the active bike switches its settings. When no bike is selected — or a bike
- * has never been customized — the previous single, global value is used as the default.
+ * Video/projection preferences for the saved 800NK Advanced, scoped through [BikeScope].
  */
 object VideoPrefs {
     private const val PREFS = "opencfmoto_bike"
@@ -100,7 +95,7 @@ object VideoPrefs {
     private const val KEY_POWER = "power_mode"
     private const val KEY_RESOLUTION = "resolution_mode"
 
-    // Match panel aspect (AA margins): Auto uses DashMemory / profile panel size for every bike.
+    // Match panel aspect (AA margins): Auto uses the measured or fixed 800NK panel size.
     private const val KEY_MATCH_MODE = "match_aspect_mode"
     /** Legacy boolean from PR #5 — migrated once into [KEY_MATCH_MODE]. */
     private const val KEY_MATCH_ASPECT = "match_aspect_on"

@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:gravity="center"
-                    android:text="@string/about_wireless_android_auto_for_carbit_easyconnect_das"
+                    android:text="@string/about_800nk_summary"
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -97,6 +97,14 @@
                     android:text="@string/about_origin_body"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_about_zirryzero"
+                    style="@style/Widget.OpenCfMoto.Segment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/about_zirryzero_github" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -285,7 +293,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:lineSpacingExtra="3dp"
-                    android:text="@string/about_credits"
+                    android:text="@string/about_credits_800nk"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -316,7 +324,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:lineSpacingExtra="2dp"
-                    android:text="@string/about_disclaimer"
+                    android:text="@string/about_disclaimer_800nk"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
             </LinearLayout>

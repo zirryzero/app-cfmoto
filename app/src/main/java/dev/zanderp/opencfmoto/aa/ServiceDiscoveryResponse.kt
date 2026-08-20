@@ -18,19 +18,12 @@ class ServiceDiscoveryResponse
     : AapMessage(Channel.ID_CTR, Control.ControlMsgType.MESSAGE_SERVICE_DISCOVERY_RESPONSE_VALUE, makeProto()) {
 
     companion object {
-        // Video geometry is PROFILE-DRIVEN: the active bike profile (chosen from the QR modelId
-        // before AA starts, refined by CLIENT_INFO) supplies the AA resolution/orientation + dpi.
-        // CFDL16 → landscape 800x480 @160; CFDL26 (1000 MT-X) → portrait 720x1280 @240. These read
-        // the live holder so AaReceiver's decoder fallback dims track the selected profile too.
+        // Video geometry comes from the fixed 800NK Advanced profile and optional display tuning.
         val AA_WIDTH: Int get() = BikeProfileHolder.aaVideo.width
         val AA_HEIGHT: Int get() = BikeProfileHolder.aaVideo.height
 
         private fun protoResolution(r: AaResolution):
             Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType = when (r) {
-            AaResolution.LANDSCAPE_800x480 ->
-                Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._800x480
-            AaResolution.LANDSCAPE_1280x720 ->
-                Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._1280x720
             AaResolution.PORTRAIT_720x1280 ->
                 Control.Service.MediaSinkService.VideoConfiguration.VideoCodecResolutionType._720x1280
             AaResolution.PORTRAIT_1080x1920 ->

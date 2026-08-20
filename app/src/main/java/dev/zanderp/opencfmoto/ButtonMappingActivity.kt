@@ -42,8 +42,6 @@ class ButtonMappingActivity : AppCompatActivity() {
         buildGestureRows()
         buildPlaceRows()
 
-        findViewById<MaterialButton>(R.id.btn_cluster_preset).setOnClickListener { pickClusterPreset() }
-        findViewById<MaterialButton>(R.id.btn_cluster_clear).setOnClickListener { confirmClearPreset() }
         findViewById<TextView>(R.id.tv_bt_status).setOnClickListener {
             BluetoothHelper.openBluetoothSettings(this)
         }
@@ -160,11 +158,6 @@ class ButtonMappingActivity : AppCompatActivity() {
             if (navMapped && !NavLauncher.canLaunchFromBackground(this)) View.VISIBLE else View.GONE
 
         findViewById<MaterialButton>(R.id.btn_reset).isEnabled = !ButtonMap.isAllDefault(this)
-        val active = ButtonClusterPreset.active(this)
-        findViewById<TextView>(R.id.tv_cluster_active).text =
-            if (active != null) "Active: ${active.title}"
-            else "No preset — shipped defaults / your custom map"
-        findViewById<MaterialButton>(R.id.btn_cluster_clear).isEnabled = active != null
         findViewById<TextView>(R.id.tv_bt_status).text = BluetoothHelper.status(this).shortLine()
         findViewById<TextView>(R.id.tv_presence).text =
             "Handlebar sources: ${ButtonPresencePrefs.summarize(this)}"
@@ -199,59 +192,13 @@ class ButtonMappingActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun pickClusterPreset() {
-        val presets = ButtonClusterPreset.entries
-        val labels = presets.map { it.title }.toTypedArray()
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Left switch cluster")
-            .setItems(labels) { _, which ->
-                val preset = presets[which]
-                MaterialAlertDialogBuilder(this)
-                    .setTitle(preset.title)
-                    .setMessage(preset.summary + "\n\nReplace the current mapping for this bike? Saved places are kept.")
-                    .setPositiveButton("Apply") { _, _ ->
-                        preset.apply(this)
-                        LogBus.log("→ button mapping preset: ${preset.title}")
-                        refresh()
-                        // Cluster only picks the bar map + turns handlebar→AA on. Touch stays as-is
-                        // (800MT etc. keep touch + bars together — never force Disable touchscreen).
-                        Toast.makeText(
-                            this,
-                            "Applied: ${preset.title} (handlebar → AA on)",
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    private fun confirmClearPreset() {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Clear cluster preset?")
-            .setMessage(
-                "Removes the active cluster tag and restores shipped gesture defaults. " +
-                    "Saved places stay. Some bikes work fine with no preset — just tweak rows below if needed."
-            )
-            .setPositiveButton("Clear") { _, _ ->
-                ButtonClusterPreset.clear(this)
-                LogBus.log("→ button mapping preset cleared")
-                refresh()
-                Toast.makeText(this, "Preset cleared", Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
     private fun confirmReset() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Reset to defaults?")
             .setMessage(
                 "Every gesture goes back to the shipped defaults: ◀/▶ = knob, " +
                     "★ = Select, ★ hold = Home, ◀◀/▶▶ = D-pad ←→, ★★ = Back.\n\n" +
-                    "Does not change which cluster preset is active. Use Clear preset to drop the tag."
+                    "Saved destinations are not changed."
             )
             .setPositiveButton("Reset") { _, _ ->
                 ButtonMap.resetAll(this)

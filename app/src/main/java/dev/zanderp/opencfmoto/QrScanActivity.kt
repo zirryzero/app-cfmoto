@@ -56,13 +56,6 @@ class QrScanActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_qr_photo).setOnClickListener {
             photoPicker.launch("image/*")
         }
-        findViewById<Button>(R.id.btn_manual_wifi).setOnClickListener {
-            ManualWifiPairing.show(this) { raw, _ ->
-                if (!handled.compareAndSet(false, true)) return@show
-                setResult(RESULT_OK, Intent().putExtra(RESULT_QR, raw))
-                finish()
-            }
-        }
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED
         ) {

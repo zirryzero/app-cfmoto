@@ -55,6 +55,15 @@ class AaInput(
             KEY_SCROLL_WHEEL, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_ENTER, KEY_BACK, KEY_HOME,
             KEY_ASSISTANT,
         )
+
+        /** AAP input reports use the monotonic clock in nanoseconds. */
+        internal fun timestampNanosFromElapsedMillis(elapsedMillis: Long): Long =
+            elapsedMillis * 1_000_000L
+
+        /** Android Auto opens the voice assistant with SEARCH release then press. */
+        internal fun keyTransitions(keycode: Int): BooleanArray =
+            if (keycode == KEY_ASSISTANT) booleanArrayOf(false, true)
+            else booleanArrayOf(true, false)
     }
 
     /** Insertion-ordered set of down pointers → last known AA-space position. */
@@ -68,8 +77,7 @@ class AaInput(
      */
     fun sendKey(keycode: Int) {
         try {
-            sendKeyReport(keycode, down = true)
-            sendKeyReport(keycode, down = false)
+            keyTransitions(keycode).forEach { down -> sendKeyReport(keycode, down) }
             log("[AA] sendKey keycode=$keycode")
         } catch (e: Exception) {
             log("[AA] sendKey failed: $e")
@@ -91,7 +99,7 @@ class AaInput(
                 )
                 .build()
             val report = Input.InputReport.newBuilder()
-                .setTimestamp(SystemClock.elapsedRealtimeNanos() / 1000)
+                .setTimestamp(SystemClock.elapsedRealtimeNanos())
                 .setRelativeEvent(rel)
                 .build()
             transport.send(AapMessage(Channel.ID_INP, Input.MsgType.EVENT_VALUE, report))
@@ -109,7 +117,7 @@ class AaInput(
             )
             .build()
         val report = Input.InputReport.newBuilder()
-            .setTimestamp(SystemClock.elapsedRealtimeNanos() / 1000)
+            .setTimestamp(SystemClock.elapsedRealtimeNanos())
             .setKeyEvent(keyEvent)
             .build()
         transport.send(AapMessage(Channel.ID_INP, Input.MsgType.EVENT_VALUE, report))
@@ -160,8 +168,7 @@ class AaInput(
             }
             touch.setActionIndex(actionIndex).setAction(pointerAction)
             val report = Input.InputReport.newBuilder()
-                // AAP input timestamps are a monotonic microsecond clock.
-                .setTimestamp(SystemClock.elapsedRealtimeNanos() / 1000)
+                .setTimestamp(SystemClock.elapsedRealtimeNanos())
                 .setTouchEvent(touch.build())
                 .build()
             transport.send(AapMessage(Channel.ID_INP, Input.MsgType.EVENT_VALUE, report))

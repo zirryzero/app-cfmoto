@@ -253,15 +253,15 @@
                         app:iconSize="18dp" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_devices"
+                        android:id="@+id/btn_pair_bike"
                         style="@style/Widget.OpenCfMoto.Button.Text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:maxLines="1"
                         android:ellipsize="end"
-                        android:text="@string/garage_garage"
-                        app:icon="@drawable/ic_devices"
+                        android:text="@string/main_pair_800nk"
+                        app:icon="@drawable/ic_qr"
                         app:iconTint="@color/text_secondary"
                         app:iconGravity="textStart"
                         app:iconPadding="6dp"

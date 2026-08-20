@@ -40,12 +40,8 @@ enum class ButtonAction(val id: String, val label: String) {
 }
 
 /**
- * The **semantic** gestures a CFMoto handlebar can produce, regardless of which physical buttons a
- * given bike uses. Different dashes send navigation on different buttons, but they all collapse to a
- * "previous / next / select" trio, so we map by meaning and let [MediaButtonBridge] route whatever
- * the bike sends into the matching gesture. Physical clusters still differ in whether hold / ×2
- * events exist — riders pick a [ButtonClusterPreset] (BACK/SET vs MODE/ENT vs 5-way Explore) when
- * the shipped defaults don't match their pod:
+ * Semantic gestures used by the 800NK Advanced controls. [MediaButtonBridge] maps received events
+ * to a "previous / next / select" trio:
  *   • **Backward / Forward** — every cluster collapses to these two directions: ◀ or ▲ = backward,
  *     ▶ or ▼ = forward (5-way track keys vs volume-style pods).
  *   • **Backward/Forward ×2** — double-tap on that axis → D-pad ← / →.
@@ -94,7 +90,7 @@ object ButtonMap {
         BikeScope.putString(prefs(context), context, gesture.id, action.id)
     }
 
-    /** Reset the **selected bike's** mapping to defaults (other bikes keep theirs). */
+    /** Reset the 800NK Advanced mapping to defaults. */
     fun resetAll(context: Context) {
         ensureDefaultsMigrated(context)
         val p = prefs(context)

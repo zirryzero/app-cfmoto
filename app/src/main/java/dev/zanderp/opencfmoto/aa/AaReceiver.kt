@@ -229,6 +229,8 @@ class AaReceiver(
                     loggedTouchMap = true
                 }
                 input.sendTouch(action, pointerId, mapped.first, mapped.second)
+            } else if (action != AaInput.ACTION_MOVE) {
+                log("[AA] touch action=$action p$pointerId bike=($cx,$cy) dropped outside AA viewport")
             }
         }
 
