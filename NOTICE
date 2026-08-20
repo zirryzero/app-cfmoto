@@ -1,39 +1,54 @@
-800NK ADV Link - derivative work notice
-=======================================
+800NK ADV Link - derivative work and attribution notice
+=======================================================
+
+Release covered by this notice: 2.0.19-pre (74)
+Source: https://github.com/zirryzero/app-cfmoto
 
 800NK ADV Link is a model-specific adaptation of OpenCfMoto for the CFMOTO
 800NK Advanced. It was not created from scratch by the maintainer of this
-adaptation. The original implementation and authorship belong to Alexandru
-and the OpenCfMoto contributors identified below. This derivative preserves
-their copyright, project lineage, incorporated-code notices, and AGPL terms.
+adaptation. The original implementation and authorship belong to Alexandru and
+the OpenCfMoto contributors identified below. This derivative preserves their
+copyright notices, project lineage, incorporated-code notices, and GNU Affero
+General Public License terms.
 
 800NK ADV Link adaptation maintained by ZirryZero:
 https://github.com/zirryzero
 
+Adaptation-specific changes include the 800NK Advanced-only product identity,
+pairing scope and interface, display and touch defaults, Android Auto input and
+microphone compatibility work, localization, documentation, and related tests.
+Copyright in each original or subsequent contribution remains with its
+respective contributor.
+
 OpenCfMoto - original project
 =============================
+
+Upstream: https://github.com/zanderp/open-cfmoto
 
 Copyright (C) 2026 Alexandru <https://alexandru.rocks> and the OpenCfMoto contributors.
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU Affero General Public License as published by the Free
 Software Foundation, either version 3 of the License, or (at your option) any
-later version. See the LICENSE file for the full text.
+later version. See the LICENSE file for the complete license text.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
 --------------------------------------------------------------------------------
-Why AGPL-3.0
+Why AGPL-3.0-or-later applies
 --------------------------------------------------------------------------------
 
-OpenCfMoto's Android Auto receiver is derived from AGPLv3-licensed code (see
-"Incorporated code" below). Under the terms of that license, the combined work
-must be distributed under the AGPL-3.0. Anyone who redistributes OpenCfMoto (or
-runs a modified version as a network-accessible service) must make the complete
-corresponding source available under the same license and preserve the
-copyright and attribution notices in this file.
+OpenCfMoto's Android Auto receiver is derived from AGPLv3-licensed code, as
+described under "Incorporated code" below. The combined 800NK ADV Link work is
+therefore distributed under AGPL-3.0-or-later. Anyone who redistributes this
+application, or runs a modified version as a network-accessible service, must
+comply with the AGPL, provide the complete corresponding source when required,
+and preserve the applicable copyright, license, and attribution notices.
+
+Copyright ownership in a new contribution does not grant permission to
+relicense the combined AGPL work under incompatible terms.
 
 --------------------------------------------------------------------------------
 Copyright holders
@@ -41,72 +56,293 @@ Copyright holders
 
 Copyright is held by the respective authors of each contribution:
 
-  * OpenCfMoto original code (UI, connection orchestration, bike Wi-Fi handling,
-    reconnect/park/resume supervisor, trip computer & logging, compositor glue,
-    documentation): Copyright (C) 2026 Alexandru <https://alexandru.rocks> and
-    the OpenCfMoto contributors.
+  * OpenCfMoto original code, including its interface, connection
+    orchestration, motorcycle Wi-Fi handling, reconnect and recovery logic,
+    trip computer, map and GPX features, compositor integration, diagnostics,
+    and documentation: Copyright (C) 2026 Alexandru
+    <https://alexandru.rocks> and the OpenCfMoto contributors.
 
-  * Android Auto Projection receiver (the `dev.zanderp.opencfmoto.aa` package):
-    portions Copyright (C) their original authors, ported from headunit-revived
-    (see below). These files retain their original AGPLv3 attribution headers.
+  * Android Auto projection receiver in `dev.zanderp.opencfmoto.aa`: portions
+    Copyright (C) their original authors, ported and adapted from
+    headunit-revived. The relevant files retain their original attribution or
+    adaptation headers.
 
-Holding copyright on your own contributions does not grant OpenCfMoto the right
-to relicense the incorporated AGPLv3 code under any other terms.
+  * 800NK ADV Link adaptation changes: copyright remains with ZirryZero and any
+    other respective contributors to those changes, where applicable.
 
 --------------------------------------------------------------------------------
-Incorporated code (bundled in this repository)
+Incorporated code bundled in this repository
 --------------------------------------------------------------------------------
 
-headunit-revived — AGPL-3.0
-  The `dev.zanderp.opencfmoto.aa` package (AAP transport, SSL handshake, message
-  handling, video decoder, protobuf message definitions, and related helpers) is
-  ported and adapted from the headunit-revived project.
-  Original work Copyright (C) the headunit lineage authors — including the
-  original "headunit" (mikereidis), "headunit-reloaded", and "headunit-revived"
-  (andreknieriem) — and their respective contributors. Licensed under AGPL-3.0.
+headunit-revived - AGPL-3.0
+  The `dev.zanderp.opencfmoto.aa` package includes AAP transport, SSL handshake,
+  message handling, input, microphone, video decoder, Protocol Buffer message
+  definitions, and related components ported or adapted from
+  headunit-revived.
+
+  Original work Copyright (C) the headunit lineage authors, including the
+  original "headunit" (mikereidis), "headunit-reloaded",
+  "headunit-revived" (andreknieriem), and their respective contributors.
+
   Upstream: https://github.com/andreknieriem/headunit-revived
 
 --------------------------------------------------------------------------------
-Project lineage (prior open-cfmoto forks studied / built upon)
+OpenCfMoto project lineage and credited research
 --------------------------------------------------------------------------------
 
-OpenCfMoto builds on research and code from the following open-cfmoto forks. At
-the time of writing these repositories did not ship an explicit LICENSE file;
-this project treats the shared AGPLv3 heritage of the Android Auto code as
-governing and credits the prior authors here:
+OpenCfMoto and this adaptation build on code, protocol research, testing, or
+implementation approaches from the following community work. At the time the
+original NOTICE was written, some referenced repositories did not include an
+explicit LICENSE file. This notice preserves credit without asserting ownership
+over contributions made by others:
 
-  * coletz / dcoletto  — dcoletto/open-cfmoto  (base app, QR/EasyConn work)
-  * richardbizik        — richardbizik/open-cfmoto  (CFDL26 protocol research)
-  * BojanJ              — BojanJ/open-cfmoto  (Android Auto receiver integration)
-  * ionutradu252        — ionutradu252/open-cfmoto  (handlebar-button control,
-                          on-screen D-pad/knob, navigate-to, Assistant mic)
+  * coletz / dcoletto - dcoletto/open-cfmoto
+    Original application, QR pairing, and EasyConn work.
 
---------------------------------------------------------------------------------
-Third-party dependencies (fetched at build time, not vendored)
---------------------------------------------------------------------------------
+  * richardbizik - richardbizik/open-cfmoto
+    CFDL26 protocol research.
 
-  * AndroidX libraries (core-ktx, appcompat, activity-ktx, constraintlayout,
-    camera-x, test) ....................................... Apache License 2.0
-  * Material Components for Android ....................... Apache License 2.0
-  * osmdroid (trip history map) ......................... Apache License 2.0
-  * MapLibre Native Android (Map / GPX dash) ............ BSD-2-Clause
-  * jmDNS (mDNS/NSD) ..................................... Apache License 2.0
-  * Conscrypt (TLS provider) ............................. Apache License 2.0
-  * Google ML Kit — Barcode Scanning .................... Google APIs Terms of Service
-  * Protocol Buffers (protobuf-java) .................... BSD-3-Clause
-  * JUnit / Espresso (tests only) ....................... EPL-1.0 / Apache 2.0
+  * BojanJ - BojanJ/open-cfmoto
+    Android Auto receiver integration.
 
-OpenStreetMap data used for Map / GPX (and via OpenFreeMap / OSRM / Overpass /
-Nominatim / Valhalla when online) is © OpenStreetMap contributors, available under the
-Open Database License (ODbL). OpenFreeMap styles/tiles: see openfreemap.org terms.
-Valhalla routing (avoid highways/tolls fallback): public instance at
-valhalla1.openstreetmap.de — please be polite with request volume.
+  * ionutradu252 - ionutradu252/open-cfmoto and open-cflink
+    Handlebar controls, on-screen controls, margins, reconnection, navigation,
+    log handling, and Assistant microphone work.
+
+  * eugen0309
+    Motorcycle network and connection research.
+
+  * Martin Escudero
+    Current Android Auto head-unit-server startup path research.
+
+Community testers and contributors who provided logs, compatibility findings,
+and fixes retain credit for their respective work.
 
 --------------------------------------------------------------------------------
-Trademarks
+Third-party dependencies fetched at build time
 --------------------------------------------------------------------------------
 
-CFMOTO, MotoPlay, EasyConn, Carbit, Android, Android Auto, Google, and Google
-Maps are trademarks of their respective owners. OpenCfMoto is an independent,
-unofficial project and is not affiliated with, endorsed by, or sponsored by any
-of them. These names are used only to describe interoperability.
+These dependencies are not relicensed by 800NK ADV Link. Their own license
+texts and terms apply:
+
+  * AndroidX libraries, including Core, AppCompat, Activity,
+    ConstraintLayout, CameraX, and AndroidX Test ........ Apache License 2.0
+  * Material Components for Android .................... Apache License 2.0
+  * osmdroid ............................................ Apache License 2.0
+  * MapLibre Native Android ............................. BSD-2-Clause
+  * jmDNS ............................................... Apache License 2.0
+  * Conscrypt ........................................... Apache License 2.0
+  * OkHttp .............................................. Apache License 2.0
+  * Protocol Buffers (`protobuf-java`) .................. BSD-3-Clause
+  * Google ML Kit Barcode Scanning ...................... Google APIs Terms
+  * JUnit and Espresso, used only for tests ............. EPL-1.0 / Apache 2.0
+
+Dependency versions are declared in `gradle/libs.versions.toml` and
+`app/build.gradle.kts`.
+
+--------------------------------------------------------------------------------
+Map data and online services
+--------------------------------------------------------------------------------
+
+OpenStreetMap data used by the trip map and Map/GPX functionality is Copyright
+OpenStreetMap contributors and is available under the Open Database License
+(ODbL). Required attribution must be preserved when map data is displayed or
+redistributed.
+
+Depending on the selected feature, map styles, tiles, search, road data, and
+routing can be obtained from OpenFreeMap, OpenStreetMap MAPNIK, Photon by
+Komoot, Nominatim, Overpass API, the OSRM demonstration server,
+openrouteservice, and the public Valhalla instance at
+`valhalla1.openstreetmap.de`. These hosted services have their own usage
+policies, attribution requirements, and availability limits. Their inclusion
+here does not imply endorsement or affiliation.
+
+--------------------------------------------------------------------------------
+Trademarks and non-affiliation
+--------------------------------------------------------------------------------
+
+CFMOTO, MotoPlay, EasyConn, Carbit, Android, Android Auto, Google, Google Maps,
+Gemini, and the names of other products or services are trademarks of their
+respective owners. 800NK ADV Link and OpenCfMoto are independent, unofficial
+projects and are not affiliated with, endorsed by, sponsored by, or certified
+by those owners. Names are used only to describe interoperability and the
+origin of incorporated work.
+
+================================================================================
+
+800NK ADV Link - aviso de obra derivada y atribuciones
+======================================================
+
+Esta traduccion al espanol se proporciona con fines informativos. Si existe una
+discrepancia, prevalecen el aviso en ingles, los avisos conservados en el codigo
+y el texto completo de LICENSE.
+
+Version cubierta por este aviso: 2.0.19-pre (74)
+Codigo fuente: https://github.com/zirryzero/app-cfmoto
+
+800NK ADV Link es una adaptacion de OpenCfMoto especifica para la CFMOTO 800NK
+Advanced. No fue creada desde cero por el responsable de esta adaptacion. La
+implementacion y autoria originales pertenecen a Alexandru y a los
+colaboradores de OpenCfMoto identificados a continuacion. Esta obra derivada
+conserva sus avisos de copyright, el linaje del proyecto, los avisos del codigo
+incorporado y las condiciones de la GNU Affero General Public License.
+
+Adaptacion 800NK ADV Link mantenida por ZirryZero:
+https://github.com/zirryzero
+
+Los cambios especificos de la adaptacion incluyen la identidad de producto
+exclusiva para la 800NK Advanced, el alcance e interfaz de emparejamiento, los
+valores de pantalla y tactil, la compatibilidad de entrada y microfono de
+Android Auto, la localizacion, la documentacion y las pruebas relacionadas. El
+copyright de cada contribucion original o posterior permanece con su respectivo
+autor.
+
+OpenCfMoto - proyecto original
+==============================
+
+Proyecto original: https://github.com/zanderp/open-cfmoto
+
+Copyright (C) 2026 Alexandru <https://alexandru.rocks> y los colaboradores de OpenCfMoto.
+
+Este programa es software libre: puede redistribuirlo o modificarlo bajo los
+terminos de la GNU Affero General Public License publicada por la Free Software
+Foundation, ya sea la version 3 de la licencia o, a su eleccion, cualquier
+version posterior. Consulte LICENSE para leer el texto legal completo.
+
+El programa se distribuye con la esperanza de que resulte util, pero SIN
+GARANTIA ALGUNA, incluso sin la garantia implicita de COMERCIABILIDAD o IDONEIDAD
+PARA UN FIN PARTICULAR. Consulte la GNU Affero General Public License para
+obtener mas detalles.
+
+--------------------------------------------------------------------------------
+Por que se aplica AGPL-3.0-or-later
+--------------------------------------------------------------------------------
+
+El receptor de Android Auto de OpenCfMoto deriva de codigo bajo AGPLv3, como se
+describe en "Codigo incorporado". Por ello, la obra combinada 800NK ADV Link se
+distribuye bajo AGPL-3.0-or-later. Quien redistribuya esta aplicacion o ejecute
+una version modificada como servicio accesible por red debe cumplir la AGPL,
+proporcionar el codigo fuente correspondiente completo cuando sea obligatorio y
+conservar los avisos de copyright, licencia y atribucion aplicables.
+
+Ser titular del copyright de una contribucion nueva no concede permiso para
+cambiar la licencia de la obra AGPL combinada a terminos incompatibles.
+
+--------------------------------------------------------------------------------
+Titulares de copyright
+--------------------------------------------------------------------------------
+
+El copyright pertenece a los autores respectivos de cada contribucion:
+
+  * Codigo original de OpenCfMoto, incluida su interfaz, orquestacion de
+    conexion, gestion del Wi-Fi de la motocicleta, reconexion y recuperacion,
+    computador de viajes, mapas y GPX, integracion del compositor, diagnostico
+    y documentacion: Copyright (C) 2026 Alexandru
+    <https://alexandru.rocks> y los colaboradores de OpenCfMoto.
+
+  * Receptor de proyeccion Android Auto en `dev.zanderp.opencfmoto.aa`: partes
+    Copyright (C) de sus autores originales, portadas y adaptadas desde
+    headunit-revived. Los archivos relevantes conservan sus encabezados de
+    atribucion o adaptacion.
+
+  * Cambios de la adaptacion 800NK ADV Link: el copyright permanece con
+    ZirryZero y los demas colaboradores respectivos de esos cambios, cuando
+    corresponda.
+
+--------------------------------------------------------------------------------
+Codigo incorporado en este repositorio
+--------------------------------------------------------------------------------
+
+headunit-revived - AGPL-3.0
+  El paquete `dev.zanderp.opencfmoto.aa` incluye transporte AAP, negociacion
+  SSL, gestion de mensajes, entrada, microfono, decodificador de video,
+  definiciones de mensajes Protocol Buffers y componentes relacionados portados
+  o adaptados desde headunit-revived.
+
+  Trabajo original Copyright (C) de los autores del linaje headunit, incluidos
+  "headunit" (mikereidis), "headunit-reloaded", "headunit-revived"
+  (andreknieriem) y sus respectivos colaboradores.
+
+  Proyecto original: https://github.com/andreknieriem/headunit-revived
+
+--------------------------------------------------------------------------------
+Linaje de OpenCfMoto e investigacion acreditada
+--------------------------------------------------------------------------------
+
+OpenCfMoto y esta adaptacion se basan en codigo, investigacion de protocolos,
+pruebas o enfoques de implementacion procedentes del siguiente trabajo de la
+comunidad. Cuando se escribio el NOTICE original, algunos repositorios citados
+no incluian un archivo LICENSE explicito. Este aviso conserva el credito sin
+atribuirse la propiedad de las contribuciones de terceros:
+
+  * coletz / dcoletto - dcoletto/open-cfmoto
+    Aplicacion original, emparejamiento QR y trabajo de EasyConn.
+
+  * richardbizik - richardbizik/open-cfmoto
+    Investigacion del protocolo CFDL26.
+
+  * BojanJ - BojanJ/open-cfmoto
+    Integracion del receptor Android Auto.
+
+  * ionutradu252 - ionutradu252/open-cfmoto y open-cflink
+    Controles del manillar, controles en pantalla, margenes, reconexion,
+    navegacion, gestion de registros y microfono del Asistente.
+
+  * eugen0309
+    Investigacion de red y conexion de la motocicleta.
+
+  * Martin Escudero
+    Investigacion de la via actual para iniciar el servidor de unidad principal
+    de Android Auto.
+
+Quienes aportaron pruebas, registros, hallazgos de compatibilidad y correcciones
+conservan el credito de sus respectivos trabajos.
+
+--------------------------------------------------------------------------------
+Dependencias de terceros obtenidas durante la compilacion
+--------------------------------------------------------------------------------
+
+800NK ADV Link no cambia la licencia de estas dependencias. Se aplican sus
+propios textos de licencia y condiciones:
+
+  * Bibliotecas AndroidX, incluidas Core, AppCompat, Activity,
+    ConstraintLayout, CameraX y AndroidX Test ........... Apache License 2.0
+  * Material Components for Android .................... Apache License 2.0
+  * osmdroid ............................................ Apache License 2.0
+  * MapLibre Native Android ............................. BSD-2-Clause
+  * jmDNS ............................................... Apache License 2.0
+  * Conscrypt ........................................... Apache License 2.0
+  * OkHttp .............................................. Apache License 2.0
+  * Protocol Buffers (`protobuf-java`) .................. BSD-3-Clause
+  * Google ML Kit Barcode Scanning ...................... Terminos de Google APIs
+  * JUnit y Espresso, usados solo en pruebas ............ EPL-1.0 / Apache 2.0
+
+Las versiones se declaran en `gradle/libs.versions.toml` y
+`app/build.gradle.kts`.
+
+--------------------------------------------------------------------------------
+Datos cartograficos y servicios en linea
+--------------------------------------------------------------------------------
+
+Los datos de OpenStreetMap utilizados por el mapa de viajes y las funciones
+Map/GPX son Copyright de los colaboradores de OpenStreetMap y estan disponibles
+bajo la Open Database License (ODbL). La atribucion obligatoria debe conservarse
+al mostrar o redistribuir los datos cartograficos.
+
+Segun la funcion elegida, los estilos, teselas, busquedas, datos viales y rutas
+pueden proceder de OpenFreeMap, OpenStreetMap MAPNIK, Photon de Komoot,
+Nominatim, Overpass API, el servidor de demostracion OSRM, openrouteservice y la
+instancia publica de Valhalla en `valhalla1.openstreetmap.de`. Estos servicios
+alojados tienen sus propias politicas de uso, requisitos de atribucion y limites
+de disponibilidad. Su mencion no implica respaldo ni afiliacion.
+
+--------------------------------------------------------------------------------
+Marcas y ausencia de afiliacion
+--------------------------------------------------------------------------------
+
+CFMOTO, MotoPlay, EasyConn, Carbit, Android, Android Auto, Google, Google Maps,
+Gemini y los nombres de otros productos o servicios son marcas de sus
+respectivos titulares. 800NK ADV Link y OpenCfMoto son proyectos independientes
+y no oficiales, sin afiliacion, respaldo, patrocinio ni certificacion de esos
+titulares. Los nombres se utilizan solo para describir la interoperabilidad y
+el origen del trabajo incorporado.
