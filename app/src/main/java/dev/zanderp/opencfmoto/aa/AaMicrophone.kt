@@ -40,14 +40,45 @@ class AaMicrophone(
 ) {
     companion object {
         const val SAMPLE_RATE = 16000
-        /** ~20 ms of audio per message — small enough for snappy voice, big enough to avoid spam. */
+        /** ~20 ms of audio per message. */
         private const val CHUNK_SAMPLES = SAMPLE_RATE / 50
+
+        /** The bike's HFP endpoint opens its call UI but does not provide a rider microphone. */
+        internal fun isBikeHandsFreeRoute(productName: CharSequence?): Boolean =
+            productName?.toString()?.contains("CFMOTO", ignoreCase = true) == true
+
+        /** Build `[header][timestamp ms, BE][PCM16, LE]`, the AAP microphone media layout. */
+        internal fun buildMicData(samples: ShortArray, count: Int, timestampMs: Long): AapMessage {
+            require(count in 0..samples.size)
+            val total = AapMessage.HEADER_SIZE + Long.SIZE_BYTES + count * 2
+            val data = ByteArray(total)
+            data[0] = Channel.ID_MIC.toByte()
+            data[1] = 0x0b
+            val bb = ByteBuffer.wrap(data, AapMessage.HEADER_SIZE, total - AapMessage.HEADER_SIZE)
+                .order(ByteOrder.BIG_ENDIAN)
+            bb.putLong(timestampMs)
+            bb.order(ByteOrder.LITTLE_ENDIAN)
+            for (i in 0 until count) bb.putShort(samples[i])
+            return AapMessage(Channel.ID_MIC, 0x0b, -1, 2, total, data)
+        }
+
+        internal fun signalPeak(samples: ShortArray, count: Int): Int {
+            var peak = 0
+            for (i in 0 until count.coerceAtMost(samples.size)) {
+                val level = if (samples[i] == Short.MIN_VALUE) 32768
+                    else kotlin.math.abs(samples[i].toInt())
+                if (level > peak) peak = level
+            }
+            return peak
+        }
     }
 
     @Volatile private var recording = false
     private var recorder: AudioRecord? = null
     private var thread: Thread? = null
     @Volatile private var sessionId = 0
+    private var audioManager: AudioManager? = null
+    private var previousAudioMode = AudioManager.MODE_NORMAL
 
     fun hasPermission(): Boolean =
         context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
@@ -83,12 +114,12 @@ class AaMicrophone(
             log("[MIC] failed to update service foreground type: $e")
         }
         try {
-            preferBluetoothMic()
+            val audioSource = configureAudioRoute()
             val minBuf = AudioRecord.getMinBufferSize(
                 SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT
             ).coerceAtLeast(CHUNK_SAMPLES * 2 * 4)
             val r = AudioRecord(
-                MediaRecorder.AudioSource.VOICE_RECOGNITION,
+                audioSource,
                 SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, minBuf
             )
             if (r.state != AudioRecord.STATE_INITIALIZED) {

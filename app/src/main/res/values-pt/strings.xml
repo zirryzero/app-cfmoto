@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Draft + terminology pass — improve via PR: docs/TRANSLATIONS.md -->
 <resources>
+    <string name="setup_app_section">Aplicação</string>
+    <string name="setup_language">Idioma da aplicação</string>
+    <string name="setup_language_change">Alterar idioma</string>
+    <string name="setup_language_system">Predefinição do sistema</string>
     <string name="about_copyright">© 2026 Alexandru</string>
     <string name="about_copyright_body">Mantido por Alexandru (zanderp). Software gratuito sob GNU AGPL v3 ou posterior — consulte LICENÇA e AVISO no repositório para obter o texto completo de direitos autorais e atribuição.</string>
     <string name="about_license_body">Você pode usar, estudar, compartilhar e modificar este aplicativo sob a AGPL. Se você redistribuir uma versão modificada (inclusive como um serviço de rede), deverá oferecer a fonte correspondente completa sob a mesma licença.</string>

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">800NK ADV Link</string>
+    <string name="setup_app_section">App</string>
+    <string name="setup_language">App language</string>
+    <string name="setup_language_change">Change language</string>
+    <string name="setup_language_system">System default</string>
     <string name="main_pair_800nk">Pair 800NK</string>
     <string name="qr_800nk_hint">Point the camera at the MotoPlay QR shown by your 800NK Advanced. You can also choose a QR screenshot from your gallery.</string>
     <string name="controls_800nk_touch_hint">The 800NK Advanced display is touch enabled. Handlebar mapping remains available for media and supported button events.</string>

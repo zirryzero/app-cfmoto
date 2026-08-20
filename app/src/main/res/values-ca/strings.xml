@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="setup_app_section">Aplicació</string>
+    <string name="setup_language">Idioma de l\'aplicació</string>
+    <string name="setup_language_change">Canvia l\'idioma</string>
+    <string name="setup_language_system">Predeterminat del sistema</string>
     <string name="app_name">800NK ADV Link</string>
     <string name="about_copyright">© 2026 Alexandru</string>
     <string name="about_copyright_body">Mantingut per Alexandru (zanderp). Programari gratuït sota GNU AGPL v3 o posterior: consulteu LICÈNCIA i AVÍS al repositori per obtenir el text complet de drets d\'autor i atribució.</string>

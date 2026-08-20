@@ -8,8 +8,8 @@ import org.junit.Test
 class AaInputTest {
 
     @Test
-    fun inputTimestampUsesNanoseconds() {
-        assertEquals(12_345_000_000L, AaInput.timestampNanosFromElapsedMillis(12_345L))
+    fun inputTimestampUsesMicroseconds() {
+        assertEquals(12_345_678L, AaInput.timestampMicrosFromElapsedNanos(12_345_678_999L))
     }
 
     @Test
@@ -18,7 +18,7 @@ class AaInputTest {
     }
 
     @Test
-    fun assistantUsesAndroidAutoVoiceSequence() {
-        assertArrayEquals(booleanArrayOf(false, true), AaInput.keyTransitions(AaInput.KEY_ASSISTANT))
+    fun assistantUsesCompletePressThenRelease() {
+        assertArrayEquals(booleanArrayOf(true, false), AaInput.keyTransitions(AaInput.KEY_ASSISTANT))
     }
 }

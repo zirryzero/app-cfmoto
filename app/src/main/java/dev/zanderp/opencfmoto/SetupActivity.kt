@@ -19,6 +19,7 @@ import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
 
 /**
@@ -34,6 +35,7 @@ class SetupActivity : AppCompatActivity() {
     private lateinit var step1Btn: MaterialButton
     private lateinit var step2Title: TextView
     private lateinit var step2Btn: MaterialButton
+    private lateinit var languageDesc: TextView
     private lateinit var qualityDesc: TextView
     private lateinit var fitDesc: TextView
     private lateinit var powerDesc: TextView
@@ -67,6 +69,7 @@ class SetupActivity : AppCompatActivity() {
         step1Btn = findViewById(R.id.step1_btn)
         step2Title = findViewById(R.id.step2_title)
         step2Btn = findViewById(R.id.step2_btn)
+        languageDesc = findViewById(R.id.language_desc)
         qualityDesc = findViewById(R.id.quality_desc)
         fitDesc = findViewById(R.id.fit_desc)
         powerDesc = findViewById(R.id.power_desc)
@@ -82,6 +85,7 @@ class SetupActivity : AppCompatActivity() {
         step2Btn.setOnClickListener { requestMissingPermissions() }
         findViewById<MaterialButton>(R.id.step2_settings_btn).setOnClickListener { openAppSettings() }
         findViewById<MaterialButton>(R.id.step3_btn).setOnClickListener { openAndroidAutoSettings() }
+        findViewById<MaterialButton>(R.id.language_btn).setOnClickListener { showLanguageDialog() }
 
         findViewById<MaterialButton>(R.id.quality_smooth).setOnClickListener { setQuality(VideoQuality.SMOOTH) }
         findViewById<MaterialButton>(R.id.quality_balanced).setOnClickListener { setQuality(VideoQuality.BALANCED) }
@@ -196,6 +200,23 @@ class SetupActivity : AppCompatActivity() {
         VideoPrefs.set(this, q)
         refreshOptions()
         toast(getString(R.string.setup_toast_video_quality, getString(q.labelRes)))
+    }
+
+    private fun showLanguageDialog() {
+        val options = AppLanguage.options(this)
+        val currentTag = AppLanguage.selectedTag()
+        var selected = options.indexOfFirst { it.tag.equals(currentTag, ignoreCase = true) }
+            .coerceAtLeast(0)
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.setup_language)
+            .setSingleChoiceItems(options.map { it.nativeName }.toTypedArray(), selected) { _, which ->
+                selected = which
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                AppLanguage.select(options[selected].tag)
+            }
+            .show()
     }
 
     private fun setFit(f: ScreenFit) {
@@ -314,6 +335,7 @@ class SetupActivity : AppCompatActivity() {
         val dbl = ButtonTimingPrefs.doubleTap(this)
         val holdsOn = ButtonTimingPrefs.holdsEnabled(this)
         val hold = ButtonTimingPrefs.longPress(this)
+        languageDesc.text = AppLanguage.selectedLabel(this)
         qualityDesc.text = getString(quality.labelRes)
         fitDesc.text = getString(fit.labelRes)
         powerDesc.text = getString(power.labelRes)

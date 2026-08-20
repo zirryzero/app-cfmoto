@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="setup_app_section">앱</string>
+    <string name="setup_language">앱 언어</string>
+    <string name="setup_language_change">언어 변경</string>
+    <string name="setup_language_system">시스템 기본값</string>
     <string name="app_name">800NK ADV Link</string>
     <string name="about_copyright">© 2026 Alexandru</string>
     <string name="about_copyright_body">Maintained by Alexandru (zanderp). Free software under the GNU AGPL v3 or later — see LICENSE and NOTICE in the repository for the full copyright and attribution text.</string>

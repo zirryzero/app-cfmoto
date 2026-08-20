@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Romanian — human-reviewed. Improve via PR: docs/TRANSLATIONS.md -->
 <resources>
+    <string name="setup_app_section">Aplicație</string>
+    <string name="setup_language">Limba aplicației</string>
+    <string name="setup_language_change">Schimbă limba</string>
+    <string name="setup_language_system">Limba implicită a sistemului</string>
     <string name="about_copyright">© 2026 Alexandru</string>
     <string name="about_copyright_body">Întreținut de Alexandru (zanderp). Software liber sub GNU AGPL v3 sau ulterior — vezi LICENSE și NOTICE din repository pentru textul complet de copyright și atribuire.</string>
     <string name="about_license_body">Poți folosi, studia, partaja și modifica această aplicație sub AGPL. Dacă redistribui o versiune modificată (inclusiv ca serviciu pe rețea), trebuie să oferi sursa completă corespunzătoare sub aceeași licență.</string>

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Draft + terminology pass — improve via PR: docs/TRANSLATIONS.md -->
 <resources>
+    <string name="setup_app_section">Aplikace</string>
+    <string name="setup_language">Jazyk aplikace</string>
+    <string name="setup_language_change">Změnit jazyk</string>
+    <string name="setup_language_system">Výchozí nastavení systému</string>
     <string name="about_copyright">© 2026 Alexandru</string>
     <string name="about_copyright_body">Spravuje Alexandru (zanderp). Volný software pod GNU AGPL v3 nebo novějším — viz LICENSE a NOTICE v úložišti, kde najdete úplný text autorských práv a uvedení zdroje.</string>
     <string name="about_license_body">Tuto aplikaci můžete používat, studovat, sdílet a upravovat pod AGPL. Pokud redistribuujete upravenou verzi (včetně síťové služby), musíte nabídnout úplný odpovídající zdroj pod stejnou licencí.</string>
