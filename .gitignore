@@ -61,3 +61,9 @@ docs/**/*discord-ops*
 agent-tools/
 **/mcp.json
 
+# Android signing keys & credentials
+*.jks
+*.keystore
+keystore.properties
+
+

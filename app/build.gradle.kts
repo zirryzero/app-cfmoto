@@ -1,6 +1,10 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.android.application)
 }
+
+import java.io.FileInputStream
+import java.util.Properties
+
 
 android {
     namespace = "dev.zanderp.opencfmoto"
@@ -19,8 +23,8 @@ android {
         applicationId = "dev.zanderp.opencfmoto"
         minSdk = 29
         targetSdk = 36
-        versionCode = 81
-        versionName = "2.1.0-pre"
+        versionCode = 82
+        versionName = "2.1.1-pre"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -57,11 +61,34 @@ android {
         }
     }
 
+    val keystorePropsFile = rootProject.file("keystore.properties")
+    val keystoreProps = Properties()
+    val hasKeystore = keystorePropsFile.exists()
+    var resolvedStoreFile: java.io.File? = null
+    if (hasKeystore) {
+        FileInputStream(keystorePropsFile).use { keystoreProps.load(it) }
+        val storeFilePath = keystoreProps.getProperty("storeFile").orEmpty()
+        val candidateInRoot = rootProject.file(storeFilePath)
+        resolvedStoreFile = if (candidateInRoot.exists()) candidateInRoot else file(storeFilePath)
+    }
+
+    signingConfigs {
+        if (hasKeystore && resolvedStoreFile?.exists() == true) {
+            create("release") {
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+                storeFile = resolvedStoreFile
+                storePassword = keystoreProps.getProperty("storePassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = slimApk
             isShrinkResources = slimApk
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
     }
     compileOptions {

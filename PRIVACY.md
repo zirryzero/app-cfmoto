@@ -1,7 +1,7 @@
 # 800NK ADV Link - Privacy and permissions
 
-_App version: 2.0.23-pre (78)_
-_Last updated: 2026-08-19_
+_App version: 2.1.1-pre (82)_
+_Last updated: 2026-10-06_
 
 800NK ADV Link is an unofficial, local-first Android application adapted
 exclusively for the CFMOTO 800NK Advanced. It does not require its own account,
@@ -208,8 +208,8 @@ owners.
 
 # 800NK ADV Link - Privacidad y permisos
 
-_Version de la aplicacion: 2.0.23-pre (78)_
-_Ultima actualizacion: 2026-08-19_
+_Version de la aplicacion: 2.1.1-pre (82)_
+_Ultima actualizacion: 2026-10-06_
 
 800NK ADV Link es una aplicacion Android local-first y no oficial, adaptada
 exclusivamente para la CFMOTO 800NK Advanced. No requiere una cuenta propia, no
