@@ -14,9 +14,13 @@
     <string name="about_questions_logs_or_a_new_bike_join_discord_tips_k">Întrebări, loguri sau o moto nouă? Intră pe Discord. Donațiile țin proiectul în viață.</string>
     <string name="about_discord">Discord</string>
     <string name="about_donate">Donează</string>
+    <string name="about_support_adaptation">Susține 800NK ADV Link</string>
+    <string name="about_support_original_creator">Susține creatorul original</string>
+    <string name="about_contact_email">Contact: powerdevelopco@gmail.com</string>
     <string name="about_copyright_2">Copyright</string>
     <string name="about_website_alexandru_rocks">Site — alexandru.rocks</string>
-    <string name="about_source_on_github">Sursă pe GitHub</string>
+    <string name="about_source_on_github">Vezi codul original</string>
+    <string name="about_adaptation_source">Vezi codul adaptării</string>
     <string name="about_license">Licență</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">GNU Affero General Public License v3 sau ulterior</string>
     <string name="about_view_license_notice">Vezi LICENSE &amp; NOTICE</string>
@@ -375,4 +379,9 @@
     <string name="setup_anonymous_telemetry_on">Pornit — ping-uri &amp; crash-uri anonime</string>
     <string name="setup_anonymous_telemetry_off">Oprit — nu se încarcă nimic</string>
     <string name="setup_anonymous_id">Id anonim: %1$s</string>
+    <string name="setup_aa_dpi">Dimensiunea textului Android Auto</string>
+    <string name="setup_aa_dpi_auto">Automat (recomandat)</string>
+    <string name="setup_aa_dpi_auto_desc">Folosește dimensiunea optimizată pentru 800NK Advanced. Valorile mai mari măresc textul, comenzile Maps și elementele Android Auto.</string>
+    <string name="setup_aa_dpi_value">Dimensiunea textului Android Auto: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Android Auto s-a conectat, apoi s-a deconectat înainte de pornirea videoclipului. Apasă din nou Conectare și lasă deschisă notificarea de conectare Android Auto.</string>
 </resources>

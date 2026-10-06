@@ -36,6 +36,8 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
+    private enum class ProjectionMode { MIRROR, APP }
+
     private lateinit var logView: TextView
     private lateinit var logScroll: ScrollView
     private lateinit var logPanel: View
@@ -51,6 +53,9 @@ class MainActivity : AppCompatActivity() {
     private val ts = SimpleDateFormat("HH:mm:ss.SSS", Locale.US)
     /** True when the pending QR scan should kick off the Android Auto flow (vs the mirror path). */
     private var pendingAaStart = false
+    private var pendingProjectionMode = ProjectionMode.MIRROR
+    private var pendingAppPackage: String? = null
+    private var pendingAppLabel: String? = null
     private var pendingAaMicPermission: QrData? = null
     /** Guards the "close the official CFMoto app" prompt so it shows once per error, not every redraw. */
     private var rivalPromptShown = false
@@ -104,17 +109,11 @@ class MainActivity : AppCompatActivity() {
             pendingAaStart = false
             startAaFlow(qr)
         } else {
-            // Mirror path (screen projection already armed): connect straight away.
+            // Mirror / app path (screen projection already armed): connect straight away.
             applyProfile(qr)
-            ConnectionState.set(Phase.MIRRORING, BikeMemory.lastBikeName(this) ?: qr.ssid)
+            ConnectionState.set(Phase.MIRRORING, mirrorStatusDetail(qr.ssid))
             joinWifi(qr, gateOnAaSteady = false)
-            // Same as startMirrorLink: single-app capture needs the shared app visible.
-            moveTaskToBack(true)
-            Toast.makeText(
-                this,
-                getString(R.string.main_mirror_leave_shared_app),
-                Toast.LENGTH_LONG,
-            ).show()
+            finishMirrorLaunch()
         }
     }
 
@@ -163,6 +162,7 @@ class MainActivity : AppCompatActivity() {
             if (::prober.isInitialized && BikeLink.prober !== prober) prober.stop()
         } catch (_: Exception) {}
         if (clearMirror) {
+            AppModeController.deactivate()
             ProjectionHolder.projection?.let { try { it.stop() } catch (_: Exception) {} }
             ProjectionHolder.projection = null
             try { ProjectionService.stop(this) } catch (_: Exception) {}
@@ -257,7 +257,12 @@ class MainActivity : AppCompatActivity() {
                 if (AaVideoBridge.aaSessionLive || AaVideoBridge.aaDecoding) return@postDelayed
                 // Still no AA after retries — stop thrashing (bike SoftAP may already be up).
                 log("[AA] Android Auto never attached — stopping silent retry")
-                ConnectionState.set(Phase.ERROR, getString(R.string.conn_detail_aa_not_started))
+                val detail = if (AaVideoBridge.aaSessionSeen) {
+                    getString(R.string.conn_detail_aa_dropped)
+                } else {
+                    getString(R.string.conn_detail_aa_not_started)
+                }
+                ConnectionState.set(Phase.ERROR, detail)
             }, 18_000)
             // Kick off the Wi-Fi join right away, in parallel with AA boot.
             joinWifi(qr, gateOnAaSteady = true)
@@ -357,6 +362,47 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val appPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode != RESULT_OK || result.data == null) return@registerForActivityResult
+        val data = result.data!!
+        if (data.getBooleanExtra(AppLauncherActivity.EXTRA_MIRROR, false)) {
+            pendingProjectionMode = ProjectionMode.MIRROR
+            pendingAppPackage = null
+            pendingAppLabel = null
+            if (AppModeController.isActive && ProjectionHolder.projection != null &&
+                ConnectionState.phase == Phase.MIRRORING
+            ) {
+                AppModeController.deactivate()
+                log("[APPS] switched active capture to entire-screen mirror")
+                moveTaskToBack(true)
+                Toast.makeText(this, R.string.main_mirror_leave_shared_app, Toast.LENGTH_LONG).show()
+                return@registerForActivityResult
+            }
+            onMirrorPressed()
+            return@registerForActivityResult
+        }
+        val packageName = data.getStringExtra(AppLauncherActivity.EXTRA_PACKAGE) ?: return@registerForActivityResult
+        val label = data.getStringExtra(AppLauncherActivity.EXTRA_LABEL) ?: packageName
+        pendingProjectionMode = ProjectionMode.APP
+        pendingAppPackage = packageName
+        pendingAppLabel = label
+
+        // A running app-mode capture is always the full default display, so switching apps does not
+        // need another MediaProjection consent or a dashboard reconnect.
+        if (AppModeController.isActive && ProjectionHolder.projection != null &&
+            ConnectionState.phase == Phase.MIRRORING
+        ) {
+            AppModeController.select(packageName, label)
+            if (!AppModeController.launchSelected(this)) {
+                Toast.makeText(this, R.string.apps_launch_failed, Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            requestScreenProjection(ProjectionMode.APP)
+        }
+    }
+
     private val projectionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -379,20 +425,40 @@ class MainActivity : AppCompatActivity() {
                         val mpm = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
                         ProjectionHolder.projection = mpm.getMediaProjection(code, data)
                         GpxSession.clear()
-                        log("screen-capture armed (FGS up after ${tries * 100}ms) — pick Entire screen or a single app (Android 14+)")
-                        androidx.appcompat.app.AlertDialog.Builder(this@MainActivity)
-                            .setTitle(R.string.main_mirror_ready_title)
-                            .setMessage(
-                                "Entire screen — best for riding; phone stays awake while mirroring. " +
-                                    "Uses Setup ▸ Screen fit (Fit = whole UI + bars).\n\n" +
-                                    "Single app — that app must stay on screen; Android sends no frames " +
-                                    "in the background. Prefer GPX / Tracks or Android Auto for pocket use.\n\n" +
-                                    "Bike touch does not drive mirrored apps. Continue connects and " +
-                                    "sends OpenCfMoto to the background.",
-                            )
-                            .setPositiveButton("Continue") { _, _ -> startMirrorLink() }
-                            .setCancelable(false)
-                            .show()
+                        if (pendingProjectionMode == ProjectionMode.APP) {
+                            val packageName = pendingAppPackage
+                            val label = pendingAppLabel
+                            if (packageName == null || label == null) {
+                                log("[APPS] projection armed without an app selection")
+                                ProjectionHolder.projection?.stop()
+                                ProjectionHolder.projection = null
+                                ProjectionService.stop(this@MainActivity)
+                                return
+                            }
+                            AppModeController.activate(this@MainActivity, packageName, label)
+                            log("[APPS] full-screen capture armed after ${tries * 100}ms")
+                            if (!AppModeController.isAccessibilityEnabled(this@MainActivity)) {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    R.string.apps_projection_touch_missing,
+                                    Toast.LENGTH_LONG,
+                                ).show()
+                            }
+                            startMirrorLink()
+                        } else {
+                            log("screen-capture armed (FGS up after ${tries * 100}ms) — pick Entire screen or a single app (Android 14+)")
+                            androidx.appcompat.app.AlertDialog.Builder(this@MainActivity)
+                                .setTitle(R.string.main_mirror_ready_title)
+                                .setMessage(
+                                    "Entire screen — best for mirroring; phone stays awake while sharing. " +
+                                        "Uses Setup ▸ Screen fit (Fit = whole UI + bars).\n\n" +
+                                        "Single app — that app must stay visible or Android stops sending frames.\n\n" +
+                                        "For dashboard touch and app switching, use the Apps option instead.",
+                                )
+                                .setPositiveButton("Continue") { _, _ -> startMirrorLink() }
+                                .setCancelable(false)
+                                .show()
+                        }
                     } catch (e: Exception) {
                         log("getMediaProjection failed: $e")
                         ProjectionService.stop(this@MainActivity)
@@ -448,7 +514,7 @@ class MainActivity : AppCompatActivity() {
         (findViewById<View>(R.id.btn_hud_view) as? MaterialButton)?.asIconTopTile(R.drawable.ic_cast)
         (findViewById<View>(R.id.btn_controls) as? MaterialButton)?.asIconTopTile(R.drawable.ic_devices)
         (findViewById<View>(R.id.btn_aa_start) as? MaterialButton)?.asIconTopTile(R.drawable.ic_qr)
-        (findViewById<View>(R.id.btn_mirror_start) as? MaterialButton)?.asIconTopTile(R.drawable.ic_cast)
+        (findViewById<View>(R.id.btn_mirror_start) as? MaterialButton)?.asIconTopTile(R.drawable.ic_apps)
         (findViewById<View>(R.id.btn_aa_stop) as? MaterialButton)?.setIconResource(R.drawable.ic_stop)
         // Footer 2×2 — icon + label (same pattern as Dash view / Controls).
         fun MaterialButton.asFooterLink(iconRes: Int) {
@@ -543,7 +609,9 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_aa_start).setOnClickListener { startAaScan() }
 
-        findViewById<Button>(R.id.btn_mirror_start).setOnClickListener { onMirrorPressed() }
+        findViewById<Button>(R.id.btn_mirror_start).setOnClickListener {
+            appPickerLauncher.launch(AppLauncherActivity.createIntent(this))
+        }
         findViewById<Button>(R.id.btn_aa_stop).setOnClickListener { stopEverything() }
 
         toggleLogBtn.setOnClickListener {
@@ -720,8 +788,9 @@ class MainActivity : AppCompatActivity() {
         // launching Google Android Auto can destroy/recreate MainActivity mid-hand-off, and tearing
         // the bike down here is exactly what left the dash on a black screen (the pending
         // onSteadyVideo hand-off was cancelled before it could fire). Only tear down when AA is NOT
-        // running — i.e. the mirror path or a genuine exit. Full teardown is the "Stop" button.
-        if (!AndroidAutoService.isRunning) {
+        // running. App mode also survives while its selected app is in the foreground; the
+        // MediaProjection foreground service keeps the process alive until the user taps Stop.
+        if (!AndroidAutoService.isRunning && !AppModeController.isActive) {
             AaVideoBridge.onSteadyVideo = null
             prober.stop()
             bleWakeUp?.stop()
@@ -1004,6 +1073,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun stopEverything() {
         log("→ stopping everything (Android Auto + bike)")
+        AppModeController.deactivate()
         try { AaVideoBridge.onSteadyVideo = null } catch (_: Exception) {}
         try { AndroidAutoService.stop(this) } catch (e: Exception) { log("AA stop: $e") }
         try { if (::prober.isInitialized) prober.stop() } catch (e: Exception) { log("prober stop: $e") }
@@ -1038,23 +1108,42 @@ class MainActivity : AppCompatActivity() {
             return
         }
         log("→ Mirror: cast phone screen to dash")
+        requestScreenProjection(ProjectionMode.MIRROR)
+    }
+
+    private fun requestScreenProjection(mode: ProjectionMode) {
+        // Android permits one MediaProjection session at a time. Retire an existing mirror before
+        // asking for a new token so its delayed onStop callback cannot tear down the replacement.
+        if (ProjectionHolder.projection != null) {
+            tearDownForModeSwitch(clearMap = true, clearMirror = true)
+        }
+        pendingProjectionMode = mode
         pendingAaStart = false
         ensureLocationPermission()
         try {
             val mpm = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
             val intent = if (Build.VERSION.SDK_INT >= 34) {
-                mpm.createScreenCaptureIntent(MediaProjectionConfig.createConfigForUserChoice())
+                val config = if (mode == ProjectionMode.APP) {
+                    // Full-display capture keeps the app pixels and injected touch coordinates in
+                    // the same coordinate space. Single-app capture can crop system insets.
+                    MediaProjectionConfig.createConfigForDefaultDisplay()
+                } else {
+                    MediaProjectionConfig.createConfigForUserChoice()
+                }
+                mpm.createScreenCaptureIntent(config)
             } else {
-                Toast.makeText(
-                    this,
-                    "Single-app mirror needs Android 14+. Whole screen will be used.",
-                    Toast.LENGTH_LONG,
-                ).show()
+                if (mode == ProjectionMode.MIRROR) {
+                    Toast.makeText(
+                        this,
+                        "Single-app mirror needs Android 14+. Whole screen will be used.",
+                        Toast.LENGTH_LONG,
+                    ).show()
+                }
                 mpm.createScreenCaptureIntent()
             }
             projectionLauncher.launch(intent)
         } catch (e: Exception) {
-            log("mirror start failed ($e)")
+            log("screen projection start failed ($e)")
         }
     }
 
@@ -1161,7 +1250,7 @@ class MainActivity : AppCompatActivity() {
             .setTitle(R.string.main_report_a_problem)
             .setMessage(R.string.main_report_problem_message)
             .setView(box)
-            .setPositiveButton(R.string.main_share) { _, _ ->
+            .setPositiveButton(R.string.main_open_email) { _, _ ->
                 shareProblemReport(
                     problem.text.toString(),
                     year.text.toString(),
@@ -1173,7 +1262,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun shareProblemReport(problem: String, year: String) {
         try {
-            val model = "CFMOTO 800NK Advanced"
+            val model = "800NK Advanced"
             val diagnostics = buildString {
                 appendLine(
                     "app=${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) " +
@@ -1185,25 +1274,19 @@ class MainActivity : AppCompatActivity() {
                 appendLine("ssid=${BikeMemory.lastQr(this@MainActivity)?.ssid ?: "—"}")
                 appendLine("phase=${ConnectionState.phase} ${ConnectionState.detail}")
             }
-            val text = ProblemReport.file(
-                problem = problem.ifBlank { "(not specified)" },
-                model = model,
-                year = year,
-                diagnostics = diagnostics,
-                log = LogBus.snapshot(),
-            )
-            val dir = File(cacheDir, "logs").apply { mkdirs() }
-            val file = File(dir, "800nk-adv-link-report.txt")
-            file.writeText(text)
-            val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
-            val send = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, ProblemReport.subject(model, BuildConfig.VERSION_NAME))
-                putExtra(Intent.EXTRA_TEXT, ProblemReport.body(problem, model, year, diagnostics))
-                putExtra(Intent.EXTRA_STREAM, uri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            startActivity(Intent.createChooser(send, getString(R.string.main_share_problem_report)))
+            val emailUri = Uri.Builder()
+                .scheme("mailto")
+                .opaquePart(SUPPORT_EMAIL)
+                .appendQueryParameter(
+                    "subject",
+                    ProblemReport.subject(model, BuildConfig.VERSION_NAME),
+                )
+                .appendQueryParameter(
+                    "body",
+                    ProblemReport.body(problem, model, year, diagnostics, LogBus.snapshot()),
+                )
+                .build()
+            startActivity(Intent(Intent.ACTION_SENDTO, emailUri))
         } catch (e: Exception) {
             Toast.makeText(this, getString(R.string.main_share_report_failed, e.toString()), Toast.LENGTH_LONG).show()
         }
@@ -1215,24 +1298,46 @@ class MainActivity : AppCompatActivity() {
     private fun startMirrorLink() {
         val saved = BikeMemory.lastQr(this)
         if (saved != null) {
-            log("→ Mirror: reusing saved bike '${BikeMemory.lastBikeName(this)}'")
+            val source = if (AppModeController.isActive) "Apps" else "Mirror"
+            log("→ $source: reusing saved bike '${BikeMemory.lastBikeName(this)}'")
             // Drop AA / Map / old PXC; keep the MediaProjection token we just armed.
             tearDownForModeSwitch(clearMap = true, clearMirror = false)
             applyProfile(saved)
-            ConnectionState.set(Phase.MIRRORING, BikeMemory.lastBikeName(this) ?: saved.ssid)
+            ConnectionState.set(Phase.MIRRORING, mirrorStatusDetail(saved.ssid))
             joinWifi(saved, gateOnAaSteady = false)
-            // Single-app MediaProjection only emits while the shared app is visible. Leaving this
-            // Activity on top → capture visible=false → black dash / framesSent=0.
-            moveTaskToBack(true)
-            Toast.makeText(
-                this,
-                getString(R.string.main_mirror_leave_shared_app),
-                Toast.LENGTH_LONG,
-            ).show()
+            finishMirrorLaunch()
         } else {
             log("→ Mirror: scan the dash QR…")
             scanLauncher.launch(Intent(this, QrScanActivity::class.java))
         }
+    }
+
+    private fun mirrorStatusDetail(fallbackBike: String): String {
+        val bike = BikeMemory.lastBikeName(this) ?: fallbackBike
+        val app = AppModeController.appLabel
+        return if (AppModeController.isActive && !app.isNullOrBlank()) "$bike · $app" else bike
+    }
+
+    private fun finishMirrorLaunch() {
+        if (AppModeController.isActive) {
+            val label = AppModeController.appLabel.orEmpty()
+            Toast.makeText(this, getString(R.string.apps_projection_started, label), Toast.LENGTH_LONG).show()
+            logView.postDelayed({
+                if (!AppModeController.launchSelected(applicationContext)) {
+                    Toast.makeText(this, R.string.apps_launch_failed, Toast.LENGTH_SHORT).show()
+                    moveTaskToBack(true)
+                }
+            }, 250)
+            return
+        }
+        // Single-app MediaProjection only emits while the shared app is visible. Leaving this
+        // Activity on top makes capture visible=false and the bike receives no frames.
+        moveTaskToBack(true)
+        Toast.makeText(
+            this,
+            getString(R.string.main_mirror_leave_shared_app),
+            Toast.LENGTH_LONG,
+        ).show()
     }
 
     /**
@@ -1278,6 +1383,7 @@ class MainActivity : AppCompatActivity() {
         const val EXTRA_START_GPX = "start_gpx"
         /** When set with [EXTRA_START_GPX], join the bike even if not already live. */
         const val EXTRA_GPX_TO_BIKE = "gpx_to_bike"
+        private const val SUPPORT_EMAIL = "powerdevelopco@gmail.com"
         private const val REQ_BT_FOR_AA = 4
         /** Latched once an auto-connect attempt actually starts, so it fires only once per process. */
         @Volatile private var autoConnectStarted = false

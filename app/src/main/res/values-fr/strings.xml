@@ -14,9 +14,13 @@
     <string name="about_questions_logs_or_a_new_bike_join_discord_tips_k">Des questions, des journaux ou une nouvelle moto ? Rejoignez Discord. Les conseils font avancer le projet.</string>
     <string name="about_discord">Discord</string>
     <string name="about_donate">Faire un don</string>
+    <string name="about_support_adaptation">Soutenir 800NK ADV Link</string>
+    <string name="about_support_original_creator">Soutenir le créateur original</string>
+    <string name="about_contact_email">Contact : powerdevelopco@gmail.com</string>
     <string name="about_copyright_2">Droit d\'auteur</string>
     <string name="about_website_alexandru_rocks">Site Web — alexandru.rocks</string>
-    <string name="about_source_on_github">Source sur GitHub</string>
+    <string name="about_source_on_github">Voir le code original</string>
+    <string name="about_adaptation_source">Voir le code de l\'adaptation</string>
     <string name="about_license">Licence</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">Licence publique générale GNU Affero v3 ou version ultérieure</string>
     <string name="about_view_license_notice">Voir LICENCE ET AVIS</string>
@@ -374,4 +378,9 @@
     <string name="setup_anonymous_telemetry_on">Activé — pings &amp; crash anonymes</string>
     <string name="setup_anonymous_telemetry_off">Désactivé — rien n’est envoyé</string>
     <string name="setup_anonymous_id">Id anonyme : %1$s</string>
+    <string name="setup_aa_dpi">Taille du texte Android Auto</string>
+    <string name="setup_aa_dpi_auto">Automatique (recommandé)</string>
+    <string name="setup_aa_dpi_auto_desc">Utilise la taille optimisée pour la 800NK Advanced. Les valeurs supérieures agrandissent le texte, les commandes de Maps et les éléments Android Auto.</string>
+    <string name="setup_aa_dpi_value">Taille du texte Android Auto : %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Android Auto s’est connecté puis déconnecté avant le démarrage de la vidéo. Appuyez de nouveau sur Connecter et laissez la notification de connexion Android Auto ouverte.</string>
 </resources>

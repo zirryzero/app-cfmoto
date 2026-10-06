@@ -33,6 +33,7 @@ object BikeLink {
     @Volatile private var bikeNetwork: Network? = null
     @Volatile private var networkReady = false
     @Volatile private var proberStarted = false
+    @Volatile private var aaDropRetried = false
 
     /** Reset the gate at the start of a fresh Android Auto connection attempt. */
     @Synchronized
@@ -42,6 +43,18 @@ object BikeLink {
         bikeNetwork = null
         networkReady = false
         proberStarted = false
+        aaDropRetried = false
+        AaVideoBridge.aaSessionSeen = false
+        // Keep the bike network requested, but leave loopback available while AA starts.
+        appContext?.let { BikeWifi.unbindProcess(context = it) }
+    }
+
+    /** Allow one self-mode retry if AA attached but dropped before video became steady. */
+    @Synchronized
+    fun takeAaDropRetry(): Boolean {
+        if (aaDropRetried || aaVideoSteady) return false
+        aaDropRetried = true
+        return true
     }
 
     @Synchronized
@@ -62,6 +75,11 @@ object BikeLink {
         if (proberStarted || !aaVideoSteady || !networkReady) return
         val p = prober ?: return
         proberStarted = true
+        appContext?.let { ctx ->
+            if (BikeWifi.rebindProcessToBike(ctx)) {
+                LogBus.log("process bound to 800NK Wi-Fi after AA video became live")
+            }
+        }
         LogBus.log("→ AA video + bike Wi-Fi both ready — starting EasyConn PXC flow …")
         ConnectionState.set(Phase.PXC_CONNECTING)
         appContext?.let { DashClockBle.start(it) }

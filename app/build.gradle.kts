@@ -10,15 +10,17 @@ android {
         }
     }
 
-    // Slim is the default ship shape: arm64-only + R8. Opt out with -PslimApk=false (fat debug/CI).
+    // Slim is the default ship shape: one ABI + R8. Opt out with -PslimApk=false (fat debug/CI).
+    // Use -Pabi=armeabi-v7a to build for phones whose Android installation is still 32-bit.
     val slimApk = (project.findProperty("slimApk") as String?)?.equals("false", ignoreCase = true) != true
+    val abiFilter = (project.findProperty("abi") as String?)?.trim().orEmpty()
 
     defaultConfig {
         applicationId = "dev.zanderp.opencfmoto"
         minSdk = 29
         targetSdk = 36
-        versionCode = 74
-        versionName = "2.0.19-pre"
+        versionCode = 81
+        versionName = "2.1.0-pre"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -48,9 +50,9 @@ android {
         }.orElse("unknown")
         buildConfigField("String", "GIT_HASH", "\"${gitHash.get()}\"")
 
-        if (slimApk) {
+        if (slimApk || abiFilter.isNotEmpty()) {
             ndk {
-                abiFilters += listOf("arm64-v8a")
+                abiFilters += listOf(abiFilter.ifEmpty { "arm64-v8a" })
             }
         }
     }

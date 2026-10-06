@@ -135,7 +135,7 @@ class CustomResolutionActivity : AppCompatActivity() {
     }
 
     private fun <T> highlight(selected: T, vararg pairs: Pair<Int, T>) {
-        val onColor = ContextCompat.getColor(this, R.color.brand_orange)
+        val onColor = ContextCompat.getColor(this, R.color.brand_cyan)
         val onText = ContextCompat.getColor(this, R.color.on_brand)
         val offColor = ContextCompat.getColor(this, R.color.surface_high)
         val offText = ContextCompat.getColor(this, R.color.text_primary)

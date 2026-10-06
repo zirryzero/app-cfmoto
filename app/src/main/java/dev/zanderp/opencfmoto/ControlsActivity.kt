@@ -243,7 +243,7 @@ class ControlsActivity : AppCompatActivity() {
 
     /** Paint the selected segment in brand color; the rest stay neutral tonal. */
     private fun highlightTheme(selected: MapTheme) {
-        val onColor = ContextCompat.getColor(this, R.color.brand_orange)
+        val onColor = ContextCompat.getColor(this, R.color.brand_cyan)
         val onText = ContextCompat.getColor(this, R.color.on_brand)
         val offColor = ContextCompat.getColor(this, R.color.surface_high)
         val offText = ContextCompat.getColor(this, R.color.text_primary)

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- A dark "cockpit" theme with a CFMoto-orange accent. Dark is intentional: this runs on a
+    <!-- A dark cockpit theme using the icon's cyan with orange as a secondary accent. Dark is intentional: this runs on a
          bike in daylight/handlebar context and mirrors a commercial head-unit look. -->
     <style name="Base.Theme.OpenCfMoto" parent="Theme.Material3.Dark.NoActionBar">
-        <item name="colorPrimary">@color/brand_orange</item>
+        <item name="colorPrimary">@color/brand_cyan</item>
         <item name="colorOnPrimary">@color/on_brand</item>
-        <item name="colorPrimaryContainer">@color/brand_orange_dark</item>
-        <item name="colorOnPrimaryContainer">@color/on_brand</item>
+        <item name="colorPrimaryContainer">@color/brand_cyan_dark</item>
+        <item name="colorOnPrimaryContainer">@color/on_brand_container</item>
+        <item name="colorSecondary">@color/brand_orange</item>
+        <item name="colorOnSecondary">@color/on_brand</item>
+        <item name="colorSecondaryContainer">@color/brand_orange_dark</item>
+        <item name="colorOnSecondaryContainer">@color/on_brand_container</item>
 
         <item name="android:colorBackground">@color/bg</item>
         <item name="colorSurface">@color/surface</item>

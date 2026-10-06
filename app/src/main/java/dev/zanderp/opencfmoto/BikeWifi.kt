@@ -131,8 +131,7 @@ object BikeWifi {
             this.onAvailableCb = onAvailable
             this.onLostCb = onLost
             this.logCb = log
-            rebindProcessToBike(context)
-            log("Wi-Fi already bound: $ssid — skipping re-join (mode switch)")
+            log("Wi-Fi already joined: $ssid — skipping re-join (mode switch)")
             onAvailable(net)
             return
         }
@@ -147,14 +146,14 @@ object BikeWifi {
         val cb = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 currentNetwork = network
-                cm.bindProcessToNetwork(network)
-                // Keep cellular requested so map/routing can pin off the bike AP (no uplink).
+                // Binding now removes the loopback route used by Android Auto. BikeLink binds the
+                // process to the 800NK network only after AA video is confirmed live.
                 AppHttp.ensureCellularUplink()
                 rejoinAttempts = 0
                 logLinkOnce(network)
                 if (!firstDelivered) {
                     firstDelivered = true
-                    logCb?.invoke("Wi-Fi joined: $ssid (network=$network, bound)")
+                    logCb?.invoke("Wi-Fi joined: $ssid (network=$network, bind deferred until AA video)")
                     onAvailableCb?.invoke(network)
                 } else {
                     logCb?.invoke("Wi-Fi re-acquired: $ssid — restarting bike link on fresh network")

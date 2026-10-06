@@ -1,0 +1,96 @@
+name: Publish v2.0.23-pre
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/release-v2.0.23-pre.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-v2.0.23-pre
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Test, build, and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install required Android SDK packages
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "platforms;android-36.1" "build-tools;36.1.0"
+
+      - name: Run unit tests and build APK
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon testDebugUnitTest assembleDebug
+
+      - name: Prepare release files
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk 800NK-ADV-Link-v2.0.23-pre.apk
+          sha256sum 800NK-ADV-Link-v2.0.23-pre.apk > 800NK-ADV-Link-v2.0.23-pre.apk.sha256
+
+      - name: Create GitHub prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_NOTES: |
+            ## 800NK ADV Link v2.0.23-pre
+
+            First public prerelease of the CFMOTO 800NK Advanced-specific adaptation.
+
+            ### Highlights
+            - 800NK Advanced-only pairing and dashboard profile.
+            - Optimized 1280x720 Android Auto mode for reliable Google Maps touch input.
+            - Working Android Auto voice channel for Gemini and Google Assistant.
+            - Touchscreen input enabled by default; motorcycle-button Android Auto control is opt-in.
+            - QR scanning, reconnect, dash view, controls, trips, GPX, diagnostics, and 14 languages.
+            - Cyan, orange, and graphite interface based on the application icon.
+            - Problem reports open an email addressed to powerdevelopco@gmail.com.
+            - In-app update search is temporarily hidden.
+
+            ### Español
+            Primera versión preliminar pública de la adaptación exclusiva para la CFMOTO 800NK Advanced.
+
+            Incluye el modo Android Auto 1280x720 optimizado para el tacto de Google Maps, soporte de voz para Gemini/Asistente, control táctil predeterminado, escaneo QR, reconexión, viajes, GPX, diagnósticos, 14 idiomas y la nueva identidad visual.
+
+            ### Installation
+            Download the APK below and install it manually on an Android 10 or newer phone. This prerelease is debug-signed for testing and is not a store build.
+
+            This project is derived from OpenCfMoto and distributed under GNU AGPL-3.0-or-later. See LICENSE and NOTICE.
+        run: |
+          if gh release view "v2.0.23-pre" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "v2.0.23-pre" \
+              800NK-ADV-Link-v2.0.23-pre.apk \
+              800NK-ADV-Link-v2.0.23-pre.apk.sha256 \
+              --clobber \
+              --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "v2.0.23-pre" \
+              800NK-ADV-Link-v2.0.23-pre.apk \
+              800NK-ADV-Link-v2.0.23-pre.apk.sha256 \
+              --target "$GITHUB_SHA" \
+              --title "800NK ADV Link v2.0.23-pre" \
+              --notes "$RELEASE_NOTES" \
+              --prerelease \
+              --repo "$GITHUB_REPOSITORY"
+          fi

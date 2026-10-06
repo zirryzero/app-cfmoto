@@ -610,6 +610,14 @@ class AndroidAutoService : Service() {
      */
     private fun onAaSessionEnded(userExit: Boolean) {
         if (!userExit) {
+            if (BikeLink.takeAaDropRetry()) {
+                LogBus.log("[AA] re-triggering self-mode after handshake drop")
+                try {
+                    dev.zanderp.opencfmoto.aa.AaSelfMode.trigger(this, log = LogBus::log)
+                } catch (e: Exception) {
+                    LogBus.log("[AA] drop re-trigger failed: $e")
+                }
+            }
             LogBus.log("[AA] session dropped — receiver still listening for reconnect")
             return
         }

@@ -14,9 +14,13 @@
     <string name="about_questions_logs_or_a_new_bike_join_discord_tips_k">Fragen, Protokolle oder ein neues Motorrad? Treten Sie Discord bei. Tipps halten das Projekt am Laufen.</string>
     <string name="about_discord">Zwietracht</string>
     <string name="about_donate">Spenden</string>
+    <string name="about_support_adaptation">800NK ADV Link unterstützen</string>
+    <string name="about_support_original_creator">Originalentwickler unterstützen</string>
+    <string name="about_contact_email">Kontakt: powerdevelopco@gmail.com</string>
     <string name="about_copyright_2">Copyright</string>
     <string name="about_website_alexandru_rocks">Website – alexandru.rocks</string>
-    <string name="about_source_on_github">Quelle auf GitHub</string>
+    <string name="about_source_on_github">Originalcode anzeigen</string>
+    <string name="about_adaptation_source">Code der Anpassung anzeigen</string>
     <string name="about_license">Lizenz</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">GNU Affero General Public License v3 oder höher</string>
     <string name="about_view_license_notice">LIZENZ &amp; HINWEIS anzeigen</string>
@@ -374,4 +378,9 @@
     <string name="setup_anonymous_telemetry_on">An — anonyme Pings &amp; Absturzberichte</string>
     <string name="setup_anonymous_telemetry_off">Aus — nichts wird hochgeladen</string>
     <string name="setup_anonymous_id">Anonyme ID: %1$s</string>
+    <string name="setup_aa_dpi">Android Auto-Textgröße</string>
+    <string name="setup_aa_dpi_auto">Automatisch (empfohlen)</string>
+    <string name="setup_aa_dpi_auto_desc">Verwendet die für die 800NK Advanced optimierte Größe. Höhere Werte vergrößern Text, Maps-Steuerelemente und Android Auto-Elemente.</string>
+    <string name="setup_aa_dpi_value">Android Auto-Textgröße: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Android Auto wurde verbunden und vor dem Videostart wieder getrennt. Tippe erneut auf Verbinden und lasse den Android Auto-Verbindungshinweis geöffnet.</string>
 </resources>

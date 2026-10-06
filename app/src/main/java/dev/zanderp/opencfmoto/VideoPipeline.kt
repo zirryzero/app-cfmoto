@@ -334,6 +334,7 @@ class VideoPipeline(
                 val fit = currentFit()
                 scaler.updateCaptureSize(srcW, srcH)
                 scaler.setOutput(encSurf, width, height, srcW, srcH, fit)
+                AppModeController.updateCaptureSize(srcW, srcH)
                 log("[MIRROR] $reason src=${srcW}x$srcH → canvas ${width}x$height fit=$fit")
             }
             applyMirrorOutput(initW, initH, "initial")
@@ -361,6 +362,7 @@ class VideoPipeline(
             val cb = object : android.media.projection.MediaProjection.Callback() {
                 override fun onStop() {
                     log("[MIRROR] MediaProjection stopped")
+                    AppModeController.deactivate()
                     ProjectionService.setKeepScreenOn(context, false)
                 }
 
@@ -610,9 +612,9 @@ class VideoPipeline(
     /** Compositor mode: the surface the AA decoder renders into (letterboxed before the encoder). */
     fun decoderInputSurface(): android.view.Surface? = aaCompositor?.inputSurface
 
-    /** Compositor mode: map a bike-canvas touch point to Android Auto source coords (letterbox-aware);
-     *  null if the point is in a black bar. See AaCompositor.mapCanvasToSource. */
-    fun mapBikeTouchToSource(cx: Int, cy: Int): Pair<Int, Int>? = aaCompositor?.mapCanvasToSource(cx, cy)
+    /** Map a bike-canvas touch to the active AA or mirrored-phone source, accounting for fit/bars. */
+    fun mapBikeTouchToSource(cx: Int, cy: Int): Pair<Int, Int>? =
+        aaCompositor?.mapCanvasToSource(cx, cy) ?: mirrorScaler?.mapCanvasToSource(cx, cy)
 
     /** Compositor mode: attach an in-app phone preview surface (HudViewActivity). No-op otherwise. */
     fun setPreviewSurface(surface: Surface, w: Int, h: Int) = aaCompositor?.setPreview(surface, w, h)

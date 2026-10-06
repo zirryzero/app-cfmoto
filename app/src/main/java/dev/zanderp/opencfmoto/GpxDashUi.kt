@@ -462,7 +462,7 @@ class GpxDashUi(
             adaptChromeLayout(navigating)
         }
         fun <T> highlight(selected: T, vararg pairs: Pair<Int, T>) {
-            val onColor = ContextCompat.getColor(context, R.color.brand_orange)
+            val onColor = ContextCompat.getColor(context, R.color.brand_cyan)
             val onText = ContextCompat.getColor(context, R.color.on_brand)
             val offColor = ContextCompat.getColor(context, R.color.surface_high)
             val offText = ContextCompat.getColor(context, R.color.text_primary)

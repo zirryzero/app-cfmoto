@@ -3,16 +3,19 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Brand: CFMoto-inspired sport orange on a dark "cockpit" surface. -->
-    <color name="brand_orange">#FF6A2C</color>
-    <color name="brand_orange_dark">#E85A1E</color>
-    <color name="on_brand">#FFFFFF</color>
+    <!-- Icon palette: electric cyan, signal orange, and a graphite cockpit surface. -->
+    <color name="brand_cyan">#00C4EE</color>
+    <color name="brand_cyan_dark">#006A80</color>
+    <color name="brand_orange">#FF6B00</color>
+    <color name="brand_orange_dark">#D95700</color>
+    <color name="on_brand">#071419</color>
+    <color name="on_brand_container">#F2FCFF</color>
 
     <!-- Dark surfaces -->
-    <color name="bg">#0E1116</color>
-    <color name="surface">#171B22</color>
-    <color name="surface_high">#1F242E</color>
-    <color name="outline">#2C333F</color>
+    <color name="bg">#0B1014</color>
+    <color name="surface">#141B20</color>
+    <color name="surface_high">#1C262D</color>
+    <color name="outline">#30414A</color>
 
     <!-- Text -->
     <color name="text_primary">#F2F5FA</color>

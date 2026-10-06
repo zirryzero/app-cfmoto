@@ -14,9 +14,13 @@
     <string name="about_questions_logs_or_a_new_bike_join_discord_tips_k">Dúvidas, registros ou uma moto nova? Junte-se ao Discord. Dicas mantêm o projeto em andamento.</string>
     <string name="about_discord">Discórdia</string>
     <string name="about_donate">Doar</string>
+    <string name="about_support_adaptation">Apoiar 800NK ADV Link</string>
+    <string name="about_support_original_creator">Apoiar o criador original</string>
+    <string name="about_contact_email">Contato: powerdevelopco@gmail.com</string>
     <string name="about_copyright_2">Direitos autorais</string>
     <string name="about_website_alexandru_rocks">Site - alexandru.rocks</string>
-    <string name="about_source_on_github">Fonte no GitHub</string>
+    <string name="about_source_on_github">Ver código original</string>
+    <string name="about_adaptation_source">Ver código da adaptação</string>
     <string name="about_license">Licença</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">Licença Pública Geral GNU Affero v3 ou posterior</string>
     <string name="about_view_license_notice">Ver LICENÇA E AVISO</string>
@@ -374,4 +378,9 @@
     <string name="setup_anonymous_telemetry_on">Ligado — pings e crashes anónimos</string>
     <string name="setup_anonymous_telemetry_off">Desligado — nada é enviado</string>
     <string name="setup_anonymous_id">Id anónimo: %1$s</string>
+    <string name="setup_aa_dpi">Tamanho do texto do Android Auto</string>
+    <string name="setup_aa_dpi_auto">Automático (recomendado)</string>
+    <string name="setup_aa_dpi_auto_desc">Usa o tamanho otimizado para a 800NK Advanced. Valores maiores aumentam o texto, os controlos do Maps e os elementos do Android Auto.</string>
+    <string name="setup_aa_dpi_value">Tamanho do texto do Android Auto: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">O Android Auto ligou-se e desligou-se antes do início do vídeo. Toque novamente em Ligar e mantenha aberto o aviso de ligação do Android Auto.</string>
 </resources>

@@ -87,6 +87,8 @@ object VideoPrefs {
     private const val KEY_FIT = "screen_fit"
     private const val KEY_POWER = "power_mode"
     private const val KEY_RESOLUTION = "resolution_mode"
+    /** 0 keeps the optimized 800NK Advanced profile DPI. */
+    private const val KEY_AA_DPI = "aa_dpi_override"
 
     // Match panel aspect (AA margins): Auto uses the encoder-aligned usable 800NK screen area.
     private const val KEY_MATCH_MODE = "match_aspect_mode"
@@ -137,6 +139,18 @@ object VideoPrefs {
 
     fun setResolution(ctx: Context, mode: ResolutionMode) {
         BikeScope.putString(prefs(ctx), ctx, KEY_RESOLUTION, mode.name)
+    }
+
+    /** Android Auto interface density, or null to use the optimized profile value. */
+    fun dpiOverride(ctx: Context): Int? {
+        val value = BikeScope.getInt(prefs(ctx), ctx, KEY_AA_DPI, 0)
+        return value.takeIf { it > 0 }
+    }
+
+    fun setDpiOverride(ctx: Context, dpi: Int?) {
+        val value = dpi?.takeIf { it > 0 } ?: 0
+        BikeScope.putInt(prefs(ctx), ctx, KEY_AA_DPI, value)
+        BikeProfileHolder.aaDpiOverride = value.takeIf { it > 0 }
     }
 
     fun matchAspectMode(ctx: Context): MatchAspectMode {

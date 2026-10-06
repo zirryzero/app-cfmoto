@@ -14,9 +14,13 @@
     <string name="about_questions_logs_or_a_new_bike_join_discord_tips_k">Questions, logs, or a new bike? Join Discord. Tips keep the project moving.</string>
     <string name="about_discord">Discord</string>
     <string name="about_donate">Donate</string>
+    <string name="about_support_adaptation">800NK ADV Link 후원</string>
+    <string name="about_support_original_creator">원작자 후원</string>
+    <string name="about_contact_email">연락처: powerdevelopco@gmail.com</string>
     <string name="about_copyright_2">Copyright</string>
     <string name="about_website_alexandru_rocks">Website — alexandru.rocks</string>
-    <string name="about_source_on_github">Source on GitHub</string>
+    <string name="about_source_on_github">원본 코드 보기</string>
+    <string name="about_adaptation_source">적응 코드 보기</string>
     <string name="about_license">License</string>
     <string name="about_gnu_affero_general_public_license_v3_or_later">GNU Affero General Public License v3 or later</string>
     <string name="about_view_license_notice">View LICENSE &amp; NOTICE</string>
@@ -399,4 +403,9 @@
     <string name="setup_anonymous_telemetry_on">On — anonymous pings &amp; crash reports</string>
     <string name="setup_anonymous_telemetry_off">Off — nothing uploaded</string>
     <string name="setup_anonymous_id">Anonymous id: %1$s</string>
+    <string name="setup_aa_dpi">Android Auto 텍스트 크기</string>
+    <string name="setup_aa_dpi_auto">자동(권장)</string>
+    <string name="setup_aa_dpi_auto_desc">800NK Advanced에 최적화된 크기를 사용합니다. 더 높은 값은 텍스트, Maps 컨트롤 및 Android Auto 요소를 크게 표시합니다.</string>
+    <string name="setup_aa_dpi_value">Android Auto 텍스트 크기: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Android Auto가 연결되었지만 비디오가 시작되기 전에 연결이 끊어졌습니다. 다시 연결을 누르고 Android Auto 연결 알림을 열어 두세요.</string>
 </resources>
