@@ -378,4 +378,9 @@
     <string name="setup_anonymous_telemetry_on">Activé — pings &amp; crash anonymes</string>
     <string name="setup_anonymous_telemetry_off">Désactivé — rien n’est envoyé</string>
     <string name="setup_anonymous_id">Id anonyme : %1$s</string>
+    <string name="setup_aa_dpi">Taille du texte Android Auto</string>
+    <string name="setup_aa_dpi_auto">Automatique (recommandé)</string>
+    <string name="setup_aa_dpi_auto_desc">Utilise la taille optimisée pour la 800NK Advanced. Les valeurs supérieures agrandissent le texte, les commandes de Maps et les éléments Android Auto.</string>
+    <string name="setup_aa_dpi_value">Taille du texte Android Auto : %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Android Auto s’est connecté puis déconnecté avant le démarrage de la vidéo. Appuyez de nouveau sur Connecter et laissez la notification de connexion Android Auto ouverte.</string>
 </resources>

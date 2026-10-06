@@ -65,7 +65,7 @@ See [docs/800NK-ADVANCED.md](docs/800NK-ADVANCED.md) for the technical dashboard
 | **Trips and GPX** | GPS trip computer, saved rides, route inspection, and GPX export. |
 | **Diagnostics** | Live logs with secrets redacted by default and email problem reports addressed to the adaptation maintainer. |
 | **Languages** | English, German, Italian, French, Spanish, Catalan, Portuguese, Polish, Czech, Romanian, Dutch, Hungarian, Turkish, and Korean. |
-| **Phone mirroring** | Optional phone-screen projection for cases where Android Auto is not suitable. |
+| **Apps mode** | Launches installed phone apps on the dashboard with full-screen projection, touch forwarding, and an optional navigation bar. Full-screen mirroring remains available. |
 
 ## Requirements
 
@@ -81,6 +81,8 @@ See [docs/800NK-ADVANCED.md](docs/800NK-ADVANCED.md) for the technical dashboard
 
 1. Download an APK from the
    [800NK ADV Link Releases page](https://github.com/zirryzero/app-cfmoto/releases).
+   Use the standard APK on most phones. If Android reports that it is incompatible on a 32-bit
+   phone, install the APK whose name ends in `armv7.apk`.
 2. Open the downloaded file and allow installation from that browser or file manager when Android
    requests it.
 3. Launch **800NK ADV Link** and grant only the permissions needed by the features you use.
@@ -94,7 +96,8 @@ See [docs/800NK-ADVANCED.md](docs/800NK-ADVANCED.md) for the technical dashboard
 | Bluetooth | Detect compatible controls and help Android Auto wireless startup. |
 | Microphone | Provide audio to Android Auto only while its voice channel requests it. |
 | Notifications | Keep projection running through a visible foreground-service notification. |
-| Screen capture | Required only when using phone-screen mirroring. |
+| Screen capture | Required only when using Apps mode or full-screen mirroring. Android always displays its confirmation dialog. |
+| Accessibility | Optional and required only to forward dashboard touches and navigation actions to phone apps. It does not read or store screen text. |
 | Display over other apps | Optional; used for seamless resume and background navigation/control actions. |
 
 Read [PRIVACY.md](PRIVACY.md) for the complete data and permission explanation.
@@ -149,6 +152,25 @@ through motorcycle buttons is disabled by default** so the controls retain their
 
 Enable button control only from the Controls/settings area when you explicitly want those events to
 navigate Android Auto. Button mappings and timing can be adjusted without changing the touch mode.
+
+## Apps and full-screen mirroring
+
+**Apps** on the main screen opens a launcher for applications installed on the phone. Select an app,
+approve Android's screen-capture dialog, and connect to the motorcycle. This mode uses the same
+`720 x 712` dashboard geometry and maps touches back to the phone display.
+
+To control phone apps from the motorcycle screen, enable **800NK ADV Link app control** in Android's
+Accessibility settings when prompted. The service forwards only dashboard gestures and the optional
+Back, Home, Recents, and Apps actions. It is not configured to inspect window content or read screen
+text. The accessibility service can be disabled at any time in Android settings.
+On phones that block accessibility for sideloaded applications, first open the application-info
+screen, use its menu to allow restricted settings, and then enable the service.
+
+Apps mode does not require Android Auto's **Start head unit server** option. Audio remains on the
+phone or its active Bluetooth output. Applications that protect video with DRM or Android's secure
+window flag, including some streaming services, may display a black image because Android blocks
+their capture. 800NK ADV Link does not bypass that protection. Samsung DeX itself cannot be started
+inside MotoPlay; Apps mode provides a phone-app launcher and navigation workflow instead.
 
 ## Voice Assistant
 
@@ -219,6 +241,12 @@ permissions are documented in [PRIVACY.md](PRIVACY.md).
 
 ```powershell
 .\gradlew.bat testDebugUnitTest assembleDebug
+```
+
+For a 32-bit ARM phone, build with:
+
+```powershell
+.\gradlew.bat assembleDebug -Pabi=armeabi-v7a
 ```
 
 ### Linux or macOS
@@ -297,6 +325,8 @@ de otras familias de tableros.
 - Computador de viaje, recorridos guardados y exportación GPX.
 - Registros con secretos ocultos y creación de informes por correo.
 - Interfaz disponible en 14 idiomas.
+- Selector de aplicaciones instaladas con proyección a pantalla completa, control táctil opcional y
+  barra de navegación. El espejo de toda la pantalla sigue disponible.
 
 ## Requisitos
 
@@ -311,12 +341,14 @@ No requiere root ni un computador durante el uso normal.
 
 1. Descarga el APK desde
    [Releases de 800NK ADV Link](https://github.com/zirryzero/app-cfmoto/releases).
+   Usa el APK normal en la mayoría de teléfonos. Si Android indica que no es compatible en un
+   teléfono de 32 bits, instala el APK cuyo nombre termina en `armv7.apk`.
 2. Abre el archivo y permite la instalación desde el navegador o administrador de archivos.
 3. Inicia la aplicación y concede únicamente los permisos correspondientes a las funciones que vas
    a utilizar.
 
 Consulta [PRIVACY.md](PRIVACY.md) para conocer el uso exacto de cámara, Wi-Fi cercano, ubicación,
-Bluetooth, micrófono, notificaciones, captura de pantalla y superposición.
+Bluetooth, micrófono, notificaciones, captura de pantalla, accesibilidad y superposición.
 
 ## Configuración de Android Auto
 
@@ -357,6 +389,28 @@ El tacto es el método predeterminado. El control de Android Auto mediante los b
 desactivado inicialmente para que conserven su comportamiento normal. Actívalo únicamente desde
 Controles o Configuración cuando quieras navegar Android Auto con esos botones.
 
+## Aplicaciones y espejo de pantalla
+
+**Aplicaciones** en la pantalla principal abre un selector con las aplicaciones instaladas en el
+teléfono. Elige una, acepta el diálogo de captura de pantalla de Android y conecta la motocicleta.
+El modo adapta la imagen a la geometría `720 x 712` del tablero y convierte las pulsaciones de la
+pantalla de la moto en coordenadas de la pantalla del teléfono.
+
+Para controlar las aplicaciones desde el tablero, activa **Control de aplicaciones de 800NK ADV
+Link** en los ajustes de Accesibilidad cuando se solicite. El servicio solo transmite los gestos del
+tablero y las acciones opcionales Atrás, Inicio, Recientes y Aplicaciones. No está configurado para
+leer el contenido de las ventanas ni guardar texto de la pantalla. Puede desactivarse en cualquier
+momento desde los ajustes de Android.
+Si el teléfono bloquea la accesibilidad de aplicaciones instaladas mediante APK, abre primero la
+información de 800NK ADV Link, permite los ajustes restringidos desde su menú y activa el servicio.
+
+Este modo no necesita **Iniciar servidor de unidad principal** de Android Auto. El audio permanece
+en el teléfono o en su salida Bluetooth activa. Las aplicaciones que protegen el video mediante DRM
+o la ventana segura de Android, incluidas algunas plataformas de streaming, pueden mostrar una
+imagen negra porque Android impide capturarlas. 800NK ADV Link no evita esa protección. Samsung DeX
+no puede iniciarse dentro de MotoPlay; este modo ofrece en su lugar un selector y navegación de apps
+del teléfono.
+
 ## Gemini y el micrófono
 
 - Concede el permiso de micrófono a 800NK ADV Link.
@@ -381,6 +435,12 @@ Requisitos: Android Studio, Android SDK 36 y JDK 17.
 
 ```powershell
 .\gradlew.bat testDebugUnitTest assembleDebug
+```
+
+Para generar el APK destinado a teléfonos ARM de 32 bits:
+
+```powershell
+.\gradlew.bat assembleDebug -Pabi=armeabi-v7a
 ```
 
 El APK de depuración se genera en `app/build/outputs/apk/debug/app-debug.apk`. Una publicación pública

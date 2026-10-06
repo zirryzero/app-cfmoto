@@ -40,7 +40,8 @@ when used.
 | **Nearby Bluetooth devices** | When starting wireless Android Auto, checking pairing, optionally synchronizing the clock, or using compatible buttons | Starts projection, detects the motorcycle connection, and processes features enabled by the user. Scanning is declared `neverForLocation`. |
 | **Microphone** | When Android Auto opens its voice channel for Gemini or the Assistant | Captures PCM audio and provides it to Android Auto for the duration of the request. 800NK ADV Link does not record it to a file or send it to telemetry. |
 | **Notifications** | During Android Auto, mirroring, reconnection, or other active services | Displays the foreground service and actions to stop or resume it. |
-| **Screen capture** | Only after approving **Mirror** in the Android dialog | Projects the complete display or a selected application to the dashboard. Approval cannot be granted silently. |
+| **Screen capture** | Only after approving **Apps** or full-screen mirroring in the Android dialog | Projects the complete display or a selected application to the dashboard. Approval cannot be granted silently. Secure or DRM-protected windows may be omitted or appear black. |
+| **Accessibility service** | Only after the user enables **800NK ADV Link app control** in Android settings | Converts touch gestures received from the motorcycle into Android gestures and provides Back, Home, Recents, and Apps actions. It is not configured to retrieve window content or screen text. |
 | **Display over other apps** | Optionally, for automatic recovery | Allows the service to reactivate Android Auto in the background. A notification is used when this access is unavailable. |
 
 The application also declares Internet and network-state access, Wi-Fi changes,
@@ -94,10 +95,17 @@ and stops capture when Android Auto closes the channel. Google, Gemini, the
 Assistant, and applications running inside Android Auto process data under
 their own terms and policies.
 
-Android Auto projection and Mirror temporarily encode visual content as video
+Android Auto projection, Apps mode, and full-screen mirroring temporarily encode visual content as video
 and send it to the 800NK head unit over its local network. This normal build
 does not save that video. The local transport to the motorcycle should not be
 considered end-to-end encrypted.
+
+The optional accessibility service receives gesture coordinates from the
+paired dashboard and asks Android to perform the corresponding gesture. It also
+supports explicit global navigation actions selected by the user. The service
+does not request window-content retrieval, does not read typed text, and does
+not store or transmit accessibility events. Disabling the service removes app
+touch control but does not prevent Android Auto or view-only projection.
 
 ## Inherited anonymous telemetry
 
@@ -241,7 +249,8 @@ propias politicas cuando se utilizan.
 | **Bluetooth cercano** | Al iniciar Android Auto inalambrico, consultar el emparejamiento, sincronizar opcionalmente el reloj o usar botones compatibles | Iniciar la proyeccion, detectar la conexion con la moto y procesar las funciones habilitadas por el usuario. El escaneo se declara `neverForLocation`. |
 | **Microfono** | Cuando Android Auto abre el canal de voz para Gemini o el Asistente | Capturar audio PCM y entregarlo a Android Auto durante la solicitud. 800NK ADV Link no lo graba en un archivo ni lo envia a su telemetria. |
 | **Notificaciones** | Durante Android Auto, espejo, reconexion o servicios activos | Mostrar el servicio en primer plano y acciones para detener o reanudar. |
-| **Captura de pantalla** | Solo despues de aprobar **Espejo** en el dialogo de Android | Proyectar la pantalla completa o una aplicacion elegida al tablero. La aprobacion no puede concederse silenciosamente. |
+| **Captura de pantalla** | Solo despues de aprobar **Aplicaciones** o el espejo de pantalla completa en el dialogo de Android | Proyectar la pantalla completa o una aplicacion elegida al tablero. La aprobacion no puede concederse silenciosamente. Las ventanas seguras o protegidas por DRM pueden omitirse o verse negras. |
+| **Servicio de accesibilidad** | Solo despues de que el usuario active **Control de aplicaciones de 800NK ADV Link** en los ajustes de Android | Convertir los gestos recibidos desde la motocicleta en gestos de Android y ofrecer las acciones Atras, Inicio, Recientes y Aplicaciones. No esta configurado para obtener el contenido de las ventanas ni el texto de la pantalla. |
 | **Mostrar sobre otras aplicaciones** | Opcional, para recuperacion automatica | Permitir que el servicio reactive Android Auto en segundo plano. Sin este permiso se utiliza una notificacion. |
 
 La aplicacion tambien declara acceso a Internet y al estado de red, cambios de
@@ -298,10 +307,18 @@ captura cuando Android Auto cierra el canal. Google, Gemini, el Asistente y las
 aplicaciones ejecutadas dentro de Android Auto procesan los datos conforme a
 sus propias condiciones y politicas.
 
-La proyeccion de Android Auto y el modo Espejo convierten temporalmente el
+La proyeccion de Android Auto, el modo Aplicaciones y el espejo de pantalla completa convierten temporalmente el
 contenido visual en video para enviarlo a la unidad principal de la 800NK por
 su red local. Esta version normal no guarda ese video. El transporte local con
 la motocicleta no debe considerarse cifrado de extremo a extremo.
+
+El servicio de accesibilidad opcional recibe coordenadas de gestos desde el
+tablero emparejado y solicita a Android que ejecute el gesto correspondiente.
+Tambien permite acciones globales de navegacion elegidas por el usuario. El
+servicio no solicita leer el contenido de las ventanas, no lee texto escrito y
+no guarda ni transmite eventos de accesibilidad. Al desactivarlo se pierde el
+control tactil de las apps, pero Android Auto y la proyeccion de solo lectura
+siguen disponibles.
 
 ## Telemetria anonima heredada
 

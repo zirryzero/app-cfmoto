@@ -115,8 +115,8 @@
     <string name="gpx_fast">Ràpid</string>
     <string name="gpx_fun">Divertit</string>
     <string name="gpx_circuit">Circuit</string>
-    <string name="gpx_avoid_tolls">Evitar peatges</string>
-    <string name="gpx_avoid_highways">Evitar autovies</string>
+    <string name="gpx_avoid_tolls">Evita peatges</string>
+    <string name="gpx_avoid_highways">Evita autovies</string>
     <string name="gpx_fun_circuit_length">Longitud del circuit divertit</string>
     <string name="gpx_30_km">30 km</string>
     <string name="gpx_60_km">60 km</string>
@@ -312,7 +312,7 @@
     <string name="setup_startup_recovery">Inici i recuperació</string>
     <string name="setup_auto_connect_on_launch">Connexió automàtica en iniciar</string>
     <string name="setup_when_a_paired_bike_s_wi_fi_is_in_range_start_pro">Quan el Wi-Fi d\'una moto aparellada estigui a l\'abast, comenceu a projectar automàticament.</string>
-    <string name="setup_auto_recovery_watchdog">Gos de guàrdia de recuperació automàtica</string>
+    <string name="setup_auto_recovery_watchdog">Monitor de vigilància de recuperació automàtica</string>
     <string name="setup_if_the_dash_drops_or_projection_stalls_reconnect">Si el quadre cau o la projecció s\'atura, torneu a connectar automàticament, sense aturar/iniciar.</string>
     <string name="setup_log_trips_automatically">Registrar viatges automàticament</string>
     <string name="setup_record_each_ride_s_route_and_stats_from_gps_whil">Registreu la ruta i les estadístiques de cada viatge des del GPS mentre projecteu. Vegeu-los a Viatge ▸ Viatges desats.</string>
@@ -506,4 +506,9 @@
     <string name="setup_anonymous_telemetry_on">Activat — pings i errors anònims</string>
     <string name="setup_anonymous_telemetry_off">Desactivat — no es puja res</string>
     <string name="setup_anonymous_id">Id anònim: %1$s</string>
+    <string name="setup_aa_dpi">Mida del text d’Android Auto</string>
+    <string name="setup_aa_dpi_auto">Automàtica (recomanada)</string>
+    <string name="setup_aa_dpi_auto_desc">Utilitza la mida optimitzada per a la 800NK Advanced. Els valors superiors fan més grans el text, els controls de Maps i els elements d’Android Auto.</string>
+    <string name="setup_aa_dpi_value">Mida del text d’Android Auto: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Android Auto s’ha connectat i s’ha desconnectat abans d’iniciar el vídeo. Prem Connecta una altra vegada i deixa obert l’avís de connexió d’Android Auto.</string>
 </resources>

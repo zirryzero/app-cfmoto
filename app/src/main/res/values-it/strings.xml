@@ -492,4 +492,9 @@
     <string name="main_phone_hotspot_settings_failed">Impossibile aprire le impostazioni hotspot — aprirle manualmente</string>
     <string name="main_phone_hotspot_cancelled">Configurazione hotspot annullata</string>
     <string name="main_phone_hotspot_waiting_named">In attesa dell\'hotspot \"%1$s\" — la moto dovrebbe collegarsi al telefono</string>
+    <string name="setup_aa_dpi">Dimensione testo Android Auto</string>
+    <string name="setup_aa_dpi_auto">Automatica (consigliata)</string>
+    <string name="setup_aa_dpi_auto_desc">Usa la dimensione ottimizzata per la 800NK Advanced. Valori più alti ingrandiscono testo, controlli di Maps ed elementi di Android Auto.</string>
+    <string name="setup_aa_dpi_value">Dimensione testo Android Auto: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Android Auto si è connesso e poi disconnesso prima dell’avvio del video. Premi di nuovo Connetti e lascia aperto l’avviso di connessione di Android Auto.</string>
 </resources>

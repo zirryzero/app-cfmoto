@@ -206,7 +206,7 @@
                     app:autoSizeMinTextSize="@dimen/btn_tile_text_min"
                     app:autoSizeMaxTextSize="@dimen/btn_tile_text"
                     app:autoSizeStepGranularity="1sp"
-                    android:text="@string/main_mirror" />
+                    android:text="@string/main_apps" />
             </LinearLayout>
 
             <!-- Hidden: Stop is merged into Connect; keep id for any legacy refs. -->

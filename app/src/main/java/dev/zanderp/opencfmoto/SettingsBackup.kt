@@ -36,6 +36,7 @@ object SettingsBackup {
         s.put("screenFit", VideoPrefs.fit(context).name)
         s.put("powerMode", VideoPrefs.power(context).name)
         s.put("resolutionMode", VideoPrefs.resolution(context).name)
+        s.put("aaDpiOverride", VideoPrefs.dpiOverride(context) ?: 0)
         s.put("controlAa", ButtonMode.isControlAa(context))
 
         ScreenMargins.load(context)
@@ -99,6 +100,10 @@ object SettingsBackup {
         }
         s.optString("resolutionMode").takeIf { it.isNotBlank() }?.let {
             runCatching { VideoPrefs.setResolution(context, ResolutionMode.valueOf(it)) }
+        }
+        if (s.has("aaDpiOverride")) {
+            val dpi = s.optInt("aaDpiOverride", 0)
+            VideoPrefs.setDpiOverride(context, dpi.takeIf { it > 0 })
         }
         if (s.has("controlAa")) ButtonMode.set(context, s.optBoolean("controlAa"))
 

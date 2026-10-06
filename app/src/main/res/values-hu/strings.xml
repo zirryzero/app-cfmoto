@@ -507,4 +507,9 @@
     <string name="setup_anonymous_telemetry_on">Bekapcsolva — névtelen pingek és összeomlás jelentések</string>
     <string name="setup_anonymous_telemetry_off">Kikapcsolva — semmi sem töltődik fel</string>
     <string name="setup_anonymous_id">Névtelen azonosító: %1$s</string>
+    <string name="setup_aa_dpi">Android Auto szövegméret</string>
+    <string name="setup_aa_dpi_auto">Automatikus (ajánlott)</string>
+    <string name="setup_aa_dpi_auto_desc">A 800NK Advanced modellhez optimalizált méretet használja. A nagyobb értékek növelik a szöveget, a Maps vezérlőit és az Android Auto elemeit.</string>
+    <string name="setup_aa_dpi_value">Android Auto szövegméret: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Az Android Auto csatlakozott, majd a videó elindulása előtt megszakadt. Koppints ismét a Csatlakozás gombra, és hagyd nyitva az Android Auto csatlakozási értesítését.</string>
 </resources>

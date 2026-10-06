@@ -403,4 +403,9 @@
     <string name="setup_anonymous_telemetry_on">Açık — anonim veriler &amp; çökme raporları</string>
     <string name="setup_anonymous_telemetry_off">Kapalı — hiçbir şey yüklenmez</string>
     <string name="setup_anonymous_id">Anonim ID: %1$s</string>
+    <string name="setup_aa_dpi">Android Auto metin boyutu</string>
+    <string name="setup_aa_dpi_auto">Otomatik (önerilen)</string>
+    <string name="setup_aa_dpi_auto_desc">800NK Advanced için optimize edilmiş boyutu kullanır. Daha yüksek değerler metni, Maps kontrollerini ve Android Auto öğelerini büyütür.</string>
+    <string name="setup_aa_dpi_value">Android Auto metin boyutu: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Android Auto bağlandı ancak video başlamadan önce bağlantı kesildi. Tekrar Bağlan’a dokunun ve Android Auto bağlantı bildirimini açık bırakın.</string>
 </resources>

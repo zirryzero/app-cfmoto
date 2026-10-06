@@ -90,9 +90,15 @@ object BikeProfiles {
 object BikeProfileHolder {
     @Volatile var active: BikeProfile = BikeProfiles.only
     @Volatile var aaVideoOverride: AaVideoSpec? = null
+    @Volatile var aaDpiOverride: Int? = null
     @Volatile var aaContentMargins: AaMargins = AaMargins.NONE
 
-    val aaVideo: AaVideoSpec get() = aaVideoOverride ?: active.aaVideo
+    val aaVideo: AaVideoSpec
+        get() {
+            val base = aaVideoOverride ?: active.aaVideo
+            val dpi = aaDpiOverride ?: return base
+            return if (dpi == base.dpi) base else AaVideoSpec(base.resolution, dpi)
+        }
     val aaUsableWidth: Int
         get() = (aaVideo.width - aaContentMargins.marginW).coerceIn(1, aaVideo.width)
     val aaUsableHeight: Int

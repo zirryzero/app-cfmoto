@@ -379,4 +379,9 @@
     <string name="setup_anonymous_telemetry_on">Pornit — ping-uri &amp; crash-uri anonime</string>
     <string name="setup_anonymous_telemetry_off">Oprit — nu se încarcă nimic</string>
     <string name="setup_anonymous_id">Id anonim: %1$s</string>
+    <string name="setup_aa_dpi">Dimensiunea textului Android Auto</string>
+    <string name="setup_aa_dpi_auto">Automat (recomandat)</string>
+    <string name="setup_aa_dpi_auto_desc">Folosește dimensiunea optimizată pentru 800NK Advanced. Valorile mai mari măresc textul, comenzile Maps și elementele Android Auto.</string>
+    <string name="setup_aa_dpi_value">Dimensiunea textului Android Auto: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Android Auto s-a conectat, apoi s-a deconectat înainte de pornirea videoclipului. Apasă din nou Conectare și lasă deschisă notificarea de conectare Android Auto.</string>
 </resources>

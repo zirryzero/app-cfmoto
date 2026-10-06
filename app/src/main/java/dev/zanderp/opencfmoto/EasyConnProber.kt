@@ -848,6 +848,20 @@ class EasyConnProber(
         val sink = AaVideoBridge.touchSink
         when {
             sink != null -> sink(action, aaId, x, y)
+            AppModeController.isActive -> {
+                val mapped = video?.mapBikeTouchToSource(x, y)
+                if (mapped != null && AppModeController.dispatchBikeTouch(
+                        action,
+                        aaId,
+                        mapped.first,
+                        mapped.second,
+                    )
+                ) {
+                    if (action != 2) log("[$tag] touch → mirrored app source=(${mapped.first},${mapped.second})")
+                } else if (action != 2) {
+                    log("[$tag] touch dropped (app control unavailable or point is in a black bar)")
+                }
+            }
             GpxSession.active && GpxSession.dispatchTouch(action, x, y) -> {
                 if (action != 2) log("[$tag] touch → GPX viewer")
             }
@@ -863,6 +877,9 @@ class EasyConnProber(
         val sink = AaVideoBridge.touchSink
         when {
             sink != null -> sink(1, aaId, p.first, p.second)
+            AppModeController.isActive -> video?.mapBikeTouchToSource(p.first, p.second)?.let { mapped ->
+                AppModeController.dispatchBikeTouch(1, aaId, mapped.first, mapped.second)
+            }
             GpxSession.active -> GpxSession.dispatchTouch(1, p.first, p.second)
         }
         pointers.remove(dashId)

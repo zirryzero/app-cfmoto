@@ -231,6 +231,7 @@
     <string name="main_connect">Connect</string>
     <string name="main_scan">Scan 800NK QR</string>
     <string name="main_mirror">Mirror</string>
+    <string name="main_apps">Apps</string>
     <string name="main_stop">Stop</string>
     <string name="main_setup">Setup</string>
     <string name="main_trip">Trip</string>
@@ -238,7 +239,7 @@
     <string name="main_search_a_place_or_address">Search a place or address…</string>
     <string name="main_go">Go</string>
     <string name="main_rider_tips">Rider tips</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connect — start Android Auto on the dash (becomes Stop while linked).\n• Mirror — cast the phone screen; while connected, it switches what the dash shows.\n• Dash view &amp; Controls — phone HUD and D-pad / handlebar.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connect — start Android Auto on the dash (becomes Stop while linked).\n• Apps — choose and control a phone app, or mirror the entire screen.\n• Dash view &amp; Controls — phone HUD and D-pad / handlebar.</string>
     <string name="main_about_credits">About &amp; credits</string>
     <string name="main_check_for_update">Check for update</string>
     <string name="main_report_a_problem">Report a problem</string>
@@ -297,6 +298,14 @@
     <string name="setup_inset_android_auto_from_each_edge_of_the_dash_to">Inset Android Auto from each edge of the dash (top / bottom / left / right). Useful on 800NK Advanced for the MotoPlay pull-down.</string>
     <string name="setup_auto_day_night">Auto (day / night)</string>
     <string name="setup_resolution_orientation">Resolution &amp; orientation</string>
+    <string name="setup_aa_dpi">Android Auto text size</string>
+    <string name="setup_aa_dpi_auto">Auto (recommended)</string>
+    <string name="setup_aa_dpi_auto_desc">Uses the optimized 800NK Advanced size. Higher values make text, Maps controls and Android Auto elements larger.</string>
+    <string name="setup_aa_dpi_value">Android Auto text size: %1$d DPI</string>
+    <string name="setup_aa_dpi_160" translatable="false">160</string>
+    <string name="setup_aa_dpi_180" translatable="false">180</string>
+    <string name="setup_aa_dpi_240" translatable="false">240</string>
+    <string name="setup_aa_dpi_320" translatable="false">320</string>
     <string name="setup_auto_match_your_bike_recommended">Auto — match your bike (recommended)</string>
     <string name="setup_portrait">Portrait</string>
     <string name="setup_720_1280">720×1280</string>
@@ -469,6 +478,7 @@
     <string name="conn_detail_auto_connect_failed">Auto-connect failed — see Logs</string>
     <string name="conn_detail_need_bluetooth">Grant Nearby devices / Bluetooth, then tap Connect again</string>
     <string name="conn_detail_aa_not_started">Android Auto didn\'t attach. On Android Auto 17.4+ Google blocked the automatic start: open Android Auto, tap Version 10 times, then ⋮ → Start head unit server, and retry Connect. SoftAP/Mirror still prove the bike Wi‑Fi link.</string>
+    <string name="conn_detail_aa_dropped">Android Auto connected and then disconnected before video started. Tap Connect again and leave the Android Auto connection banner open.</string>
     <string name="main_aa_need_nearby_title">Nearby devices required</string>
     <string name="main_aa_need_nearby_message">Android Auto Connect needs Nearby devices (Bluetooth) so the phone can start wireless projection. Grant Nearby, turn Bluetooth on, then tap Connect again.\n\nMirror does not need this.</string>
     <string name="main_aa_need_bt_on_message">Turn Bluetooth on, then tap Connect again. Android Auto Connect uses Bluetooth to start wireless projection on newer Android Auto builds.\n\nMirror does not need this.</string>
@@ -507,6 +517,25 @@
     <string name="main_up_to_date">You\'re up to date (or offline)</string>
     <string name="main_crash_title">Recovered after a crash</string>
     <string name="main_mirror_ready_title">Mirror ready</string>
+    <string name="apps_title">Apps on the dashboard</string>
+    <string name="apps_subtitle">Choose an app or mirror the complete phone screen</string>
+    <string name="apps_search">Search apps</string>
+    <string name="apps_entire_screen">Entire screen</string>
+    <string name="apps_close">Close</string>
+    <string name="apps_touch_enabled">Dashboard touch control is enabled</string>
+    <string name="apps_touch_disabled">Enable touch control to operate mirrored apps from the 800NK</string>
+    <string name="apps_enable_touch">Enable touch</string>
+    <string name="apps_touch_settings">Touch settings</string>
+    <string name="apps_settings_failed">Couldn\'t open Accessibility settings</string>
+    <string name="apps_launch_failed">Couldn\'t open that app</string>
+    <string name="apps_accessibility_name">800NK app touch control</string>
+    <string name="apps_accessibility_description">Converts touches received from the paired 800NK dashboard into taps and gestures in the app currently shown on the motorcycle screen. It does not read screen text or passwords.</string>
+    <string name="apps_back">Back</string>
+    <string name="apps_home">Home</string>
+    <string name="apps_recents">Recent apps</string>
+    <string name="apps_switch">Switch app</string>
+    <string name="apps_projection_started">Opening %1$s on the dashboard</string>
+    <string name="apps_projection_touch_missing">The app will be displayed, but dashboard touch needs the 800NK app touch control enabled in Accessibility settings.</string>
     <string name="main_rival_title">Official CFMoto app is in the way</string>
     <string name="main_bike_search_hint">Bike dash search — type here</string>
 

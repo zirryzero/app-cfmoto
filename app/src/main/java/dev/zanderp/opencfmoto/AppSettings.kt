@@ -73,6 +73,7 @@ object AppSettings {
     /** Sync holder flags from prefs (call on process start / before connect). */
     fun applyToHolder(ctx: Context) {
         BikeProfileHolder.active = BikeProfiles.only
+        BikeProfileHolder.aaDpiOverride = VideoPrefs.dpiOverride(ctx)
         LogBus.includeSecrets = includeSecretsInLogs(ctx)
         ButtonMap.ensureDefaultsMigrated(ctx)
         ScreenMargins.load(ctx)

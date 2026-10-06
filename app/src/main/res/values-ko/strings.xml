@@ -403,4 +403,9 @@
     <string name="setup_anonymous_telemetry_on">On — anonymous pings &amp; crash reports</string>
     <string name="setup_anonymous_telemetry_off">Off — nothing uploaded</string>
     <string name="setup_anonymous_id">Anonymous id: %1$s</string>
+    <string name="setup_aa_dpi">Android Auto 텍스트 크기</string>
+    <string name="setup_aa_dpi_auto">자동(권장)</string>
+    <string name="setup_aa_dpi_auto_desc">800NK Advanced에 최적화된 크기를 사용합니다. 더 높은 값은 텍스트, Maps 컨트롤 및 Android Auto 요소를 크게 표시합니다.</string>
+    <string name="setup_aa_dpi_value">Android Auto 텍스트 크기: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">Android Auto가 연결되었지만 비디오가 시작되기 전에 연결이 끊어졌습니다. 다시 연결을 누르고 Android Auto 연결 알림을 열어 두세요.</string>
 </resources>

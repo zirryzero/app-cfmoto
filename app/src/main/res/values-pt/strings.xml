@@ -378,4 +378,9 @@
     <string name="setup_anonymous_telemetry_on">Ligado — pings e crashes anónimos</string>
     <string name="setup_anonymous_telemetry_off">Desligado — nada é enviado</string>
     <string name="setup_anonymous_id">Id anónimo: %1$s</string>
+    <string name="setup_aa_dpi">Tamanho do texto do Android Auto</string>
+    <string name="setup_aa_dpi_auto">Automático (recomendado)</string>
+    <string name="setup_aa_dpi_auto_desc">Usa o tamanho otimizado para a 800NK Advanced. Valores maiores aumentam o texto, os controlos do Maps e os elementos do Android Auto.</string>
+    <string name="setup_aa_dpi_value">Tamanho do texto do Android Auto: %1$d DPI</string>
+    <string name="conn_detail_aa_dropped">O Android Auto ligou-se e desligou-se antes do início do vídeo. Toque novamente em Ligar e mantenha aberto o aviso de ligação do Android Auto.</string>
 </resources>
