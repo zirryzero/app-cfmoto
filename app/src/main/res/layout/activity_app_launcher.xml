@@ -92,18 +92,31 @@
             android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <GridView
-        android:id="@+id/apps_grid"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:columnWidth="96dp"
-        android:gravity="center"
-        android:horizontalSpacing="8dp"
-        android:numColumns="auto_fit"
-        android:paddingBottom="12dp"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="8dp" />
+        android:layout_weight="1">
+
+        <ProgressBar
+            android:id="@+id/apps_progress"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+
+        <GridView
+            android:id="@+id/apps_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:columnWidth="96dp"
+            android:gravity="center"
+            android:horizontalSpacing="8dp"
+            android:numColumns="auto_fit"
+            android:paddingBottom="12dp"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="8dp"
+            android:visibility="gone" />
+    </FrameLayout>
 </LinearLayout>

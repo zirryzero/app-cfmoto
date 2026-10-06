@@ -15,7 +15,9 @@ import android.widget.EditText
 import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ProgressBar
 import android.widget.Toast
+import kotlin.concurrent.thread
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
@@ -44,9 +46,11 @@ class AppLauncherActivity : AppCompatActivity() {
         val mirror: Boolean = false,
     )
 
-    private lateinit var adapter: AppAdapter
+    private var adapter: AppAdapter? = null
     private lateinit var accessibilityStatus: TextView
     private lateinit var accessibilityButton: MaterialButton
+    private lateinit var progressBar: ProgressBar
+    private lateinit var gridView: GridView
     private val switchOnly: Boolean get() = intent.getBooleanExtra(EXTRA_SWITCH_ONLY, false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,14 +62,31 @@ class AppLauncherActivity : AppCompatActivity() {
         accessibilityButton.setOnClickListener { openAccessibilitySettings() }
         findViewById<View>(R.id.apps_close).setOnClickListener { finish() }
 
-        val entries = loadApps()
-        adapter = AppAdapter(entries)
-        findViewById<GridView>(R.id.apps_grid).apply {
-            adapter = this@AppLauncherActivity.adapter
-            setOnItemClickListener { _, _, position, _ -> choose(this@AppLauncherActivity.adapter.item(position)) }
+        progressBar = findViewById(R.id.apps_progress)
+        gridView = findViewById(R.id.apps_grid)
+
+        val searchInput = findViewById<EditText>(R.id.apps_search)
+        searchInput.doAfterTextChanged { text ->
+            adapter?.filter(text?.toString().orEmpty())
         }
-        findViewById<EditText>(R.id.apps_search).doAfterTextChanged { text ->
-            adapter.filter(text?.toString().orEmpty())
+
+        thread(name = "load-apps", isDaemon = true) {
+            val entries = loadApps()
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                adapter = AppAdapter(entries).also {
+                    gridView.adapter = it
+                }
+                gridView.setOnItemClickListener { _, _, position, _ ->
+                    adapter?.item(position)?.let { choose(it) }
+                }
+                val currentQuery = searchInput.text?.toString().orEmpty()
+                if (currentQuery.isNotEmpty()) {
+                    adapter?.filter(currentQuery)
+                }
+                progressBar.visibility = View.GONE
+                gridView.visibility = View.VISIBLE
+            }
         }
     }
 
