@@ -59,6 +59,7 @@ jobs:
             Prerelease update with release signing support, project development guidelines, and recent stability improvements for the CFMOTO 800NK Advanced.
 
             ### Highlights
+            - **Package Identity**: Updated application ID to `com.zirryzero.advlink` for independent installation.
             - **Release Signing**: Automated signing configuration for release builds with private keystore integration.
             - **Project Guidelines**: Canonical development standards (`PROJECT_GUIDELINES.md`) documenting hardware contracts, touch mapping, video pipeline invariants, and AI contributor rules.
             - **Apps Mode & Projection**: Full-screen phone application launcher and dashboard navigation for MotoPlay.
@@ -68,6 +69,7 @@ jobs:
             ### Español
             Actualización preliminar con soporte de firma de release, directrices de desarrollo del proyecto y mejoras de estabilidad para la CFMOTO 800NK Advanced.
 
+            - **Identidad de paquete**: Identificador actualizado a `com.zirryzero.advlink` para instalación independiente.
             - **Firma de producción**: Configuración automática de firmas para APKs de release.
             - **Directrices del proyecto**: Documento `PROJECT_GUIDELINES.md` con contratos técnicos y reglas de desarrollo.
             - **Modo Apps**: Lanzador de aplicaciones del teléfono y control táctil en el tablero.
