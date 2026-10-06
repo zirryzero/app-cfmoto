@@ -19,7 +19,7 @@ investigarse y corregirse antes de publicar.
 ## 2. Identidad, origen y licencia
 
 - **Nombre:** 800NK ADV Link.
-- **ID de aplicacion:** `dev.zanderp.opencfmoto`.
+- **ID de aplicacion:** `com.zirryzero.advlink` (original: `dev.zanderp.opencfmoto`).
 - **Naturaleza:** aplicacion Android local-first, independiente y no oficial.
 - **Alcance:** adaptacion exclusiva para la CFMOTO 800NK Advanced.
 - **Origen:** adaptacion de

@@ -20,7 +20,7 @@ android {
     val abiFilter = (project.findProperty("abi") as String?)?.trim().orEmpty()
 
     defaultConfig {
-        applicationId = "dev.zanderp.opencfmoto"
+        applicationId = "com.zirryzero.advlink"
         minSdk = 29
         targetSdk = 36
         versionCode = 82
