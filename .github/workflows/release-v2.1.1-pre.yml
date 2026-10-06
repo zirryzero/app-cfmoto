@@ -33,12 +33,12 @@ jobs:
           cache: gradle
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        run: echo "Using runner pre-installed Android SDK ($ANDROID_HOME)"
 
       - name: Install required Android SDK packages
         run: |
           yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-36" "platforms;android-36.1" "build-tools;36.1.0"
+          sdkmanager "platforms;android-36" || true
 
       - name: Run unit tests and build APK
         run: |
@@ -94,3 +94,4 @@ jobs:
               --prerelease \
               --repo "$GITHUB_REPOSITORY"
           fi
+
