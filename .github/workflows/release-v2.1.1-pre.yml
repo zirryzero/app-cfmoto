@@ -1,0 +1,96 @@
+name: Publish v2.1.1-pre
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/release-v2.1.1-pre.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-v2.1.1-pre
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Test, build, and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install required Android SDK packages
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "platforms;android-36.1" "build-tools;36.1.0"
+
+      - name: Run unit tests and build APK
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon testDebugUnitTest assembleDebug
+
+      - name: Prepare release files
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk 800NK-ADV-Link-v2.1.1-pre.apk
+          sha256sum 800NK-ADV-Link-v2.1.1-pre.apk > 800NK-ADV-Link-v2.1.1-pre.apk.sha256
+
+      - name: Create GitHub prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_NOTES: |
+            ## 800NK ADV Link v2.1.1-pre
+
+            Prerelease update with release signing support, project development guidelines, and recent stability improvements for the CFMOTO 800NK Advanced.
+
+            ### Highlights
+            - **Release Signing**: Automated signing configuration for release builds with private keystore integration.
+            - **Project Guidelines**: Canonical development standards (`PROJECT_GUIDELINES.md`) documenting hardware contracts, touch mapping, video pipeline invariants, and AI contributor rules.
+            - **Apps Mode & Projection**: Full-screen phone application launcher and dashboard navigation for MotoPlay.
+            - **Optimized Android Auto**: 1280x720 landscape projection matching 800NK dashboard geometry with 22px top margin.
+            - **Privacy & Security**: Local-first operation, redacted logs, and no user accounts required.
+
+            ### Español
+            Actualización preliminar con soporte de firma de release, directrices de desarrollo del proyecto y mejoras de estabilidad para la CFMOTO 800NK Advanced.
+
+            - **Firma de producción**: Configuración automática de firmas para APKs de release.
+            - **Directrices del proyecto**: Documento `PROJECT_GUIDELINES.md` con contratos técnicos y reglas de desarrollo.
+            - **Modo Apps**: Lanzador de aplicaciones del teléfono y control táctil en el tablero.
+            - **Android Auto 1280x720**: Calibración para evitar desalineación táctil en Google Maps.
+
+            ### Installation
+            Download the APK below and install it manually on an Android 10 or newer phone.
+
+            This project is derived from OpenCfMoto and distributed under GNU AGPL-3.0-or-later. See LICENSE and NOTICE.
+        run: |
+          if gh release view "v2.1.1-pre" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "v2.1.1-pre" \
+              800NK-ADV-Link-v2.1.1-pre.apk \
+              800NK-ADV-Link-v2.1.1-pre.apk.sha256 \
+              --clobber \
+              --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "v2.1.1-pre" \
+              800NK-ADV-Link-v2.1.1-pre.apk \
+              800NK-ADV-Link-v2.1.1-pre.apk.sha256 \
+              --target "$GITHUB_SHA" \
+              --title "800NK ADV Link v2.1.1-pre" \
+              --notes "$RELEASE_NOTES" \
+              --prerelease \
+              --repo "$GITHUB_REPOSITORY"
+          fi
