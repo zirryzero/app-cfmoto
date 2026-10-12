@@ -881,8 +881,6 @@ class MainActivity : AppCompatActivity() {
         connectBtn.isEnabled = true
         // Scan only when not mid-flight.
         setEnabled(R.id.btn_aa_start, !busy)
-        // Mirror stays available while live so the rider can switch dash content.
-        setEnabled(R.id.btn_mirror_start, !busy || live)
         setEnabled(R.id.btn_aa_stop, busy || live)
     }
 
