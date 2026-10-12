@@ -183,30 +183,14 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_aa_start"
                     style="@style/Widget.OpenCfMoto.Button.Tile"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:layout_weight="1"
                     android:maxLines="1"
                     app:autoSizeTextType="uniform"
                     app:autoSizeMinTextSize="@dimen/btn_tile_text_min"
                     app:autoSizeMaxTextSize="@dimen/btn_tile_text"
                     app:autoSizeStepGranularity="1sp"
                     android:text="@string/main_scan" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_mirror_start"
-                    style="@style/Widget.OpenCfMoto.Button.Tile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    app:autoSizeTextType="uniform"
-                    app:autoSizeMinTextSize="@dimen/btn_tile_text_min"
-                    app:autoSizeMaxTextSize="@dimen/btn_tile_text"
-                    app:autoSizeStepGranularity="1sp"
-                    android:text="@string/main_apps" />
             </LinearLayout>
 
             <!-- Hidden: Stop is merged into Connect; keep id for any legacy refs. -->

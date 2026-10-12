@@ -514,7 +514,6 @@ class MainActivity : AppCompatActivity() {
         (findViewById<View>(R.id.btn_hud_view) as? MaterialButton)?.asIconTopTile(R.drawable.ic_cast)
         (findViewById<View>(R.id.btn_controls) as? MaterialButton)?.asIconTopTile(R.drawable.ic_devices)
         (findViewById<View>(R.id.btn_aa_start) as? MaterialButton)?.asIconTopTile(R.drawable.ic_qr)
-        (findViewById<View>(R.id.btn_mirror_start) as? MaterialButton)?.asIconTopTile(R.drawable.ic_apps)
         (findViewById<View>(R.id.btn_aa_stop) as? MaterialButton)?.setIconResource(R.drawable.ic_stop)
         // Footer 2×2 — icon + label (same pattern as Dash view / Controls).
         fun MaterialButton.asFooterLink(iconRes: Int) {
@@ -609,9 +608,6 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_aa_start).setOnClickListener { startAaScan() }
 
-        findViewById<Button>(R.id.btn_mirror_start).setOnClickListener {
-            appPickerLauncher.launch(AppLauncherActivity.createIntent(this))
-        }
         findViewById<Button>(R.id.btn_aa_stop).setOnClickListener { stopEverything() }
 
         toggleLogBtn.setOnClickListener {

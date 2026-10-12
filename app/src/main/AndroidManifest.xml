@@ -32,7 +32,6 @@
     <!-- BLE wake-up is dormant/optional, so don't block installs on devices without BLE. -->
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
@@ -122,30 +121,10 @@
         <activity
             android:name=".AboutActivity"
             android:exported="false" />
-        <activity
-            android:name=".AppLauncherActivity"
-            android:exported="false"
-            android:launchMode="singleTop" />
-        <service
-            android:name=".ProjectionService"
-            android:exported="false"
-            android:foregroundServiceType="mediaProjection" />
         <service
             android:name=".AndroidAutoService"
             android:exported="false"
             android:foregroundServiceType="connectedDevice|location|microphone" />
-        <service
-            android:name=".AppControlAccessibilityService"
-            android:exported="false"
-            android:label="@string/apps_accessibility_name"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/app_control_accessibility_service" />
-        </service>
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"

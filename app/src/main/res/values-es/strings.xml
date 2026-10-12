@@ -240,7 +240,7 @@
     <string name="main_search_a_place_or_address">Buscar un lugar o dirección…</string>
     <string name="main_go">Ir</string>
     <string name="main_rider_tips">Consejos para moteros</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Conectar: inicia Android Auto en el tablero (se convierte en Detener mientras está vinculado).\n• Aplicaciones: elige y controla una app del teléfono o duplica toda la pantalla.\n• Vista del tablero y controles: HUD del teléfono y D-pad/manillar.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Conectar: inicia Android Auto en el tablero (se convierte en Detener mientras está vinculado).\n• Escanear QR 800NK: empareja o actualiza la conexión con la moto.\n• Vista del tablero y controles: HUD del teléfono y D-pad/manillar.</string>
     <string name="main_about_credits">Acerca de y créditos</string>
     <string name="main_check_for_update">Buscar actualizaciones</string>
     <string name="main_report_a_problem">Informar de un problema</string>

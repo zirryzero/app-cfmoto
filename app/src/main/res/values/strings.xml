@@ -239,7 +239,7 @@
     <string name="main_search_a_place_or_address">Search a place or address…</string>
     <string name="main_go">Go</string>
     <string name="main_rider_tips">Rider tips</string>
-    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connect — start Android Auto on the dash (becomes Stop while linked).\n• Apps — choose and control a phone app, or mirror the entire screen.\n• Dash view &amp; Controls — phone HUD and D-pad / handlebar.</string>
+    <string name="main_connect_start_android_auto_on_the_dash_becomes_s">• Connect — start Android Auto on the dash (becomes Stop while linked).\n• Scan 800NK QR — pair or update the motorcycle connection.\n• Dash view &amp; Controls — phone HUD and D-pad / handlebar.</string>
     <string name="main_about_credits">About &amp; credits</string>
     <string name="main_check_for_update">Check for update</string>
     <string name="main_report_a_problem">Report a problem</string>
