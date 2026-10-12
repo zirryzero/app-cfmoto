@@ -136,9 +136,9 @@ class EasyConnProber(
         this.network = network
         dumpEnvironment(network)
 
-        val myIp = pickBikeInterfaceIp(network)
+        val myIp = pickBikeInterfaceIp(network) ?: try { Inet4Address.getByName("0.0.0.0") as Inet4Address } catch (_: Exception) { null }
         if (myIp == null) { log("could not resolve our IPv4 on the bike network; aborting"); return }
-        val bikeIp = resolveGateway(network)
+        val bikeIp = resolveGateway(network) ?: try { Inet4Address.getByName("127.0.0.1") as Inet4Address } catch (_: Exception) { null }
         if (bikeIp == null) {
             log(
                 "could not resolve bike gateway IP; aborting" +
@@ -184,7 +184,7 @@ class EasyConnProber(
             try {
                 val ss = ServerSocket()
                 ss.reuseAddress = true
-                ss.bind(InetSocketAddress(myIp, port), 50)
+                ss.bind(InetSocketAddress(port), 50)
                 servers.add(ss)
                 spawnAccept(port, ss)
             } catch (e: Exception) {

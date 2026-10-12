@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
     private var rivalPromptShown = false
     /** Guards the VPN kill-switch prompt so it shows once per error, not every redraw. */
     private var vpnPromptShown = false
+    private var isSimulatorSession = false
 
     private val micPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -265,7 +266,12 @@ class MainActivity : AppCompatActivity() {
                 ConnectionState.set(Phase.ERROR, detail)
             }, 18_000)
             // Kick off the Wi-Fi join right away, in parallel with AA boot.
-            joinWifi(qr, gateOnAaSteady = true)
+            if (isSimulatorSession) {
+                log("  [SIMULATOR] skipping bike Wi-Fi join; ready on local network / ADB")
+                BikeLink.markWifiReady(null)
+            } else {
+                joinWifi(qr, gateOnAaSteady = true)
+            }
         } catch (e: Exception) {
             log("Connect failed (app stays open): $e")
             CrashGuard.persistSession(this)
@@ -607,10 +613,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        connectBtn.setOnLongClickListener {
+            showSimulatorDialog()
+            true
+        }
+
         findViewById<Button>(R.id.btn_aa_start).setOnClickListener { startAaScan() }
 
         findViewById<Button>(R.id.btn_mirror_start).setOnClickListener {
             appPickerLauncher.launch(AppLauncherActivity.createIntent(this))
+        }
+        findViewById<Button>(R.id.btn_mirror_start).setOnLongClickListener {
+            showSimulatorDialog()
+            true
         }
         findViewById<Button>(R.id.btn_aa_stop).setOnClickListener { stopEverything() }
 
@@ -1073,6 +1088,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun stopEverything() {
         log("→ stopping everything (Android Auto + bike)")
+        isSimulatorSession = false
         AppModeController.deactivate()
         try { AaVideoBridge.onSteadyVideo = null } catch (_: Exception) {}
         try { AndroidAutoService.stop(this) } catch (e: Exception) { log("AA stop: $e") }
@@ -1296,6 +1312,10 @@ class MainActivity : AppCompatActivity() {
 
     /** After screen-capture consent: connect using saved bike or scan. */
     private fun startMirrorLink() {
+        if (isSimulatorSession) {
+            startSimulatorLink()
+            return
+        }
         val saved = BikeMemory.lastQr(this)
         if (saved != null) {
             val source = if (AppModeController.isActive) "Apps" else "Mirror"
@@ -1310,6 +1330,82 @@ class MainActivity : AppCompatActivity() {
             log("→ Mirror: scan the dash QR…")
             scanLauncher.launch(Intent(this, QrScanActivity::class.java))
         }
+    }
+
+    private fun startSimulatorLink() {
+        val source = if (AppModeController.isActive) "Apps" else "Mirror"
+        log("→ [SIMULATOR] $source: iniciando servidor en red local / ADB...")
+        tearDownForModeSwitch(clearMap = true, clearMirror = false)
+        val dummyQr = QrData(ssid = "SIMULATOR", pwd = "SIMULATOR_PWD")
+        applyProfile(dummyQr)
+        ConnectionState.set(Phase.MIRRORING, "Simulator (PC)")
+        try {
+            (BikeLink.prober ?: prober).start(null)
+        } catch (e: Exception) {
+            log("[SIMULATOR] Prober start failed: $e")
+        }
+        finishMirrorLaunch()
+        val ip = getLocalWifiIp() ?: "IP_DEL_CELULAR"
+        Toast.makeText(
+            this,
+            "Simulador listo. En PC ejecuta:\npython mock_bike_dash.py --host $ip",
+            Toast.LENGTH_LONG,
+        ).show()
+        log("→ [SIMULATOR] Servidor activo. En tu PC ejecuta:")
+        log("   python mock_bike_dash.py --host $ip")
+        log("   o si usas cable USB: python mock_bike_dash.py --adb")
+    }
+
+    private fun showSimulatorDialog() {
+        val wifiIp = getLocalWifiIp() ?: "IP_DEL_CELULAR"
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("🖥️ Modo Simulador (PC)")
+            .setMessage(
+                "Prueba la transmisión de video, Modo Apps y toques táctiles en tu PC usando 'mock_bike_dash.py' sin necesidad de la moto.\n\n" +
+                "IP detectada en Wi-Fi: $wifiIp\n\n" +
+                "Comandos en tu PC:\n" +
+                "  python mock_bike_dash.py --host $wifiIp\n\n" +
+                "O por cable USB:\n" +
+                "  python mock_bike_dash.py --adb"
+            )
+            .setPositiveButton("Modo Apps / Espejo") { _, _ ->
+                isSimulatorSession = true
+                appPickerLauncher.launch(AppLauncherActivity.createIntent(this))
+            }
+            .setNeutralButton("Android Auto") { _, _ ->
+                isSimulatorSession = true
+                val dummyQr = QrData(ssid = "SIMULATOR", pwd = "SIMULATOR_PWD")
+                startAaFlow(dummyQr)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun getLocalWifiIp(): String? {
+        try {
+            val wm = applicationContext.getSystemService(Context.WIFI_SERVICE) as? android.net.wifi.WifiManager
+            @Suppress("DEPRECATION")
+            val ipInt = wm?.connectionInfo?.ipAddress ?: 0
+            if (ipInt != 0) {
+                return String.format(
+                    Locale.US,
+                    "%d.%d.%d.%d",
+                    ipInt and 0xff,
+                    ipInt shr 8 and 0xff,
+                    ipInt shr 16 and 0xff,
+                    ipInt shr 24 and 0xff,
+                )
+            }
+            for (nic in java.net.NetworkInterface.getNetworkInterfaces()) {
+                if (!nic.isUp || nic.isLoopback) continue
+                for (addr in nic.inetAddresses) {
+                    if (addr is java.net.Inet4Address && !addr.isLoopbackAddress) {
+                        return addr.hostAddress
+                    }
+                }
+            }
+        } catch (_: Exception) {}
+        return null
     }
 
     private fun mirrorStatusDetail(fallbackBike: String): String {

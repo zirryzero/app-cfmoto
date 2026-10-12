@@ -294,6 +294,8 @@
     <string name="setup_fill">Rellenar</string>
     <string name="setup_fit">Ajustar</string>
     <string name="setup_stretch">Estirar</string>
+    <string name="setup_mirror_fit">Ajuste de pantalla (Modo Apps / Espejo)</string>
+    <string name="setup_mirror_fit_desc">Cómo se ajustan las apps y la pantalla del móvil en el tablero de la moto</string>
     <string name="setup_screen_margins">Márgenes de la pantalla…</string>
     <string name="setup_inset_android_auto_from_each_edge_of_the_dash_to">Aparta Android Auto de cada borde del tablero (arriba/abajo/izquierda/derecha). Útil en la 800NK Advanced por el desplegable de MotoPlay.</string>
     <string name="setup_auto_day_night">Automático (día/noche)</string>
@@ -560,6 +562,7 @@
     <string name="pref_hold_ignored">Ignorado mientras la detección de retención está desactivada</string>
     <string name="setup_toast_video_quality">Calidad de vídeo: %1$s</string>
     <string name="setup_toast_screen_fit">Ajuste de pantalla: %1$s</string>
+    <string name="setup_toast_mirror_fit">Ajuste Modo Apps: %1$s</string>
     <string name="setup_toast_power_mode">Modo de energía: %1$s</string>
     <string name="setup_toast_resolution">Resolución: %1$s</string>
     <string name="setup_toast_map_theme">Tema del mapa: %1$s</string>

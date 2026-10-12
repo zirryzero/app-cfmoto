@@ -7,13 +7,13 @@ import java.nio.charset.StandardCharsets
 data class QrData(
     val ssid: String,
     val pwd: String,
-    val auth: String?,
-    val mac: String?,
-    val name: String?,
-    val action: Int,
-    val modelId: String?,
-    val sn: String?,
-    val channel: String?,
+    val auth: String? = null,
+    val mac: String? = null,
+    val name: String? = null,
+    val action: Int = 0,
+    val modelId: String? = null,
+    val sn: String? = null,
+    val channel: String? = null,
 ) {
     val supportsAp: Boolean get() = true
 

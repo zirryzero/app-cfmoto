@@ -329,7 +329,7 @@ class VideoPipeline(
             }
             // Setup ▸ Screen fit (same preference as AA). Prefer Fit for mirror so tall phone /
             // single-app buffers letterbox instead of cropping to a slice.
-            fun currentFit() = VideoPrefs.fit(context)
+            fun currentFit() = VideoPrefs.mirrorFit(context)
             fun applyMirrorOutput(srcW: Int, srcH: Int, reason: String) {
                 val fit = currentFit()
                 scaler.updateCaptureSize(srcW, srcH)
@@ -626,7 +626,10 @@ class VideoPipeline(
     fun clearPreviewSurface() = aaCompositor?.clearPreview()
 
     /** Live update when the rider changes [ScreenMargins] while projecting. */
-    fun refreshScreenMargins() = aaCompositor?.refreshMargins()
+    fun refreshScreenMargins() {
+        aaCompositor?.refreshMargins()
+        mirrorScaler?.refreshMargins()
+    }
 
     /** Called by the data socket on each REQ_RV_DATA_NEXT(114). Returns one access unit. */
     fun pollFrame(timeoutMs: Long): ByteArray? =

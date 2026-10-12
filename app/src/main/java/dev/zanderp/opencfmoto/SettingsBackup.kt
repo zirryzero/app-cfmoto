@@ -34,6 +34,7 @@ object SettingsBackup {
         val s = JSONObject()
         s.put("videoQuality", VideoPrefs.get(context).name)
         s.put("screenFit", VideoPrefs.fit(context).name)
+        s.put("mirrorScreenFit", VideoPrefs.mirrorFit(context).name)
         s.put("powerMode", VideoPrefs.power(context).name)
         s.put("resolutionMode", VideoPrefs.resolution(context).name)
         s.put("aaDpiOverride", VideoPrefs.dpiOverride(context) ?: 0)
@@ -94,6 +95,9 @@ object SettingsBackup {
         }
         s.optString("screenFit").takeIf { it.isNotBlank() }?.let {
             runCatching { VideoPrefs.setFit(context, ScreenFit.valueOf(it)) }
+        }
+        s.optString("mirrorScreenFit").takeIf { it.isNotBlank() }?.let {
+            runCatching { VideoPrefs.setMirrorFit(context, ScreenFit.valueOf(it)) }
         }
         s.optString("powerMode").takeIf { it.isNotBlank() }?.let {
             runCatching { VideoPrefs.setPower(context, PowerMode.valueOf(it)) }

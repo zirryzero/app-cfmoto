@@ -38,6 +38,7 @@ class SetupActivity : AppCompatActivity() {
     private lateinit var languageDesc: TextView
     private lateinit var qualityDesc: TextView
     private lateinit var fitDesc: TextView
+    private lateinit var mirrorFitDesc: TextView
     private lateinit var powerDesc: TextView
     private lateinit var resDesc: TextView
     private lateinit var dpiDesc: TextView
@@ -73,6 +74,7 @@ class SetupActivity : AppCompatActivity() {
         languageDesc = findViewById(R.id.language_desc)
         qualityDesc = findViewById(R.id.quality_desc)
         fitDesc = findViewById(R.id.fit_desc)
+        mirrorFitDesc = findViewById(R.id.mirror_fit_desc)
         powerDesc = findViewById(R.id.power_desc)
         resDesc = findViewById(R.id.res_desc)
         dpiDesc = findViewById(R.id.dpi_desc)
@@ -95,6 +97,9 @@ class SetupActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.fit_fill).setOnClickListener { setFit(ScreenFit.FILL) }
         findViewById<MaterialButton>(R.id.fit_fit).setOnClickListener { setFit(ScreenFit.FIT) }
         findViewById<MaterialButton>(R.id.fit_stretch).setOnClickListener { setFit(ScreenFit.STRETCH) }
+        findViewById<MaterialButton>(R.id.mirror_fit_fit).setOnClickListener { setMirrorFit(ScreenFit.FIT) }
+        findViewById<MaterialButton>(R.id.mirror_fit_stretch).setOnClickListener { setMirrorFit(ScreenFit.STRETCH) }
+        findViewById<MaterialButton>(R.id.mirror_fit_fill).setOnClickListener { setMirrorFit(ScreenFit.FILL) }
         findViewById<MaterialButton>(R.id.power_auto).setOnClickListener { setPower(PowerMode.AUTO) }
         findViewById<MaterialButton>(R.id.power_smooth).setOnClickListener { setPower(PowerMode.SMOOTH) }
         findViewById<MaterialButton>(R.id.power_balanced).setOnClickListener { setPower(PowerMode.BALANCED) }
@@ -232,6 +237,12 @@ class SetupActivity : AppCompatActivity() {
         toast(getString(R.string.setup_toast_screen_fit, getString(f.labelRes)))
     }
 
+    private fun setMirrorFit(f: ScreenFit) {
+        VideoPrefs.setMirrorFit(this, f)
+        refreshOptions()
+        toast(getString(R.string.setup_toast_mirror_fit, getString(f.labelRes)))
+    }
+
     private fun setPower(m: PowerMode) {
         VideoPrefs.setPower(this, m)
         refreshOptions()
@@ -345,6 +356,7 @@ class SetupActivity : AppCompatActivity() {
     private fun refreshOptions() {
         val quality = VideoPrefs.get(this)
         val fit = VideoPrefs.fit(this)
+        val mirrorFit = VideoPrefs.mirrorFit(this)
         val power = VideoPrefs.power(this)
         val res = VideoPrefs.resolution(this)
         val dpi = VideoPrefs.dpiOverride(this)
@@ -355,6 +367,7 @@ class SetupActivity : AppCompatActivity() {
         languageDesc.text = AppLanguage.selectedLabel(this)
         qualityDesc.text = getString(quality.labelRes)
         fitDesc.text = getString(fit.labelRes)
+        mirrorFitDesc.text = getString(mirrorFit.labelRes)
         powerDesc.text = getString(power.labelRes)
         resDesc.text = getString(res.labelRes)
         dpiDesc.text = if (dpi == null) {
@@ -378,6 +391,10 @@ class SetupActivity : AppCompatActivity() {
             R.id.fit_fill to ScreenFit.FILL,
             R.id.fit_fit to ScreenFit.FIT,
             R.id.fit_stretch to ScreenFit.STRETCH)
+        highlight(mirrorFit,
+            R.id.mirror_fit_fit to ScreenFit.FIT,
+            R.id.mirror_fit_stretch to ScreenFit.STRETCH,
+            R.id.mirror_fit_fill to ScreenFit.FILL)
         highlight(power,
             R.id.power_auto to PowerMode.AUTO,
             R.id.power_smooth to PowerMode.SMOOTH,

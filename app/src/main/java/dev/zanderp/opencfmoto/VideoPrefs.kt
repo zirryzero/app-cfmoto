@@ -85,6 +85,7 @@ object VideoPrefs {
     private const val PREFS = "opencfmoto_bike"
     private const val KEY_QUALITY = "video_quality"
     private const val KEY_FIT = "screen_fit"
+    private const val KEY_MIRROR_FIT = "mirror_screen_fit"
     private const val KEY_POWER = "power_mode"
     private const val KEY_RESOLUTION = "resolution_mode"
     /** 0 keeps the optimized 800NK Advanced profile DPI. */
@@ -120,6 +121,15 @@ object VideoPrefs {
 
     fun setFit(ctx: Context, fit: ScreenFit) {
         BikeScope.putString(prefs(ctx), ctx, KEY_FIT, fit.name)
+    }
+
+    fun mirrorFit(ctx: Context): ScreenFit {
+        val name = BikeScope.getString(prefs(ctx), ctx, KEY_MIRROR_FIT, ScreenFit.FIT.name)
+        return runCatching { ScreenFit.valueOf(name!!) }.getOrDefault(ScreenFit.FIT)
+    }
+
+    fun setMirrorFit(ctx: Context, fit: ScreenFit) {
+        BikeScope.putString(prefs(ctx), ctx, KEY_MIRROR_FIT, fit.name)
     }
 
     fun power(ctx: Context): PowerMode {
